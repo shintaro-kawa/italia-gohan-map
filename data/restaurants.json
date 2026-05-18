@@ -6,23 +6,38 @@
     "area": "Trastevere",
     "genre": "trattoria",
     "priceRange": "€€",
-    "lat": 41.8896,
-    "lng": 12.4696,
+    "lat": 41.8880864,
+    "lng": 12.477807,
     "address": "Via dei Vascellari, 29, 00153 Roma RM",
     "visited": false,
     "comment": "カチョエペペが名物。予約必須の人気店",
     "url": "https://www.daenzoal29.com/",
-    "tags": ["pasta", "local", "reservation-required"],
+    "tags": [
+      "pasta",
+      "local",
+      "reservation-required"
+    ],
     "source": "gambero-rosso",
     "sourceTrust": "high",
     "verdict": "recommended",
     "concerns": [
-      { "type": "long-wait", "severity": "medium", "note": "予約必須、ピーク時は待ち時間長" }
+      {
+        "type": "long-wait",
+        "severity": "medium",
+        "note": "予約必須、ピーク時は待ち時間長"
+      }
     ],
     "highlights": [
-      { "type": "signature-dish", "note": "カチョエペペ" },
-      { "type": "family-run" },
-      { "type": "locals-frequent" }
+      {
+        "type": "signature-dish",
+        "note": "カチョエペペ"
+      },
+      {
+        "type": "family-run"
+      },
+      {
+        "type": "locals-frequent"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -33,22 +48,37 @@
     "area": "Prati",
     "genre": "pizzeria",
     "priceRange": "€",
-    "lat": 41.907,
-    "lng": 12.4537,
+    "lat": 41.9066975,
+    "lng": 12.4466606,
     "address": "Via della Meloria, 43, 00136 Roma RM",
     "visited": false,
     "comment": "ローマ式ピザ・アル・タリオの名店。立ち食い",
-    "tags": ["pizza-al-taglio", "takeaway"],
+    "tags": [
+      "pizza-al-taglio",
+      "takeaway"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "concerns": [
-      { "type": "crowded-noisy", "severity": "low", "note": "立ち食いで席は限定的" }
+      {
+        "type": "crowded-noisy",
+        "severity": "low",
+        "note": "立ち食いで席は限定的"
+      }
     ],
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza 常連" },
-      { "type": "signature-dish", "note": "Bonci ブランドの地粉ピザ" },
-      { "type": "value-for-money" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza 常連"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Bonci ブランドの地粉ピザ"
+      },
+      {
+        "type": "value-for-money"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -59,22 +89,40 @@
     "area": "Testaccio",
     "genre": "trattoria",
     "priceRange": "€€",
-    "lat": 41.876,
-    "lng": 12.474,
+    "lat": 41.8749069,
+    "lng": 12.4765142,
     "address": "Via di Monte Testaccio, 97-99, 00153 Roma RM",
     "visited": false,
     "url": "https://www.ristorantevelavevodetto.it/",
-    "tags": ["roman-classics", "cacio-e-pepe", "oxtail", "testaccio"],
+    "tags": [
+      "roman-classics",
+      "cacio-e-pepe",
+      "oxtail",
+      "testaccio"
+    ],
     "source": "gambero-rosso",
     "sourceTrust": "high",
     "verdict": "recommended",
     "concerns": [
-      { "type": "long-wait", "severity": "medium", "note": "予約推奨。週末は早めに" }
+      {
+        "type": "long-wait",
+        "severity": "medium",
+        "note": "予約推奨。週末は早めに"
+      }
     ],
     "highlights": [
-      { "type": "locals-frequent", "note": "ローマっ子の宴会・家族利用が多い" },
-      { "type": "signature-dish", "note": "コーダ・アッラ・ヴァッチナーラ" },
-      { "type": "fresh-ingredients", "note": "ローマ郷土の伝統メニュー中心" }
+      {
+        "type": "locals-frequent",
+        "note": "ローマっ子の宴会・家族利用が多い"
+      },
+      {
+        "type": "signature-dish",
+        "note": "コーダ・アッラ・ヴァッチナーラ"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "ローマ郷土の伝統メニュー中心"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -85,23 +133,44 @@
     "area": "Monteverde",
     "genre": "trattoria",
     "priceRange": "€€",
-    "lat": 41.879,
-    "lng": 12.448,
+    "lat": 41.8768509,
+    "lng": 12.4407734,
     "address": "Via del Casaletto, 45, 00151 Roma RM",
     "visited": false,
     "url": "https://www.trattoriacesarealcasaletto.it/",
-    "tags": ["roman-classics", "fritti", "carbonara", "amatriciana"],
+    "tags": [
+      "roman-classics",
+      "fritti",
+      "carbonara",
+      "amatriciana"
+    ],
     "source": "gambero-rosso",
     "sourceTrust": "high",
     "verdict": "recommended",
     "concerns": [
-      { "type": "long-wait", "severity": "medium", "note": "予約必須、人気店" }
+      {
+        "type": "long-wait",
+        "severity": "medium",
+        "note": "予約必須、人気店"
+      }
     ],
     "highlights": [
-      { "type": "award-winning", "note": "Gambero Rosso 系で高評価常連" },
-      { "type": "innovative", "note": "伝統料理に細やかな工夫" },
-      { "type": "locals-frequent", "note": "観光地から離れ、地元客中心" },
-      { "type": "signature-dish", "note": "フリッティが名物" }
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso 系で高評価常連"
+      },
+      {
+        "type": "innovative",
+        "note": "伝統料理に細やかな工夫"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "観光地から離れ、地元客中心"
+      },
+      {
+        "type": "signature-dish",
+        "note": "フリッティが名物"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -112,22 +181,39 @@
     "area": "Ostiense",
     "genre": "trattoria",
     "priceRange": "€€",
-    "lat": 41.866,
-    "lng": 12.482,
+    "lat": 41.8733548,
+    "lng": 12.4798767,
     "address": "Via Giovanni da Empoli, 5, 00154 Roma RM",
     "visited": false,
     "url": "https://www.trattoriapennestri.it/",
-    "tags": ["roman-classics", "modern-traditional", "ostiense"],
+    "tags": [
+      "roman-classics",
+      "modern-traditional",
+      "ostiense"
+    ],
     "source": "slow-food",
     "sourceTrust": "high",
     "verdict": "recommended",
     "concerns": [
-      { "type": "long-wait", "severity": "low", "note": "予約推奨" }
+      {
+        "type": "long-wait",
+        "severity": "low",
+        "note": "予約推奨"
+      }
     ],
     "highlights": [
-      { "type": "innovative", "note": "若手シェフによる伝統料理の現代的解釈" },
-      { "type": "fresh-ingredients", "note": "季節食材重視" },
-      { "type": "locals-frequent", "note": "Ostiense / Garbatella エリア住民が中心" }
+      {
+        "type": "innovative",
+        "note": "若手シェフによる伝統料理の現代的解釈"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "季節食材重視"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "Ostiense / Garbatella エリア住民が中心"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -141,14 +227,28 @@
     "lat": 41.881,
     "lng": 12.476,
     "visited": false,
-    "tags": ["pizza", "modern", "napoletana", "award-winning"],
+    "tags": [
+      "pizza",
+      "modern",
+      "napoletana",
+      "award-winning"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza Italia 2025 #3、イタリア全国 3 位" },
-      { "type": "innovative", "note": "Pier Daniele Seu によるモダンピザ" },
-      { "type": "signature-dish", "note": "ナポリ風 + 革新トッピング" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #3、イタリア全国 3 位"
+      },
+      {
+        "type": "innovative",
+        "note": "Pier Daniele Seu によるモダンピザ"
+      },
+      {
+        "type": "signature-dish",
+        "note": "ナポリ風 + 革新トッピング"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -162,13 +262,24 @@
     "lat": 41.879,
     "lng": 12.547,
     "visited": false,
-    "tags": ["pizza", "romana", "thin-crust", "award-winning"],
+    "tags": [
+      "pizza",
+      "romana",
+      "thin-crust",
+      "award-winning"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza Italia 2025 #13" },
-      { "type": "signature-dish", "note": "ローマ式薄手" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #13"
+      },
+      {
+        "type": "signature-dish",
+        "note": "ローマ式薄手"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -181,12 +292,18 @@
     "lat": 41.9028,
     "lng": 12.4964,
     "visited": false,
-    "tags": ["pizza", "award-winning"],
+    "tags": [
+      "pizza",
+      "award-winning"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza Italia 2025 #38" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #38"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -200,13 +317,23 @@
     "lat": 41.877,
     "lng": 12.445,
     "visited": false,
-    "tags": ["pizza", "romana", "award-winning"],
+    "tags": [
+      "pizza",
+      "romana",
+      "award-winning"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza Italia 2025 #41" },
-      { "type": "locals-frequent", "note": "観光地外、地元利用率高" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #41"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "観光地外、地元利用率高"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -219,13 +346,23 @@
     "lat": 41.9028,
     "lng": 12.4964,
     "visited": false,
-    "tags": ["pizza", "thin-crispy", "award-winning"],
+    "tags": [
+      "pizza",
+      "thin-crispy",
+      "award-winning"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza Italia 2025 #43" },
-      { "type": "innovative", "note": "薄手クリスピー系" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #43"
+      },
+      {
+        "type": "innovative",
+        "note": "薄手クリスピー系"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -236,24 +373,46 @@
     "area": "San Lorenzo",
     "genre": "trattoria",
     "priceRange": "€€",
-    "lat": 43.7775,
-    "lng": 11.2538,
+    "lat": 43.7765666,
+    "lng": 11.2545454,
     "address": "Via Rosina, 2/R, 50123 Firenze FI",
     "visited": false,
     "comment": "ビステッカ・アッラ・フィオレンティーナで有名。昼のみ営業・予約不可",
-    "tags": ["bistecca", "lunch-only", "no-reservation"],
+    "tags": [
+      "bistecca",
+      "lunch-only",
+      "no-reservation"
+    ],
     "source": "slow-food",
     "sourceTrust": "high",
     "verdict": "recommended",
     "concerns": [
-      { "type": "long-wait", "severity": "high", "note": "予約不可で開店前から並ぶ必要あり" },
-      { "type": "crowded-noisy", "severity": "medium", "note": "相席が前提" }
+      {
+        "type": "long-wait",
+        "severity": "high",
+        "note": "予約不可で開店前から並ぶ必要あり"
+      },
+      {
+        "type": "crowded-noisy",
+        "severity": "medium",
+        "note": "相席が前提"
+      }
     ],
     "highlights": [
-      { "type": "generations-old", "note": "1953 年創業" },
-      { "type": "family-run" },
-      { "type": "signature-dish", "note": "ビステッカ" },
-      { "type": "locals-frequent" }
+      {
+        "type": "generations-old",
+        "note": "1953 年創業"
+      },
+      {
+        "type": "family-run"
+      },
+      {
+        "type": "signature-dish",
+        "note": "ビステッカ"
+      },
+      {
+        "type": "locals-frequent"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -264,22 +423,37 @@
     "area": "Santa Croce",
     "genre": "gelateria",
     "priceRange": "€",
-    "lat": 43.7676,
-    "lng": 11.2602,
+    "lat": 43.7680825,
+    "lng": 11.2581365,
     "address": "Via dei Neri, 9/11/r, 50122 Firenze FI",
     "visited": false,
     "comment": "フィレンツェ屈指のジェラート店",
-    "tags": ["gelato", "dessert"],
+    "tags": [
+      "gelato",
+      "dessert"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "neutral",
     "concerns": [
-      { "type": "tourist-oriented", "severity": "medium", "note": "観光客にも有名で混雑する時間帯あり" },
-      { "type": "long-wait", "severity": "low" }
+      {
+        "type": "tourist-oriented",
+        "severity": "medium",
+        "note": "観光客にも有名で混雑する時間帯あり"
+      },
+      {
+        "type": "long-wait",
+        "severity": "low"
+      }
     ],
     "highlights": [
-      { "type": "fresh-ingredients", "note": "季節フルーツのジェラート" },
-      { "type": "value-for-money" }
+      {
+        "type": "fresh-ingredients",
+        "note": "季節フルーツのジェラート"
+      },
+      {
+        "type": "value-for-money"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -293,17 +467,33 @@
     "lat": 43.775,
     "lng": 11.247,
     "visited": false,
-    "tags": ["bistecca", "tortina-carciofi", "traditional"],
+    "tags": [
+      "bistecca",
+      "tortina-carciofi",
+      "traditional"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "concerns": [
-      { "type": "long-wait", "severity": "medium", "note": "小規模、予約推奨" }
+      {
+        "type": "long-wait",
+        "severity": "medium",
+        "note": "小規模、予約推奨"
+      }
     ],
     "highlights": [
-      { "type": "generations-old", "note": "1869 年創業" },
-      { "type": "family-run" },
-      { "type": "signature-dish", "note": "Tortina di Carciofi、ビステッカ" }
+      {
+        "type": "generations-old",
+        "note": "1869 年創業"
+      },
+      {
+        "type": "family-run"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Tortina di Carciofi、ビステッカ"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -317,16 +507,30 @@
     "lat": 43.772,
     "lng": 11.243,
     "visited": false,
-    "tags": ["bistecca", "fagioli", "locals-only"],
+    "tags": [
+      "bistecca",
+      "fagioli",
+      "locals-only"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "concerns": [
-      { "type": "long-wait", "severity": "medium", "note": "地元人気で早期予約必須" }
+      {
+        "type": "long-wait",
+        "severity": "medium",
+        "note": "地元人気で早期予約必須"
+      }
     ],
     "highlights": [
-      { "type": "locals-frequent", "note": "観光客ほぼなし" },
-      { "type": "signature-dish", "note": "Fagioli all'uccelletto、ビステッカ" }
+      {
+        "type": "locals-frequent",
+        "note": "観光客ほぼなし"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Fagioli all'uccelletto、ビステッカ"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -340,14 +544,27 @@
     "lat": 43.77,
     "lng": 11.258,
     "visited": false,
-    "tags": ["pici", "wild-boar", "ribollita"],
+    "tags": [
+      "pici",
+      "wild-boar",
+      "ribollita"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "highlights": [
-      { "type": "hidden-gem", "note": "観光ガイドに載らない" },
-      { "type": "family-run", "note": "オーナー Alfredo の温かい接客" },
-      { "type": "value-for-money", "note": "2 人 €78 ワイン込み" }
+      {
+        "type": "hidden-gem",
+        "note": "観光ガイドに載らない"
+      },
+      {
+        "type": "family-run",
+        "note": "オーナー Alfredo の温かい接客"
+      },
+      {
+        "type": "value-for-money",
+        "note": "2 人 €78 ワイン込み"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -361,14 +578,25 @@
     "lat": 43.766,
     "lng": 11.238,
     "visited": false,
-    "tags": ["home-cooked", "value", "locals"],
+    "tags": [
+      "home-cooked",
+      "value",
+      "locals"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "highlights": [
-      { "type": "family-run" },
-      { "type": "value-for-money", "note": "驚異的な安さで質を保つ" },
-      { "type": "locals-frequent" }
+      {
+        "type": "family-run"
+      },
+      {
+        "type": "value-for-money",
+        "note": "驚異的な安さで質を保つ"
+      },
+      {
+        "type": "locals-frequent"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -382,16 +610,29 @@
     "lat": 43.769,
     "lng": 11.248,
     "visited": false,
-    "tags": ["modern-tuscan", "natural-wine"],
+    "tags": [
+      "modern-tuscan",
+      "natural-wine"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "neutral",
     "concerns": [
-      { "type": "not-authentic", "severity": "low", "note": "semi-modern スタイル、純伝統ではない" }
+      {
+        "type": "not-authentic",
+        "severity": "low",
+        "note": "semi-modern スタイル、純伝統ではない"
+      }
     ],
     "highlights": [
-      { "type": "innovative", "note": "伝統 + 現代解釈" },
-      { "type": "fresh-ingredients", "note": "自然派ワイン充実" }
+      {
+        "type": "innovative",
+        "note": "伝統 + 現代解釈"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "自然派ワイン充実"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -402,18 +643,25 @@
     "area": "Catania",
     "genre": "pizzeria",
     "priceRange": "€€",
-    "lat": 37.5079,
-    "lng": 15.083,
+    "lat": 37.4979612,
+    "lng": 15.0831647,
     "address": "Via Plebiscito, 192, 95124 Catania CT",
     "visited": false,
     "comment": "カターニアで人気のピッツェリア",
-    "tags": ["pizza", "catania"],
+    "tags": [
+      "pizza",
+      "catania"
+    ],
     "source": "reddit-local",
     "sourceTrust": "medium",
     "verdict": "neutral",
     "highlights": [
-      { "type": "locals-frequent" },
-      { "type": "value-for-money" }
+      {
+        "type": "locals-frequent"
+      },
+      {
+        "type": "value-for-money"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -424,19 +672,31 @@
     "area": "Palermo",
     "genre": "pasticceria",
     "priceRange": "€",
-    "lat": 38.1157,
-    "lng": 13.3615,
+    "lat": 38.1121405,
+    "lng": 13.3502492,
     "address": "Via Colonna Rotta, 68, 90134 Palermo PA",
     "visited": false,
     "comment": "セッテヴェーリ（七層ケーキ）発祥の店",
-    "tags": ["dessert", "palermo", "cassata"],
+    "tags": [
+      "dessert",
+      "palermo",
+      "cassata"
+    ],
     "source": "slow-food",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "signature-dish", "note": "セッテヴェーリ発祥" },
-      { "type": "generations-old" },
-      { "type": "innovative", "note": "伝統菓子への革新で知られる" }
+      {
+        "type": "signature-dish",
+        "note": "セッテヴェーリ発祥"
+      },
+      {
+        "type": "generations-old"
+      },
+      {
+        "type": "innovative",
+        "note": "伝統菓子への革新で知られる"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -450,12 +710,19 @@
     "lat": 38.046,
     "lng": 13.547,
     "visited": false,
-    "tags": ["pizza", "sicilian", "award-winning"],
+    "tags": [
+      "pizza",
+      "sicilian",
+      "award-winning"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza Italia 2025 #32" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #32"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -469,12 +736,19 @@
     "lat": 38.183,
     "lng": 15.553,
     "visited": false,
-    "tags": ["pizza", "sicilian", "award-winning"],
+    "tags": [
+      "pizza",
+      "sicilian",
+      "award-winning"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza Italia 2025 #45" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #45"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -488,12 +762,19 @@
     "lat": 37.612,
     "lng": 15.165,
     "visited": false,
-    "tags": ["pizza", "sicilian", "award-winning"],
+    "tags": [
+      "pizza",
+      "sicilian",
+      "award-winning"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza Italia 2025 #62" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #62"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -507,12 +788,19 @@
     "lat": 38.115,
     "lng": 13.361,
     "visited": false,
-    "tags": ["pizza", "sicilian", "award-winning"],
+    "tags": [
+      "pizza",
+      "sicilian",
+      "award-winning"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza Italia 2025 #64" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #64"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -526,12 +814,19 @@
     "lat": 38.115,
     "lng": 13.361,
     "visited": false,
-    "tags": ["pizza", "sicilian", "award-winning"],
+    "tags": [
+      "pizza",
+      "sicilian",
+      "award-winning"
+    ],
     "source": "50-top-pizza",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "50 Top Pizza Italia 2025 #69" }
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #69"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -545,13 +840,23 @@
     "lat": 38.115,
     "lng": 13.361,
     "visited": false,
-    "tags": ["sicilian", "traditional", "slow-food-chiocciola"],
+    "tags": [
+      "sicilian",
+      "traditional",
+      "slow-food-chiocciola"
+    ],
     "source": "slow-food",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "Slow Food Osterie d'Italia 2025 Chiocciola" },
-      { "type": "family-run", "note": "Slow Food 基準で選定（家族経営・郷土料理）" }
+      {
+        "type": "award-winning",
+        "note": "Slow Food Osterie d'Italia 2025 Chiocciola"
+      },
+      {
+        "type": "family-run",
+        "note": "Slow Food 基準で選定（家族経営・郷土料理）"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -565,13 +870,22 @@
     "lat": 38.115,
     "lng": 13.361,
     "visited": false,
-    "tags": ["sicilian", "traditional", "slow-food-chiocciola"],
+    "tags": [
+      "sicilian",
+      "traditional",
+      "slow-food-chiocciola"
+    ],
     "source": "slow-food",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "Slow Food Osterie d'Italia 2025 Chiocciola" },
-      { "type": "family-run" }
+      {
+        "type": "award-winning",
+        "note": "Slow Food Osterie d'Italia 2025 Chiocciola"
+      },
+      {
+        "type": "family-run"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -585,12 +899,19 @@
     "lat": 38.115,
     "lng": 13.361,
     "visited": false,
-    "tags": ["sicilian", "traditional", "slow-food"],
+    "tags": [
+      "sicilian",
+      "traditional",
+      "slow-food"
+    ],
     "source": "slow-food",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "Slow Food Osterie d'Italia 2025 推薦掲載" }
+      {
+        "type": "award-winning",
+        "note": "Slow Food Osterie d'Italia 2025 推薦掲載"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -604,12 +925,19 @@
     "lat": 38.115,
     "lng": 13.361,
     "visited": false,
-    "tags": ["sicilian", "traditional", "slow-food"],
+    "tags": [
+      "sicilian",
+      "traditional",
+      "slow-food"
+    ],
     "source": "slow-food",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "Slow Food Osterie d'Italia 2025 推薦掲載" }
+      {
+        "type": "award-winning",
+        "note": "Slow Food Osterie d'Italia 2025 推薦掲載"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -623,12 +951,19 @@
     "lat": 38.115,
     "lng": 13.361,
     "visited": false,
-    "tags": ["sicilian", "traditional", "slow-food"],
+    "tags": [
+      "sicilian",
+      "traditional",
+      "slow-food"
+    ],
     "source": "slow-food",
     "sourceTrust": "high",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "Slow Food Osterie d'Italia 2025 推薦掲載" }
+      {
+        "type": "award-winning",
+        "note": "Slow Food Osterie d'Italia 2025 推薦掲載"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -639,21 +974,36 @@
     "area": "Palermo",
     "genre": "paninoteca",
     "priceRange": "€",
-    "lat": 38.115,
-    "lng": 13.366,
+    "lat": 38.1163329,
+    "lng": 13.3661444,
     "address": "Via Alessandro Paternostro 58, 90133 Palermo PA",
     "visited": false,
     "url": "https://www.anticafocacceria.it/",
-    "tags": ["pani-ca-meusa", "panelle", "historic", "anti-mafia"],
+    "tags": [
+      "pani-ca-meusa",
+      "panelle",
+      "historic",
+      "anti-mafia"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "concerns": [
-      { "type": "tourist-oriented", "severity": "low", "note": "歴史と観光価値で観光客も多いが、味の本格性は維持" }
+      {
+        "type": "tourist-oriented",
+        "severity": "low",
+        "note": "歴史と観光価値で観光客も多いが、味の本格性は維持"
+      }
     ],
     "highlights": [
-      { "type": "generations-old", "note": "1834 年創業、リバティ様式、Pirandello/Sciascia/Guttuso らが通った" },
-      { "type": "signature-dish", "note": "pani ca meusa, panelle" }
+      {
+        "type": "generations-old",
+        "note": "1834 年創業、リバティ様式、Pirandello/Sciascia/Guttuso らが通った"
+      },
+      {
+        "type": "signature-dish",
+        "note": "pani ca meusa, panelle"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -664,18 +1014,30 @@
     "area": "Palermo",
     "genre": "paninoteca",
     "priceRange": "€",
-    "lat": 38.115,
-    "lng": 13.366,
+    "lat": 38.1191046,
+    "lng": 13.369885,
     "address": "Corso Vittorio Emanuele 102, 90133 Palermo PA",
     "visited": false,
-    "tags": ["pani-ca-meusa", "piazza-marina"],
+    "tags": [
+      "pani-ca-meusa",
+      "piazza-marina"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "highlights": [
-      { "type": "award-winning", "note": "ilsicilia.it pani ca meusa Top 10 #1" },
-      { "type": "family-run", "note": "Valenti 家 2 世代" },
-      { "type": "signature-dish", "note": "よく味付けされた pani ca meusa、脂控えめ" }
+      {
+        "type": "award-winning",
+        "note": "ilsicilia.it pani ca meusa Top 10 #1"
+      },
+      {
+        "type": "family-run",
+        "note": "Valenti 家 2 世代"
+      },
+      {
+        "type": "signature-dish",
+        "note": "よく味付けされた pani ca meusa、脂控えめ"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -686,21 +1048,35 @@
     "area": "Palermo",
     "genre": "paninoteca",
     "priceRange": "€",
-    "lat": 38.111,
-    "lng": 13.366,
+    "lat": 38.1090947,
+    "lng": 13.3708037,
     "address": "Corso dei Mille 200, Palermo PA",
     "visited": false,
     "comment": "屋台形式、早朝〜午後営業（夜は閉店）",
-    "tags": ["pani-ca-meusa", "kiosk", "authentic"],
+    "tags": [
+      "pani-ca-meusa",
+      "kiosk",
+      "authentic"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "concerns": [
-      { "type": "crowded-noisy", "severity": "low", "note": "屋台形式で席は限定" }
+      {
+        "type": "crowded-noisy",
+        "severity": "low",
+        "note": "屋台形式で席は限定"
+      }
     ],
     "highlights": [
-      { "type": "generations-old", "note": "4 世代、1943 年〜" },
-      { "type": "locals-frequent", "note": "シンプルな屋台、地元客中心" }
+      {
+        "type": "generations-old",
+        "note": "4 世代、1943 年〜"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "シンプルな屋台、地元客中心"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -711,17 +1087,27 @@
     "area": "Palermo",
     "genre": "paninoteca",
     "priceRange": "€",
-    "lat": 38.119,
-    "lng": 13.369,
+    "lat": 38.1194624,
+    "lng": 13.3666192,
     "address": "Via Cala 62, Palermo PA",
     "visited": false,
-    "tags": ["pani-ca-meusa", "la-cala", "waterfront"],
+    "tags": [
+      "pani-ca-meusa",
+      "la-cala",
+      "waterfront"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "highlights": [
-      { "type": "generations-old", "note": "Favata 兄弟、1943 年〜" },
-      { "type": "award-winning", "note": "Discovery Travel Bizarre Foods 出演" }
+      {
+        "type": "generations-old",
+        "note": "Favata 兄弟、1943 年〜"
+      },
+      {
+        "type": "award-winning",
+        "note": "Discovery Travel Bizarre Foods 出演"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -736,13 +1122,23 @@
     "lng": 13.35,
     "address": "Corso Camillo Finocchiaro Aprile 76, Palermo PA",
     "visited": false,
-    "tags": ["pani-ca-meusa", "fast-service", "traditional"],
+    "tags": [
+      "pani-ca-meusa",
+      "fast-service",
+      "traditional"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "highlights": [
-      { "type": "generations-old", "note": "4 世代" },
-      { "type": "signature-dish", "note": "踊るような速い調理技術、Mediaset Street Food Heroes 出演" }
+      {
+        "type": "generations-old",
+        "note": "4 世代"
+      },
+      {
+        "type": "signature-dish",
+        "note": "踊るような速い調理技術、Mediaset Street Food Heroes 出演"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -757,17 +1153,34 @@
     "lng": 15.293,
     "visited": false,
     "url": "https://trattoriadaninotaormina.com/",
-    "tags": ["sicilian", "family", "pasta-al-forno", "sea-view"],
+    "tags": [
+      "sicilian",
+      "family",
+      "pasta-al-forno",
+      "sea-view"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "concerns": [
-      { "type": "tourist-oriented", "severity": "low", "note": "funivia 付近で観光客もいるが、地元客も多い 50 年継続店" }
+      {
+        "type": "tourist-oriented",
+        "severity": "low",
+        "note": "funivia 付近で観光客もいるが、地元客も多い 50 年継続店"
+      }
     ],
     "highlights": [
-      { "type": "generations-old", "note": "Nicita 家 3 世代、1972 年〜" },
-      { "type": "family-run" },
-      { "type": "signature-dish", "note": "祖父が設置した木窯のパスタ・アル・フォルノ" }
+      {
+        "type": "generations-old",
+        "note": "Nicita 家 3 世代、1972 年〜"
+      },
+      {
+        "type": "family-run"
+      },
+      {
+        "type": "signature-dish",
+        "note": "祖父が設置した木窯のパスタ・アル・フォルノ"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -781,13 +1194,22 @@
     "lat": 37.853,
     "lng": 15.288,
     "visited": false,
-    "tags": ["sicilian", "traditional", "quiet"],
+    "tags": [
+      "sicilian",
+      "traditional",
+      "quiet"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "highlights": [
-      { "type": "locals-frequent", "note": "観光ストリート外の静かな立地" },
-      { "type": "family-run" }
+      {
+        "type": "locals-frequent",
+        "note": "観光ストリート外の静かな立地"
+      },
+      {
+        "type": "family-run"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   },
@@ -801,14 +1223,27 @@
     "lat": 37.851,
     "lng": 15.288,
     "visited": false,
-    "tags": ["sicilian", "intimate", "ricotta-ravioli"],
+    "tags": [
+      "sicilian",
+      "intimate",
+      "ricotta-ravioli"
+    ],
     "source": "food-blogger",
     "sourceTrust": "medium",
     "verdict": "recommended",
     "highlights": [
-      { "type": "hidden-gem", "note": "12 席のみの親密空間" },
-      { "type": "signature-dish", "note": "リコッタラビオリ" },
-      { "type": "family-run", "note": "客の好みのワインを記憶" }
+      {
+        "type": "hidden-gem",
+        "note": "12 席のみの親密空間"
+      },
+      {
+        "type": "signature-dish",
+        "note": "リコッタラビオリ"
+      },
+      {
+        "type": "family-run",
+        "note": "客の好みのワインを記憶"
+      }
     ],
     "lastAnalyzed": "2026-05-18"
   }

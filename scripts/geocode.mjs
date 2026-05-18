@@ -22,6 +22,13 @@ const MAX = 50;
 const WAIT_MS = 1100;
 const USER_AGENT = 'italia-gohan-map/0.1 (https://github.com/shintaro-kawa/italia-gohan-map)';
 
+// data の city フィールド（英語）→ Nominatim 出力の伊語名（display_name に出やすい形）
+const CITY_NAME_MAP = {
+  Rome: ['roma'],
+  Florence: ['firenze'],
+  Sicily: ['sicilia'],
+};
+
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
@@ -39,25 +46,10 @@ async function geocode(address) {
   };
 }
 
-// 概算座標かどうかを判定（同じ座標が複数店舗で使われている = placeholder の可能性大）
-function countCoordOccurrences(data) {
-  const counts = new Map();
-  for (const r of data) {
-    const k = `${r.lat},${r.lng}`;
-    counts.set(k, (counts.get(k) ?? 0) + 1);
-  }
-  return counts;
-}
-
 const data = JSON.parse(await readFile(TARGET, 'utf-8'));
-const coordCounts = countCoordOccurrences(data);
 
-const candidates = data.filter((r) => {
-  if (!r.address || !r.address.trim()) return false;
-  // 同じ座標が 2 件以上 → placeholder の可能性
-  const sharing = coordCounts.get(`${r.lat},${r.lng}`) ?? 0;
-  return sharing >= 2;
-});
+// 住所があるエントリすべてが対象（既に正確な座標は dry-run で "already accurate" としてスキップ）
+const candidates = data.filter((r) => r.address && r.address.trim().length > 0);
 
 console.log(`Total entries: ${data.length}`);
 console.log(`Candidates with address + shared coord: ${candidates.length}`);
@@ -76,9 +68,26 @@ for (const r of candidates) {
     if (!result) {
       console.log(`[${processed}] ${r.id}: no match for "${r.address}"`);
     } else {
+      // サニティチェック 1: 結果に期待する地名（英伊両方）が含まれているか
+      const displayLower = result.displayName.toLowerCase();
+      const expected = [
+        ...CITY_NAME_MAP[r.city] ?? [],
+        (r.area ?? '').toLowerCase(),
+      ].filter((n) => n.length > 0);
+      const nameMatch = expected.some((n) => displayLower.includes(n));
+
+      // サニティチェック 2: 元座標との距離が暴れすぎていないか（同じ都市内なら 0.1 度 ≒ 11km 以内のはず）
       const dLat = Math.abs(result.lat - r.lat);
       const dLng = Math.abs(result.lng - r.lng);
-      if (dLat < 0.0005 && dLng < 0.0005) {
+      const tooFar = dLat > 0.2 || dLng > 0.2;
+
+      if (!nameMatch) {
+        console.log(`[${processed}] ${r.id}: ⚠ display name lacks expected location names [${expected.join(', ')}], SKIP`);
+        console.log(`    matched: ${result.displayName}`);
+      } else if (tooFar) {
+        console.log(`[${processed}] ${r.id}: ⚠ delta too large (lat ${dLat.toFixed(4)}, lng ${dLng.toFixed(4)}), SKIP`);
+        console.log(`    matched: ${result.displayName}`);
+      } else if (dLat < 0.0005 && dLng < 0.0005) {
         console.log(`[${processed}] ${r.id}: already accurate`);
       } else {
         console.log(`[${processed}] ${r.id}: ${r.lat},${r.lng} -> ${result.lat},${result.lng}`);
