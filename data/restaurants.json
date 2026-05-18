@@ -2427,5 +2427,51 @@
       }
     ],
     "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-e70acc46",
+    "name": "Pasticceria Bompiani (Walter Musco)",
+    "city": "Rome",
+    "area": "Tor Marancia",
+    "genre": "pasticceria",
+    "priceRange": "€€",
+    "lat": 41.8537,
+    "lng": 12.4837,
+    "address": "Largo Benedetto Bompiani, 8",
+    "visited": false,
+    "url": "https://pasticceriabompiani.it/",
+    "tags": [
+      "cornetto-fritto",
+      "croissant",
+      "colazione",
+      "foresta-nera",
+      "award-winning",
+      "creative-pastry"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "crowded-noisy",
+        "severity": "low",
+        "note": "住宅街にある人気店。週末は地元客で混雑"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso 2019年「最優秀セイヴォリー（塩気系）パスティッチェリア」受賞。オーナーのWalter Muscoは元アートギャラリスト出身の独学パティシエ"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Gambero Rosso推薦の名物「フォレスタ・ネーラ（黒い森）」コルネット（チョコ・クリーム・チェリー）と「コルネット・フリット（揚げコルネット）」がユニーク"
+      },
+      {
+        "type": "innovative",
+        "note": "イタリア式コルネットからフランス式クロワッサン、揚げコルネットまで幅広いラインナップ"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
   }
 ]
