@@ -2335,5 +2335,51 @@
       }
     ],
     "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-3dfe7b36",
+    "name": "Casa Manfredi",
+    "city": "Rome",
+    "area": "Aventino / Piramide",
+    "genre": "pasticceria",
+    "priceRange": "€€",
+    "lat": 41.8768,
+    "lng": 12.4816,
+    "address": "Viale Aventino, 91/93（本店） / Via dei Conciatori, 5（Piramide支店）",
+    "visited": false,
+    "url": "https://www.facebook.com/casamanfrediaventino/",
+    "tags": [
+      "cornetto",
+      "cappuccino",
+      "specialty-coffee",
+      "croissant-francese",
+      "colazione",
+      "viennoiserie"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "crowded-noisy",
+        "severity": "low",
+        "note": "人気店のため朝の混雑あり。早めの来店推奨"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rossoが「完璧な朝食が楽しめる店」として繰り返し推薦。Tierra!のスペシャルティコーヒーを使用"
+      },
+      {
+        "type": "signature-dish",
+        "note": "フランス式クロワッサン（バターはIsigny産）、ラズベリー入りクロワッサン生地のタルト、ヴェネツィアーナが絶品"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "クロワッサン生地はラズベリーコンポートと生ラズベリーで、甘さと酸味のバランスが秀逸とGambero Rosso評"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
   }
 ]
