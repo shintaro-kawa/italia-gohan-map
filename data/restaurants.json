@@ -1249,5 +1249,1091 @@
       }
     ],
     "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-fatamorgana",
+    "name": "Fatamorgana",
+    "city": "Rome",
+    "area": "Trieste",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 41.918,
+    "lng": 12.512,
+    "visited": false,
+    "tags": [
+      "gelato",
+      "artisanal",
+      "clean-label",
+      "award-winning"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso Gelaterie d'Italia 2025 Tre Coni"
+      },
+      {
+        "type": "innovative",
+        "note": "約 400 のレシピ、添加物・着色料なしのクリーンラベル"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "実験的な組み合わせの 40+ フレーバー"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-otaleg",
+    "name": "Otaleg!",
+    "city": "Rome",
+    "area": "Trastevere",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 41.886,
+    "lng": 12.469,
+    "visited": false,
+    "tags": [
+      "gelato",
+      "artisanal",
+      "award-winning"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso Tre Coni 2025"
+      },
+      {
+        "type": "innovative",
+        "note": "Marco Radicioni による極端な丁寧仕上げ、糖度バランス"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-la-gourmandise",
+    "name": "La Gourmandise",
+    "city": "Rome",
+    "area": "Monteverde Vecchio",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 41.88,
+    "lng": 12.46,
+    "visited": false,
+    "tags": [
+      "gelato",
+      "goat-milk",
+      "gluten-free",
+      "award-winning"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso Tre Coni 2025"
+      },
+      {
+        "type": "innovative",
+        "note": "マルタ産ヤギ乳使用、グルテンフリーも対応"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-torce",
+    "name": "Torcè",
+    "city": "Rome",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 41.9028,
+    "lng": 12.4964,
+    "visited": false,
+    "tags": [
+      "gelato",
+      "fructose",
+      "high-digestibility",
+      "award-winning"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso Tre Coni 2025"
+      },
+      {
+        "type": "innovative",
+        "note": "果糖使用、高消化性のミルクとクリーム"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-pasticceria-regoli",
+    "name": "Pasticceria Regoli",
+    "city": "Rome",
+    "area": "Esquilino",
+    "genre": "pasticceria",
+    "priceRange": "€",
+    "lat": 41.8948767,
+    "lng": 12.5009426,
+    "address": "Via dello Statuto 60, 00185 Roma RM",
+    "visited": false,
+    "comment": "朝 6:30 開店、昼前にマリトッツォは売り切れることが多い",
+    "tags": [
+      "maritozzo",
+      "cornetto",
+      "breakfast",
+      "century-old"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "long-wait",
+        "severity": "medium",
+        "note": "週末は早朝から並ぶ"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "100 年以上の歴史"
+      },
+      {
+        "type": "signature-dish",
+        "note": "マリトッツォ（生クリーム入り菓子パン）"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "ローマっ子の朝食定番"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-antico-forno-roscioli",
+    "name": "Antico Forno Roscioli",
+    "city": "Rome",
+    "area": "Centro Storico",
+    "genre": "pasticceria",
+    "priceRange": "€",
+    "lat": 41.8946474,
+    "lng": 12.4742641,
+    "address": "Via dei Chiavari 34, 00186 Roma RM",
+    "visited": false,
+    "tags": [
+      "bakery",
+      "pizza-al-taglio",
+      "suppli",
+      "pastries"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "long-wait",
+        "severity": "low"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "Roscioli 家経営の老舗ベーカリー"
+      },
+      {
+        "type": "signature-dish",
+        "note": "焼きたてピザ・スップリ・各種ペストリー"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-roscioli-caffe",
+    "name": "Roscioli Caffè Pasticceria",
+    "city": "Rome",
+    "area": "Centro Storico",
+    "genre": "pasticceria",
+    "priceRange": "€€",
+    "lat": 41.8941529,
+    "lng": 12.4744327,
+    "address": "Piazza Benedetto Cairoli 16, 00186 Roma RM",
+    "visited": false,
+    "tags": [
+      "coffee",
+      "pastries",
+      "third-wave"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "innovative",
+        "note": "職人焙煎豆、伝統イタリアンコーヒー文化"
+      },
+      {
+        "type": "signature-dish",
+        "note": "高品質エスプレッソ + ペストリー"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-grappolo-doro",
+    "name": "Grappolo d'Oro",
+    "city": "Rome",
+    "area": "Centro Storico",
+    "genre": "osteria",
+    "priceRange": "€€",
+    "lat": 41.897,
+    "lng": 12.472,
+    "visited": false,
+    "tags": [
+      "carbonara",
+      "roman-classics",
+      "slow-food"
+    ],
+    "source": "slow-food",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Slow Food 推薦"
+      },
+      {
+        "type": "signature-dish",
+        "note": "芸術的なカルボナーラ"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-menabo",
+    "name": "Menabò Vino e Cucina",
+    "city": "Rome",
+    "genre": "osteria",
+    "priceRange": "€€",
+    "lat": 41.9028,
+    "lng": 12.4964,
+    "visited": false,
+    "tags": [
+      "wine-pairing",
+      "slow-food",
+      "award-winning"
+    ],
+    "source": "slow-food",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Slow Food Osterie d'Italia 2025 - Premio Vino in osteria 受賞"
+      },
+      {
+        "type": "innovative",
+        "note": "ワイン 1 本ごとにストーリーとペアリング"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-armando-al-pantheon",
+    "name": "Armando Al Pantheon",
+    "city": "Rome",
+    "area": "Pantheon",
+    "genre": "ristorante",
+    "priceRange": "€€€",
+    "lat": 41.8990605,
+    "lng": 12.476199,
+    "address": "Salita de' Crescenzi 31, 00186 Roma RM",
+    "visited": false,
+    "tags": [
+      "amatriciana",
+      "carbonara",
+      "roman-classics",
+      "michelin-recommended"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "low",
+        "note": "パンテオンすぐ近く、観光客にも有名だが質を保つ"
+      },
+      {
+        "type": "long-wait",
+        "severity": "high",
+        "note": "数週間前からの予約必須"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "60 年以上、家族経営"
+      },
+      {
+        "type": "signature-dish",
+        "note": "市内最高のアマトリチャーナ、グアンチャーレが分厚い"
+      },
+      {
+        "type": "award-winning",
+        "note": "Michelin 推薦、Gambero Rosso 系評価"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-latteria",
+    "name": "Latteria",
+    "city": "Rome",
+    "area": "Trastevere",
+    "genre": "enoteca",
+    "priceRange": "€€",
+    "lat": 41.887,
+    "lng": 12.47,
+    "visited": false,
+    "tags": [
+      "natural-wine",
+      "aperitivo",
+      "charcuterie",
+      "terrace"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "locals-frequent",
+        "note": "石畳の路地裏、地元客に人気"
+      },
+      {
+        "type": "signature-dish",
+        "note": "ナチュラルワイン + シャルキュトリー / クロスティーニ"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-antidoto",
+    "name": "Enoteca L'Antidoto",
+    "city": "Rome",
+    "area": "Trastevere",
+    "genre": "enoteca",
+    "priceRange": "€€",
+    "lat": 41.886,
+    "lng": 12.469,
+    "visited": false,
+    "tags": [
+      "natural-wine",
+      "small-plates",
+      "trastevere"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "locals-frequent"
+      },
+      {
+        "type": "innovative",
+        "note": "マイナーヴィンヤード中心のナチュラルワイン"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-la-barrique",
+    "name": "La Barrique",
+    "city": "Rome",
+    "area": "Monti",
+    "genre": "enoteca",
+    "priceRange": "€€",
+    "lat": 41.894,
+    "lng": 12.491,
+    "visited": false,
+    "tags": [
+      "wine-bar",
+      "aperitivo",
+      "monti"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "locals-frequent",
+        "note": "昼は地元ビジネスマン、夜はアペリティーボ"
+      },
+      {
+        "type": "signature-dish",
+        "note": "ナチュラル + 伝統ワインの幅広い選択"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-il-goccetto",
+    "name": "Il Goccetto",
+    "city": "Rome",
+    "area": "Campo de' Fiori",
+    "genre": "enoteca",
+    "priceRange": "€€",
+    "lat": 41.898,
+    "lng": 12.47,
+    "visited": false,
+    "tags": [
+      "wine-bar",
+      "locals",
+      "cobblestone"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "crowded-noisy",
+        "severity": "low",
+        "note": "毎晩地元客でぎっしり"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "locals-frequent",
+        "note": "ほぼ毎晩地元客で満員"
+      },
+      {
+        "type": "value-for-money",
+        "note": "卓越したワイン選 + 美味しい食 + 温かいサービス"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-al-vino-al-vino",
+    "name": "Al Vino al Vino",
+    "city": "Rome",
+    "area": "Monti",
+    "genre": "enoteca",
+    "priceRange": "€€",
+    "lat": 41.894,
+    "lng": 12.491,
+    "visited": false,
+    "tags": [
+      "wine-bar",
+      "intimate",
+      "monti"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "hidden-gem",
+        "note": "Monti の喧騒から外れた親密な空間"
+      },
+      {
+        "type": "innovative",
+        "note": "スタッフが個人選定する多彩なラベル"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-vivoli",
+    "name": "Vivoli",
+    "city": "Florence",
+    "area": "Santa Croce",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 43.769939,
+    "lng": 11.2601058,
+    "address": "Via Isola delle Stinche 7, 50122 Firenze FI",
+    "visited": false,
+    "tags": [
+      "gelato",
+      "affogato",
+      "historic",
+      "family"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "low",
+        "note": "観光客にも有名だが地元客も多い"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "1930 年創業、4 世代続くフィレンツェ最古のジェラテリア"
+      },
+      {
+        "type": "family-run",
+        "note": "同じ家族が代々経営"
+      },
+      {
+        "type": "signature-dish",
+        "note": "2025 年に隣接して Affogato Bar 開設"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-perche-no",
+    "name": "Perché No!",
+    "city": "Florence",
+    "area": "Centro Storico",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 43.7708222,
+    "lng": 11.2554909,
+    "address": "Via dei Tavolini 19R, 50122 Firenze FI",
+    "visited": false,
+    "tags": [
+      "gelato",
+      "natural",
+      "vegan",
+      "historic"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "1939 年創業"
+      },
+      {
+        "type": "signature-dish",
+        "note": "天然素材のみ、ソイ・ヴィーガン対応、Nigella Lawson の愛店"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "フルーツの濃厚な蒸留のような味"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-la-carraia",
+    "name": "Gelateria La Carraia",
+    "city": "Florence",
+    "area": "Oltrarno",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 43.767,
+    "lng": 11.247,
+    "visited": false,
+    "tags": [
+      "gelato",
+      "river-side",
+      "generous",
+      "value"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "1990 年〜、リーズナブル価格で気前の良いポーション"
+      },
+      {
+        "type": "signature-dish",
+        "note": "バランスの取れたフレーバー、Arno 川 Ponte alla Carraia 近く"
+      },
+      {
+        "type": "family-run",
+        "note": "Eleonora 創業、家族で運営"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-caffe-gilli",
+    "name": "Caffè Gilli",
+    "city": "Florence",
+    "area": "Piazza della Repubblica",
+    "genre": "bar",
+    "priceRange": "€€€",
+    "lat": 43.7719131,
+    "lng": 11.2542518,
+    "address": "Piazza della Repubblica 39R, 50123 Firenze FI",
+    "visited": false,
+    "tags": [
+      "historic",
+      "cafe",
+      "pastries",
+      "panettone"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "medium",
+        "note": "Piazza della Repubblica の中央、観光客主体"
+      },
+      {
+        "type": "overpriced",
+        "severity": "medium",
+        "note": "歴史カフェ価格で立ち飲みより 3 倍ほど"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "1733 年スイス系 Gilli 家創業、フィレンツェ最古の歴史カフェ"
+      },
+      {
+        "type": "signature-dish",
+        "note": "繊細なペストリー、復活祭にはコロンバ、クリスマスにはパネットーネ"
+      },
+      {
+        "type": "award-winning",
+        "note": "Marinetti / Soffici 等の文豪に愛されたリベルティ装飾"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-caffe-rivoire",
+    "name": "Caffè Rivoire",
+    "city": "Florence",
+    "area": "Piazza della Signoria",
+    "genre": "bar",
+    "priceRange": "€€€",
+    "lat": 43.7694047,
+    "lng": 11.25508,
+    "address": "Piazza della Signoria 4R, 50122 Firenze FI",
+    "visited": false,
+    "tags": [
+      "historic",
+      "chocolate",
+      "cafe",
+      "savoy"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "medium",
+        "note": "シニョーリア広場の象徴的立地"
+      },
+      {
+        "type": "overpriced",
+        "severity": "medium"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "1872 年創業、サヴォイア王家御用達"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Torinese マスターショコラティエ由来のチョコレート"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-procacci-1885",
+    "name": "Procacci 1885",
+    "city": "Florence",
+    "area": "Via Tornabuoni",
+    "genre": "enoteca",
+    "priceRange": "€€€",
+    "lat": 43.771781,
+    "lng": 11.2514229,
+    "address": "Via de' Tornabuoni 64R, 50123 Firenze FI",
+    "visited": false,
+    "tags": [
+      "truffle",
+      "tartine",
+      "antinori",
+      "historic"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "overpriced",
+        "severity": "medium",
+        "note": "トリュフメニューでハイエンド価格"
+      },
+      {
+        "type": "tourist-oriented",
+        "severity": "low",
+        "note": "ファッション関係者・観光客も訪れる"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "1885 年創業、Vittorio Emanuele III 王御用達、1925 年〜サヴォイア王家紋章"
+      },
+      {
+        "type": "signature-dish",
+        "note": "トリュフクリームの小型タルティーヌ（秘伝レシピ）"
+      },
+      {
+        "type": "award-winning",
+        "note": "Antinori 家所有、30 世代続くトスカーナ最古ワイン名門"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-allantico-vinaio",
+    "name": "All'Antico Vinaio",
+    "city": "Florence",
+    "area": "Santa Croce",
+    "genre": "paninoteca",
+    "priceRange": "€",
+    "lat": 43.768415,
+    "lng": 11.2573845,
+    "address": "Via dei Neri 65R, 50122 Firenze FI",
+    "visited": false,
+    "comment": "Schiacciata 約 20cm、サヴェール誌「世界最高サンドイッチ」",
+    "tags": [
+      "schiacciata",
+      "panini",
+      "truffle",
+      "tuscan"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "high",
+        "note": "TripAdvisor 世界一レビュー数（2014）、観光客の列が長い"
+      },
+      {
+        "type": "long-wait",
+        "severity": "high",
+        "note": "ピーク時 30〜60 分待ち"
+      },
+      {
+        "type": "crowded-noisy",
+        "severity": "medium"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "1989 年〜、Mazzanti 家経営"
+      },
+      {
+        "type": "family-run",
+        "note": "1991 年から Mazzanti 家が継続"
+      },
+      {
+        "type": "signature-dish",
+        "note": "schiacciata（トスカーナ平焼パン）+ tartufo / pecorino / prosciutto crudo"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-i-fratellini",
+    "name": "I Fratellini",
+    "city": "Florence",
+    "area": "Centro Storico",
+    "genre": "paninoteca",
+    "priceRange": "€",
+    "lat": 43.77,
+    "lng": 11.254,
+    "visited": false,
+    "tags": [
+      "panini",
+      "historic",
+      "wine",
+      "takeaway"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "フィレンツェの歴史パニーノ店"
+      },
+      {
+        "type": "hidden-gem",
+        "note": "All'Antico Vinaio の隣の喧騒を避けるなら"
+      },
+      {
+        "type": "value-for-money",
+        "note": "ワイン + パニーノで素早く"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-santarpia",
+    "name": "Pizzeria Giovanni Santarpia",
+    "city": "Florence",
+    "area": "Via Senese",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 43.7495928,
+    "lng": 11.2356458,
+    "address": "Via Senese 155R, 50124 Firenze FI",
+    "visited": false,
+    "tags": [
+      "pizza",
+      "napoletana",
+      "award-winning",
+      "santarpizze"
+    ],
+    "source": "50-top-pizza",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #34、フィレンツェ最高位"
+      },
+      {
+        "type": "innovative",
+        "note": "Giovanni Santarpia による Santarpizze（ナポリ風 + 革新トッピング）"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Santarpizze シリーズ"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-vecchio-mare",
+    "name": "Il Vecchio e il Mare",
+    "city": "Florence",
+    "area": "Santa Croce",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 43.767,
+    "lng": 11.265,
+    "visited": false,
+    "tags": [
+      "pizza",
+      "santa-croce",
+      "award-winning"
+    ],
+    "source": "50-top-pizza",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025 #48"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-giotto",
+    "name": "Giotto Pizzeria",
+    "city": "Florence",
+    "area": "Via Veracini",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 43.781,
+    "lng": 11.247,
+    "address": "Via Vincenzo Veracini 22, 50144 Firenze FI",
+    "visited": false,
+    "tags": [
+      "pizza",
+      "long-fermentation",
+      "truffle",
+      "award-winning"
+    ],
+    "source": "50-top-pizza",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso + 50 Top Pizza 評価"
+      },
+      {
+        "type": "signature-dish",
+        "note": "長時間発酵で軽くエアリーな生地、サンマルツァーノトマト・水牛モッツァレラ・トリュフクリーム"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-berbere",
+    "name": "Berberè",
+    "city": "Florence",
+    "area": "Santa Croce",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 43.7677842,
+    "lng": 11.2593647,
+    "address": "Via dei Benci 7, 50122 Firenze FI",
+    "visited": false,
+    "tags": [
+      "pizza",
+      "high-hydration",
+      "organic-flour",
+      "24-48h"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "innovative",
+        "note": "高水分生地、24〜48 時間発酵"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "オーガニック石臼挽き小麦使用"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-pinchiorri",
+    "name": "Enoteca Pinchiorri",
+    "city": "Florence",
+    "area": "Sant'Ambrogio",
+    "genre": "ristorante",
+    "priceRange": "€€€€",
+    "lat": 43.769,
+    "lng": 11.265,
+    "visited": false,
+    "tags": [
+      "fine-dining",
+      "michelin",
+      "tre-forchette",
+      "wine-cellar"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "overpriced",
+        "severity": "high",
+        "note": "Michelin 3 ツ星級のファインダイニング価格"
+      },
+      {
+        "type": "long-wait",
+        "severity": "medium",
+        "note": "数か月前の予約必須"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso 2025 Tre Forchette、93/100 でイタリア美食界の基準点"
+      },
+      {
+        "type": "innovative",
+        "note": "イタリア最高峰のレストランの一つ"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-da-burde",
+    "name": "Da Burde",
+    "city": "Florence",
+    "area": "Novoli",
+    "genre": "osteria",
+    "priceRange": "€€",
+    "lat": 43.798,
+    "lng": 11.225,
+    "visited": false,
+    "tags": [
+      "tuscan-classics",
+      "slow-food",
+      "tre-gamberi",
+      "family"
+    ],
+    "source": "slow-food",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso 2025 Tre Gamberi、Slow Food 系の高評価"
+      },
+      {
+        "type": "family-run",
+        "note": "代々続く家族経営オステリア"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "観光地から離れた Novoli、地元客中心"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-gucci-osteria",
+    "name": "Gucci Osteria",
+    "city": "Florence",
+    "area": "Piazza della Signoria",
+    "genre": "ristorante",
+    "priceRange": "€€€€",
+    "lat": 43.77,
+    "lng": 11.256,
+    "visited": false,
+    "tags": [
+      "fine-dining",
+      "innovative",
+      "karime-lopez",
+      "gucci"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "overpriced",
+        "severity": "medium",
+        "note": "Gucci ブランドのプレミアム価格"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso 2025 スコア 87、シェフ Karime Lopez"
+      },
+      {
+        "type": "innovative",
+        "note": "Gucci Garden 内、ファッションメゾン × トスカーナ料理"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
   }
 ]

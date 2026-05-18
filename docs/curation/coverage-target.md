@@ -84,3 +84,22 @@
 > 注: 上記は **ユーザーが R-001〜R-007 の TSV を Sheets に貼り付け済み** の想定。実際の値は Sheets 反映後に再集計。
 >
 > 観察: Sicily.trattoria + paninoteca は目標オーバー（ユーザー要望でブースト）。残ギャップ大は `Florence.pasticceria` (3) / `Florence.gelateria` (2) / `Rome.gelateria` (3) / `Sicily.pasticceria` (3)。スイーツ系の補強が次の最適候補。
+
+## セッション #3 後（2026-05-18、user_directive_override で +30 件）
+
+```
+最新:
+  Rome:     25 / 20 (OVER +5)
+    trattoria 4, pizzeria 6, gelateria 4, pasticceria 3, osteria 2, ristorante 1, enoteca 5
+    → enoteca と gelateria で目標超過
+  Florence: 22 / 18 (OVER +4)
+    trattoria 6, pizzeria 4, gelateria 4, bar 2, enoteca 1, paninoteca 2, ristorante 2, osteria 1
+    → 全ジャンルバランスよく充足
+  Sicily:   20 / 21 (gap = 1)
+    pizzeria 6, trattoria 7, paninoteca 5, pasticceria 1, osteria 1
+    → pasticceria が gap 3、gelateria が gap 2 残存
+  ────────────────────────────────────────
+  合計: 67 / 59  全体目標 + 8 件超達成
+```
+
+> 観察: Rome と Florence は目標を超えて充実。次に伸ばすなら **Sicily.pasticceria / gelateria** か、**他都市追加**（Venice, Naples, Bologna 等）の方向。
