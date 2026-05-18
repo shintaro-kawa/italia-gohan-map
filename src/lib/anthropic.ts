@@ -1,9 +1,14 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { Restaurant } from '../types/restaurant.js';
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+let _client: Anthropic | null = null;
+function getClient(): Anthropic {
+  if (_client) return _client;
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured');
+  _client = new Anthropic({ apiKey });
+  return _client;
+}
 
 export const CHAT_MODEL = 'claude-sonnet-4-6';
 
@@ -72,7 +77,7 @@ ${existingSummary}
 }
 
 export async function chatWithClaude(userMessage: string, existing: Restaurant[]): Promise<string> {
-  const response = await client.messages.create({
+  const response = await getClient().messages.create({
     model: CHAT_MODEL,
     max_tokens: 4096,
     system: buildSystemPrompt(existing),
