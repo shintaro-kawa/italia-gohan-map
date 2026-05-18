@@ -2473,5 +2473,50 @@
       }
     ],
     "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-aef8310a",
+    "name": "Pasticceria Barberini",
+    "city": "Rome",
+    "area": "Testaccio",
+    "genre": "pasticceria",
+    "priceRange": "€",
+    "lat": 41.8782,
+    "lng": 12.4785,
+    "address": "Via Marmorata（Testaccio地区）",
+    "visited": false,
+    "tags": [
+      "cornetto",
+      "colazione",
+      "locals-spot",
+      "natural-starter",
+      "testaccio",
+      "value-for-money"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "long-wait",
+        "severity": "low",
+        "note": "地元客に人気のため朝は行列ができることも"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "locals-frequent",
+        "note": "Testaccioの地元客に長年愛される近所の名店。観光客よりもローマっ子の姿が多い"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "コルネットは自家製で朝から焼きたて提供。天然酵母と本物のバターを使用した生地が評判"
+      },
+      {
+        "type": "value-for-money",
+        "note": "価格も良心的で、カスタムロースト珈琲とのセットが◎"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
   }
 ]
