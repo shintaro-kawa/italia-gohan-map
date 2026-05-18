@@ -208,9 +208,76 @@
 - 代替案: 負のみ → ニュートラルとポジティブの差が出ない
 - 影響: タクソノミーが 2 系統になる。UI も両方を表示する設計に
 
+## D-021: リサーチエージェントに Web ツール（WebSearch + WebFetch）を導入
+
+- 日付: 2026-05-18
+- 状態: Active、Supersedes D-017 の「AI 知識のみ」前提
+- 関連: [agents/restaurant-research-agent.md](../../agents/restaurant-research-agent.md), [docs/curation-guide.md](../curation-guide.md)
+- 決定: 店舗リサーチエージェントは AI 知識だけでなく、**WebSearch + WebFetch ツール** を使って実際に信頼ソース（50 Top Pizza, MICHELIN, Gambero Rosso 等）の公開ページから情報を取得する
+- 根拠: LLM 知識カットオフ問題と幻覚リスクを大幅軽減。実在性・現状の営業情報・最新のランキングを反映できる
+- 代替案: API 統合（Brave Search / Anthropic Search） → 鍵管理・コストが増えるため見送り
+- 影響: 1 ラウンドあたり WebSearch 1〜2 回 + WebFetch 2〜3 回。ToS 範囲内（公開ページ参照、レート過多なし）
+
+## D-023: セッション #1〜#2 の運用学習を反映
+
+- 日付: 2026-05-18
+- 状態: Active
+- 関連: [docs/curation-guide.md](../curation-guide.md), [agents/restaurant-research-agent.md](../../agents/restaurant-research-agent.md), [docs/curation/coverage-target.md](../curation/coverage-target.md)
+- 決定: セッション #1（R-002〜R-004）と #2（R-005〜R-007）で観測した実運用パターンを以下のように体系化:
+
+### 学習 1: Gambero Rosso は WebFetch を恒常的に拒否（403）
+- 観測: 計 3 回試行、すべて 403 Forbidden（Bot 対策）
+- 対応: ソース優先順序から **Gambero Rosso の直接フェッチを外す**。WebSearch でメタ情報を拾う用途のみに留める
+- 代替ソース: Slow Food regional blogs（例: slowfoodpalermo.it）、地元ジャーナリズム（ilsicilia.it / palermotoday.it 等）
+
+### 学習 2: 地元ジャーナリズム系が想定以上に有用
+- 観測: ilsicilia.it / sicilianstories.eu / palermotoday.it / World of Mouth が構造化された Top-N リストを公開しており、WebFetch でクリーンに抽出できる
+- 対応: ソースタクソノミーに `local-journalism`（medium trust）を **将来追加候補**（現状は `food-blogger` で代用可）
+
+### 学習 3: 緯度経度は AI 知識では精度不足、住所までで止める
+- 観測: 全 31 件で「都市/地区中心の概算」しか提供できず、要検証フラグが必須化
+- 対応: リサーチ AG の出力で **緯度経度は明示的に「街区中心仮値」と明記**、最終値はユーザーが Google Maps で取得
+- 将来改善: OSM Nominatim API を呼び出す中間ステップを検討（D-021 で既に言及済）
+
+### 学習 4: 屋台・カート系の営業時間が data model 不足
+- 観測: R-006 の pani ca' meusa 5 件はすべて早朝〜午後のみ営業、`openingHours` フィールド欠落で表現できず
+- 対応: 現状は **`comment` フィールドに時間情報を含める** ルールを暫定採用。フィールド追加は openingHours の正規化（曜日別?）が複雑なため将来検討
+- エスカレーション先: 要件定義 AG に `openingHours` 追加要否を打診
+
+### 学習 5: カバレッジ目標の偏り耐性が弱い
+- 観測: pizzeria（Rome / Sicily）と Sicily.trattoria/paninoteca が目標超過、Florence のスイーツ系が未着手のまま
+- 対応: 計画 AG オーケストレーターが **「次に最大ギャップ」を機械的に選ぶ** ロジックを強化。target の +200% を超えたら警告
+
+### 学習 6: ユーザー直接指示（自由なキーワード）への対応
+- 観測: 「Palermo + Taormina の trattoria と paninoteca」のようにエリア + ジャンル指定が来た
+- 対応: 計画 AG は `area` 指定にも対応するモード C を追加（カバレッジ目標を一時的に上書き）
+
+## D-022: キュレーション計画 AG をオーケストレーター化、自律モード追加
+
+- 日付: 2026-05-18
+- 状態: Active
+- 関連: [agents/curation-planning-agent.md](../../agents/curation-planning-agent.md), [docs/curation/coverage-target.md](../curation/coverage-target.md)
+- 決定: 計画エージェントに「カバレッジ目標」概念を導入し、目標と現状のギャップを自動計算してラウンドを連続生成・実行する能力を付与
+- 根拠: ユーザー要望（自律的な複数ラウンド回り）。手動で 1 ラウンドずつブリーフを書く負担を排除
+- 代替案: 4 つ目の「オーケストレーター」エージェントを新設 → 役割重複でかえって複雑化、計画 AG の拡張で十分
+- 影響: `docs/curation/coverage-target.md` で目標宣言。1 ターン内最大 5 ラウンド連続実行（safety limit）
+
+## D-020: キュレーション専門サブチーム（3 エージェント）を設立
+
+- 日付: 2026-05-18
+- 状態: Active
+- 関連: [agents/curation-planning-agent.md](../../agents/curation-planning-agent.md), [agents/restaurant-research-agent.md](../../agents/restaurant-research-agent.md), [agents/curation-integration-agent.md](../../agents/curation-integration-agent.md), [docs/curation/curation-log.md](../curation/curation-log.md)
+- 決定: 既存の 4 エージェント（要件 / レビュー / 実装 / 計画管理）とは別に、データ拡充専用のサブチームを新設。役割は (1) キュレーション計画、(2) 店舗リサーチ、(3) 統合・レビュー の 3 段階
+- 根拠: 「データの拡充」は「コードの開発」とサイクルが大きく異なる（リサーチ → AI 評価 → シート反映の繰り返し）。専用ロールを切り分けることで Plan Manager の負担を軽減し、ラウンドベースで再現可能なワークフローを構築
+- 代替案: 既存の Plan Manager + Implementation で兼務 → 役割が混在し、データ品質の議論と機能開発の議論が混ざる
+- 影響: agents/ 配下に 3 ファイル追加。workflow.md に「キュレーションサブチーム」セクションを追記。docs/curation/ で各ラウンドを記録
+
 ## 更新履歴
 
 - 2026-05-18: D-001 〜 D-007 を初期登録
 - 2026-05-18: D-008 〜 D-013 を追加（レビュー指摘対応の決定事項）
 - 2026-05-18: D-014, D-015 を追加（現在地表示のスコープ追加とプライバシー方針）
 - 2026-05-18: D-016 〜 D-019 を追加（キュレーション設計: 出典タクソノミー / AI 役割定義 / プロンプトテンプレ方式 / verdict + concerns + highlights 二軸）
+- 2026-05-18: D-020 を追加（キュレーション専門 3 エージェント体制を設立）
+- 2026-05-18: D-021, D-022 を追加（Web ツール統合 + 計画 AG のオーケストレーター化）
+- 2026-05-18: D-023 を追加（セッション #1〜#2 の運用学習 6 項目を反映）

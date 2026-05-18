@@ -11,7 +11,9 @@
 
 ## マルチエージェント開発体制
 
-このプロジェクトは 4 つのエージェントが連携して進める。3 つの専門エージェントが順番に作業を引き継ぎ、開発計画管理エージェントが横断的に進捗と意思決定を管理する。
+7 つのエージェントが 2 つのチームに分かれて運用される。
+
+### コア開発チーム（4 エージェント）
 
 | エージェント | 役割 | 成果物の置き場 |
 |---|---|---|
@@ -19,6 +21,14 @@
 | 要件定義エージェント | サイトの目的・機能・データ構造を定義 | [docs/requirements/](docs/requirements/) と [docs/design/](docs/design/) |
 | レビューエージェント | 要件と設計の妥当性をチェック・指摘 | [docs/reviews/](docs/reviews/) |
 | 実装エージェント | 承認された要件・設計を元にコードを書く | [src/](src/) と [data/](data/) |
+
+### キュレーションサブチーム（3 エージェント、D-020）
+
+| エージェント | 役割 | 成果物の置き場 |
+|---|---|---|
+| キュレーション計画エージェント | リサーチブリーフ作成（ターゲット・件数・ソース順） | [docs/curation/curation-log.md](docs/curation/curation-log.md) |
+| 店舗リサーチエージェント | 信頼ソース由来の候補発見 + AI 評価メタ付与 | 同上 |
+| キュレーション統合エージェント | 重複検証 + Sheets 貼り付け用 TSV 整形 + 確認事項提示 | 同上 |
 
 各エージェントの詳細な指示書は [agents/](agents/) に格納。連携フローは [workflow.md](workflow.md) を参照。
 
@@ -104,12 +114,15 @@ pnpm build
 
 ```
 .
-├── agents/         各エージェントの役割定義
+├── agents/         各エージェントの役割定義（コア 4 + キュレーション 3）
 ├── docs/           エージェント間で受け渡す成果物
 │   ├── requirements/  要件
 │   ├── design/        設計
 │   ├── reviews/       レビュー指摘
-│   └── plan/          計画・意思決定・未解決事項
+│   ├── plan/          計画・意思決定・未解決事項
+│   ├── curation/      キュレーションラウンド台帳
+│   ├── curation-guide.md       信頼ソース一覧
+│   └── ai-prompt-template.md   Claude 用評価プロンプト
 ├── public/         静的ファイル（robots.txt, favicon）
 ├── src/
 │   ├── components/    Astro コンポーネント
@@ -119,6 +132,7 @@ pnpm build
 │   ├── styles/        global.css
 │   └── types/         TypeScript 型
 ├── data/           店舗データ（サンプル / フォールバック）
+├── .github/workflows/rebuild.yml  GitHub Actions cron + 手動トリガー
 ├── astro.config.mjs
 ├── tsconfig.json
 └── package.json
