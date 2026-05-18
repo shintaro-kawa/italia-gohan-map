@@ -1,0 +1,238 @@
+---
+// アプリ内 AI チャットパネル（F-17、Phase 6）
+// パスワード認証 → Anthropic API 経由で候補生成 → GitHub commit で永続化
+---
+
+<button type="button" id="chat-toggle" class="chat-toggle" aria-label="AI チャットを開く">
+  <span aria-hidden="true">💬</span>
+  <span>AI に聞く</span>
+</button>
+
+<div id="chat-panel" class="chat-panel" hidden role="dialog" aria-label="AI チャット">
+  <header class="chat-header">
+    <h2>AI に店舗を聞く</h2>
+    <button type="button" id="chat-close" class="chat-close" aria-label="閉じる">×</button>
+  </header>
+
+  <div id="chat-auth" class="chat-auth">
+    <p>このチャットは閲覧者全員に公開されないため、パスワードでロックされています。</p>
+    <input type="password" id="chat-password" placeholder="パスワード" autocomplete="current-password" />
+    <button type="button" id="chat-auth-submit">ロック解除</button>
+    <p class="chat-auth-error" id="chat-auth-error" hidden></p>
+  </div>
+
+  <div id="chat-content" class="chat-content" hidden>
+    <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
+    <form id="chat-form" class="chat-form">
+      <textarea
+        id="chat-input"
+        placeholder="例: ローマで朝食にいい場所を 3 件教えて"
+        rows="2"
+        required
+      ></textarea>
+      <button type="submit" id="chat-send">送信</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  type Candidate = {
+    id?: string;
+    name: string;
+    city: string;
+    area?: string;
+    genre: string;
+    priceRange?: string;
+    lat: number;
+    lng: number;
+    address?: string;
+    visited: boolean;
+    url?: string;
+    tags?: string[];
+    source?: string;
+    sourceTrust?: string;
+    verdict?: string;
+    concerns?: Array<{ type: string; severity: string; note?: string }>;
+    highlights?: Array<{ type: string; note?: string }>;
+    lastAnalyzed?: string;
+  };
+
+  const PASSWORD_KEY = 'italia-gohan-chat-password';
+
+  function getPassword(): string | null {
+    return sessionStorage.getItem(PASSWORD_KEY);
+  }
+  function setPassword(p: string) {
+    sessionStorage.setItem(PASSWORD_KEY, p);
+  }
+  function clearPassword() {
+    sessionStorage.removeItem(PASSWORD_KEY);
+  }
+
+  function escape(s: string): string {
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function renderCandidate(c: Candidate, idx: number): string {
+    const meta = [c.city, c.area, c.priceRange].filter(Boolean).join(' ・ ');
+    const tags = (c.tags ?? []).map((t) => `<span class="chat-tag">${escape(t)}</span>`).join('');
+    const verdictBadge = c.verdict
+      ? `<span class="chat-verdict chat-verdict-${c.verdict}">${escape(c.verdict)}</span>`
+      : '';
+    return `
+      <div class="chat-candidate" data-idx="${idx}">
+        <div class="chat-candidate-head">
+          ${verdictBadge}
+          <strong>${escape(c.name)}</strong>
+        </div>
+        <p class="chat-candidate-meta">${escape(meta)} / ${escape(c.genre)}</p>
+        ${c.address ? `<p class="chat-candidate-addr">📍 ${escape(c.address)}</p>` : ''}
+        ${tags ? `<div class="chat-tags">${tags}</div>` : ''}
+        <button type="button" class="chat-add-btn" data-idx="${idx}">＋ リストに追加</button>
+      </div>
+    `;
+  }
+
+  function appendMessage(role: 'user' | 'assistant' | 'system', html: string) {
+    const container = document.getElementById('chat-messages');
+    if (!container) return;
+    const div = document.createElement('div');
+    div.className = `chat-msg chat-msg-${role}`;
+    div.innerHTML = html;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  let currentCandidates: Candidate[] = [];
+
+  async function send(message: string) {
+    const password = getPassword();
+    if (!password) return;
+    appendMessage('user', escape(message));
+    appendMessage('system', '<em>AI 思考中…（Web 検索を含むため 10〜30 秒）</em>');
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify({ message }),
+      });
+      // remove loading
+      const msgs = document.querySelectorAll('.chat-msg-system');
+      const last = msgs[msgs.length - 1];
+      if (last) last.remove();
+
+      if (res.status === 401) {
+        clearPassword();
+        showAuth();
+        appendMessage('system', '<em>パスワードが無効です。再入力してください。</em>');
+        return;
+      }
+      const json = await res.json();
+      if (!res.ok) {
+        appendMessage('system', `<em>エラー: ${escape(json.error ?? 'unknown')}</em>`);
+        return;
+      }
+      const aiMsg = json.message ? `<p>${escape(json.message)}</p>` : '';
+      const candidatesHtml = (json.candidates as Candidate[]).map((c, i) => renderCandidate(c, i)).join('');
+      const sourcesHtml =
+        json.sources && json.sources.length > 0
+          ? `<p class="chat-sources">出典: ${(json.sources as string[]).map((s) => `<a href="${escape(s)}" target="_blank" rel="noopener noreferrer">${escape(new URL(s).hostname)}</a>`).join(', ')}</p>`
+          : '';
+      currentCandidates = json.candidates ?? [];
+      appendMessage('assistant', aiMsg + candidatesHtml + sourcesHtml);
+    } catch (e) {
+      appendMessage('system', `<em>ネットワークエラー: ${escape(String(e))}</em>`);
+    }
+  }
+
+  async function saveCandidate(idx: number, btn: HTMLButtonElement) {
+    const password = getPassword();
+    if (!password) return;
+    const c = currentCandidates[idx];
+    if (!c) return;
+    btn.disabled = true;
+    btn.textContent = '送信中…';
+    try {
+      const res = await fetch('/api/save', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify({ candidate: c }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        btn.disabled = false;
+        btn.textContent = `エラー: ${json.error?.slice(0, 30) ?? 'failed'}`;
+        return;
+      }
+      btn.textContent = `✓ 追加済み (commit ${json.commitSha?.slice(0, 7)})`;
+      btn.classList.add('is-saved');
+    } catch (e) {
+      btn.disabled = false;
+      btn.textContent = `ネットワークエラー`;
+    }
+  }
+
+  function showAuth() {
+    document.getElementById('chat-auth')!.hidden = false;
+    document.getElementById('chat-content')!.hidden = true;
+  }
+  function showChat() {
+    document.getElementById('chat-auth')!.hidden = true;
+    document.getElementById('chat-content')!.hidden = false;
+    const input = document.getElementById('chat-input');
+    if (input instanceof HTMLTextAreaElement) input.focus();
+  }
+
+  function openPanel() {
+    document.getElementById('chat-panel')!.hidden = false;
+    if (getPassword()) showChat();
+    else showAuth();
+  }
+  function closePanel() {
+    document.getElementById('chat-panel')!.hidden = true;
+  }
+
+  document.getElementById('chat-toggle')?.addEventListener('click', openPanel);
+  document.getElementById('chat-close')?.addEventListener('click', closePanel);
+
+  document.getElementById('chat-auth-submit')?.addEventListener('click', () => {
+    const input = document.getElementById('chat-password') as HTMLInputElement;
+    const errBox = document.getElementById('chat-auth-error');
+    const value = input.value.trim();
+    if (!value) return;
+    setPassword(value);
+    if (errBox) errBox.hidden = true;
+    showChat();
+  });
+
+  document.getElementById('chat-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const input = document.getElementById('chat-input') as HTMLTextAreaElement;
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    send(msg);
+  });
+
+  document.getElementById('chat-messages')?.addEventListener('click', (e) => {
+    const target = e.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (target.classList.contains('chat-add-btn')) {
+      const idx = Number(target.getAttribute('data-idx'));
+      if (Number.isFinite(idx)) saveCandidate(idx, target as HTMLButtonElement);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const panel = document.getElementById('chat-panel');
+      if (panel && !panel.hidden) closePanel();
+    }
+  });
+</script>

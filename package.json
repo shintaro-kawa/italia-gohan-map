@@ -16,6 +16,9 @@
     "images:apply": "node scripts/extract-images.mjs --apply"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.96.0",
+    "@astrojs/vercel": "^7.8.2",
+    "@octokit/rest": "^22.0.1",
     "astro": "^4.16.0",
     "leaflet": "^1.9.4"
   },
@@ -24,6 +27,9 @@
     "typescript": "^5.6.0"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "sharp"]
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
   }
 }

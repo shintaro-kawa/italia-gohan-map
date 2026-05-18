@@ -129,12 +129,22 @@ https://docs.google.com/spreadsheets/d/<ここがSHEETS_ID>/edit?gid=0
 
 「Environment Variables」セクションで:
 
-| Name | Value |
-|---|---|
-| `SHEETS_ID` | STEP 3-3 で控えた文字列 |
-| `SHEET_NAME` | `restaurants` |
+| Name | Value | 用途 |
+|---|---|---|
+| `SHEETS_ID` | STEP 3-3 で控えた文字列（**D-024 以降オプション**、未設定で JSON 使用） | Sheets 連携（廃止予定） |
+| `SHEET_NAME` | `restaurants` | 同上 |
+| `ANTHROPIC_API_KEY` | Anthropic コンソールで発行（`sk-ant-...`） | F-17 チャット機能（Phase 6） |
+| `GITHUB_TOKEN` | GitHub PAT（`repo` 権限） | チャットからの自動 commit |
+| `GITHUB_OWNER` | `shintaro-kawa` | 同上 |
+| `GITHUB_REPO` | `italia-gohan-map` | 同上 |
+| `ADMIN_PASSWORD` | 任意の強いパスワード | チャット利用時の認証 |
 
 Production / Preview / Development 全部にチェック。
+
+> **Phase 6 環境変数の発行手順**:
+> - `ANTHROPIC_API_KEY`: [console.anthropic.com](https://console.anthropic.com/) でアカウント作成 → API Keys → Create Key → 課金カード設定（$5〜10 でも 100 クエリ程度回る）
+> - `GITHUB_TOKEN`: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → スコープ `repo` を有効化、有効期限 90 日以上推奨
+> - `ADMIN_PASSWORD`: 自分で決める（パスワードマネージャー推奨）
 
 ### 4-3. Deploy
 

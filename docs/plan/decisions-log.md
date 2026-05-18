@@ -218,6 +218,43 @@
 - 代替案: API 統合（Brave Search / Anthropic Search） → 鍵管理・コストが増えるため見送り
 - 影響: 1 ラウンドあたり WebSearch 1〜2 回 + WebFetch 2〜3 回。ToS 範囲内（公開ページ参照、レート過多なし）
 
+## D-027: Phase 6 — アプリ内 AI チャットで店舗追加（F-17）
+
+- 日付: 2026-05-18
+- 状態: Active
+- 関連: F-17, `src/pages/api/chat.ts`, `src/pages/api/save.ts`, `src/components/ChatPanel.astro`
+- 決定: 静的サイトに **Vercel Serverless Function** で API エンドポイントを 2 本追加し、ブラウザから AI に直接質問して `data/restaurants.json` へ自動 commit する機能を追加
+  - `/api/chat`: Anthropic Claude API + web_search ツールで候補生成
+  - `/api/save`: GitHub API（Octokit）経由で repo に commit
+  - ChatPanel: フローティング UI、パスワード認証
+- アーキテクチャ転換:
+  - Astro の `output: 'static'` → **`'hybrid'`** に変更（ページは静的、API ルートのみ SSR）
+  - `@astrojs/vercel` アダプタを導入
+- セキュリティ:
+  - `ADMIN_PASSWORD` 環境変数でチャット利用を制限
+  - クライアントはヘッダー `X-Admin-Password` を送信、Function 側で検証
+  - sessionStorage に保存（タブを閉じれば消える）
+- 必要な環境変数（Vercel）:
+  - `ANTHROPIC_API_KEY`: Claude API キー
+  - `GITHUB_TOKEN`: PAT（`repo` 権限）
+  - `GITHUB_OWNER`: `shintaro-kawa`
+  - `GITHUB_REPO`: `italia-gohan-map`
+  - `ADMIN_PASSWORD`: チャット保護パスワード
+- コスト見積:
+  - Claude Sonnet 4.6 ≈ $0.05/クエリ（web_search 込み）
+  - Vercel Function 実行: 無料枠内
+  - 月 50 クエリ ≈ $2.5
+- 段階:
+  - **Phase 6a**: チャット UI + AI 候補生成（手動コピー）
+  - **Phase 6b**: 「リストに追加」で GitHub 自動 commit
+  - Phase 6c は後日（Nominatim 統合 / 画像取得統合）
+- ハルシネーション対策:
+  - Claude の `web_search` を必須化（実在ソース引用）
+  - レスポンスを Restaurant スキーマでサーバー側バリデーション
+  - 既存店名・id をコンテキストに含めて重複検出を AI に任せる
+  - city タクソノミーを system prompt で制約（Rome / Florence / Sicily のみ）
+- 影響: ビルド成果物にサーバーレス Function が含まれる、Vercel デプロイ時間が微増、依存パッケージ +3（@astrojs/vercel, @anthropic-ai/sdk, @octokit/rest）
+
 ## D-026: Phase 5 拡張 — 検索バー + 並び替え（F-7 昇格 + F-16 新規）
 
 - 日付: 2026-05-18

@@ -4,6 +4,7 @@ import FilterBar from '@/components/FilterBar.astro';
 import RestaurantCard from '@/components/RestaurantCard.astro';
 import MapView from '@/components/Map.astro';
 import RestaurantModal from '@/components/RestaurantModal.astro';
+import ChatPanel from '@/components/ChatPanel.astro';
 import { getRestaurants } from '@/data/loader';
 
 const restaurants = await getRestaurants();
@@ -38,6 +39,7 @@ const restaurants = await getRestaurants();
   </main>
 
   <RestaurantModal restaurants={restaurants} />
+  <ChatPanel />
 </Layout>
 
 <script>
