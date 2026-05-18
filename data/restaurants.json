@@ -2381,5 +2381,51 @@
       }
     ],
     "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-38c8991a",
+    "name": "Le Levain",
+    "city": "Rome",
+    "area": "Trastevere / Prati",
+    "genre": "pasticceria",
+    "priceRange": "€€",
+    "lat": 41.8873,
+    "lng": 12.4695,
+    "address": "Via Luigi Santini, 22/23（Trastevere） / Via Piave, 8（Prati）",
+    "visited": false,
+    "url": "https://www.facebook.com/LeLevainRoma",
+    "tags": [
+      "croissant-francese",
+      "boulangerie",
+      "pain-au-chocolat",
+      "specialty-coffee",
+      "colazione",
+      "cornetto"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "long-wait",
+        "severity": "low",
+        "note": "Trastevere店は週末行列になることあり"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "2015年オープン。Gambero Rosso曰くローマに本格フランス式クロワッサン（ブーランジェリー文化）を最初に持ち込んだ先駆者"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Isignyバター使用のクラシック・クロワッサンが絶品。pain au chocolat、シナモンロール、chausson aux pommesも好評"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "Gambero Rossoのローマ最高朝食スポットリストに複数回登場"
+      }
+    ],
+    "lastAnalyzed": "2026-05-18"
   }
 ]
