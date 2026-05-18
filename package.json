@@ -11,7 +11,9 @@
     "astro": "astro",
     "tsv": "node scripts/json-to-tsv.mjs",
     "geocode": "node scripts/geocode.mjs",
-    "geocode:apply": "node scripts/geocode.mjs --apply"
+    "geocode:apply": "node scripts/geocode.mjs --apply",
+    "images": "node scripts/extract-images.mjs",
+    "images:apply": "node scripts/extract-images.mjs --apply"
   },
   "dependencies": {
     "astro": "^4.16.0",
