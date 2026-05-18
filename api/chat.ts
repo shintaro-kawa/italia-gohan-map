@@ -1,7 +1,7 @@
-import { checkAuth } from '../src/lib/auth';
-import { chatWithClaude, extractJson } from '../src/lib/anthropic';
-import { fetchCurrentData } from '../src/lib/github';
-import type { Restaurant } from '../src/types/restaurant';
+import { checkAuth } from '../src/lib/auth.js';
+import { chatWithClaude, extractJson } from '../src/lib/anthropic.js';
+import { fetchCurrentData } from '../src/lib/github.js';
+import type { Restaurant } from '../src/types/restaurant.js';
 
 const VALID_GENRES = new Set([
   'pizzeria', 'trattoria', 'osteria', 'ristorante', 'enoteca',

@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import { createHash } from 'node:crypto';
-import type { Restaurant } from '../types/restaurant';
+import type { Restaurant } from '../types/restaurant.js';
 
 const OWNER = process.env.GITHUB_OWNER ?? 'shintaro-kawa';
 const REPO = process.env.GITHUB_REPO ?? 'italia-gohan-map';

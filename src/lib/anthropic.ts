@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import type { Restaurant } from '../types/restaurant';
+import type { Restaurant } from '../types/restaurant.js';
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,

@@ -1,6 +1,6 @@
-import { checkAuth } from '../src/lib/auth';
-import { appendRestaurant } from '../src/lib/github';
-import type { Restaurant } from '../src/types/restaurant';
+import { checkAuth } from '../src/lib/auth.js';
+import { appendRestaurant } from '../src/lib/github.js';
+import type { Restaurant } from '../src/types/restaurant.js';
 
 const VALID_GENRES = new Set([
   'pizzeria', 'trattoria', 'osteria', 'ristorante', 'enoteca',
