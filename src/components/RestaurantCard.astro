@@ -29,6 +29,22 @@ const hasMediocreConcern = (restaurant.concerns ?? []).some(
   (c) => c.type === 'mediocre-food' && (c.severity === 'medium' || c.severity === 'high'),
 );
 const isSkip = restaurant.verdict === 'skip';
+
+const searchableText = [
+  restaurant.name,
+  restaurant.area,
+  restaurant.address,
+  restaurant.comment,
+  (restaurant.tags ?? []).join(' '),
+  (restaurant.highlights ?? []).map((h) => h.note ?? '').join(' '),
+  (restaurant.concerns ?? []).map((c) => c.note ?? '').join(' '),
+]
+  .filter((s): s is string => Boolean(s))
+  .join(' ')
+  .toLowerCase();
+
+const VERDICT_RANK: Record<string, number> = { recommended: 4, neutral: 3, caution: 2, skip: 1 };
+const verdictRank = restaurant.verdict ? VERDICT_RANK[restaurant.verdict] ?? 0 : 0;
 ---
 
 <button
@@ -43,6 +59,11 @@ const isSkip = restaurant.verdict === 'skip';
   data-mediocre={hasMediocreConcern ? 'true' : 'false'}
   data-skip={isSkip ? 'true' : 'false'}
   data-concerns={(restaurant.concerns ?? []).map((c) => `${c.type}:${c.severity}`).join(',')}
+  data-search={searchableText}
+  data-sort-name={restaurant.name.toLowerCase()}
+  data-sort-rating={restaurant.rating ?? -1}
+  data-sort-verdict={verdictRank}
+  data-sort-analyzed={restaurant.lastAnalyzed ?? ''}
 >
   <h3 class="card-title">
     {verdict && <span class="verdict-badge" aria-label={`評価: ${verdict.label}`}>{verdict.emoji}</span>}

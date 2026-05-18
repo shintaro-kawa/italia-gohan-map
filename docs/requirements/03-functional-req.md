@@ -102,12 +102,35 @@
 - 取得失敗時は既存値を維持（破壊的にしない）
 - 差分は git diff で目視確認してから commit
 
+### F-7. フリーワード検索（D-026 で「必須」に昇格）
+
+- フィルタバー上部に検索入力（フルワイドのスマホ最適化）
+- 検索対象（すべて小文字に正規化して substring 一致）:
+  - `name`
+  - `area`
+  - `comment`
+  - `tags`（半角スペース連結）
+  - `highlights[].note`
+  - `concerns[].note`
+- インクリメンタル検索（入力ごとに即時絞込み）
+- 既存フィルタ（city / genre / visit / exclude）と **AND**
+- URL クエリ同期 `?q=...`
+- 入力クリアボタン（×）
+
+### F-16. 並び替え（D-026 新規）
+
+- フィルタバーに並び替え select
+- 並び替え軸:
+  - `recommended`（既定）: verdict 降順 → rating 降順 → name 昇順
+  - `rating`: rating 降順（rating なしは末尾）
+  - `name`: name 昇順（A-Z）
+  - `recent`: lastAnalyzed 降順（新着優先）
+- 実装: 既存カード DOM に `order` CSS を JS で割当（リフローのみで再描画なし）
+- URL クエリ同期 `?sort=recommended|rating|name|recent`
+
 ## 推奨機能
 
-### F-7. フリーワード検索
-
-- 店名・コメント・タグを横断して検索
-- インクリメンタル検索（入力に応じて絞り込み）
+> F-7 は D-026 で必須に昇格。残りは下記。
 
 ### F-8. 訪問済み / 未訪問のクイックトグル（排他 3 状態）
 

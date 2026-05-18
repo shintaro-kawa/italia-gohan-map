@@ -218,6 +218,21 @@
 - 代替案: API 統合（Brave Search / Anthropic Search） → 鍵管理・コストが増えるため見送り
 - 影響: 1 ラウンドあたり WebSearch 1〜2 回 + WebFetch 2〜3 回。ToS 範囲内（公開ページ参照、レート過多なし）
 
+## D-026: Phase 5 拡張 — 検索バー + 並び替え（F-7 昇格 + F-16 新規）
+
+- 日付: 2026-05-18
+- 状態: Active
+- 関連: [docs/requirements/03-functional-req.md](../requirements/03-functional-req.md) F-7, F-16
+- 決定: データ件数が 37 を超え、既存の都市 / ジャンル / 訪問 / 除外フィルタだけでは細粒度の到達が難しくなったため:
+  1. **F-7（フリーワード検索）を「推奨機能」→「必須機能」に昇格**
+  2. **F-16 並び替え** を新規追加（おすすめ順 / 評価順 / 名前順 / 新着順 の 4 軸）
+- 根拠: 旅行中の高速到達体験のため。「Trastevere のトラットリアを評価順で見たい」のようなニーズを満たす
+- 実装方針:
+  - 検索: クライアントサイド substring（name / area / comment / tags / notes を横断）、URL `?q=`
+  - 並び替え: 既存カード要素の CSS `order` を JS で書き換え、URL `?sort=`
+  - 既存フィルタチェーンに **AND** で組み込み
+- 影響: FilterBar.astro に検索入力 + ソート select、index.astro のフィルタロジック拡張
+
 ## D-025: Phase 5 開始 — データ品質底上げ + UX 仕上げ + CI
 
 - 日付: 2026-05-18

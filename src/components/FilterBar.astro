@@ -3,6 +3,29 @@ import { CITIES, GENRES } from '@/types/restaurant';
 ---
 
 <section class="filter-bar" aria-label="絞り込み">
+  <div class="filter-row filter-row-top">
+    <div class="search-wrap">
+      <input
+        type="search"
+        id="search-input"
+        class="search-input"
+        placeholder="店名・エリア・タグで検索…"
+        autocomplete="off"
+        aria-label="検索"
+      />
+      <button type="button" id="search-clear" class="search-clear" aria-label="検索クリア" hidden>×</button>
+    </div>
+    <label class="sort-wrap">
+      <span class="filter-label">並び替え</span>
+      <select id="sort-select" class="sort-select" aria-label="並び替え">
+        <option value="recommended">おすすめ順</option>
+        <option value="rating">評価順</option>
+        <option value="name">名前順</option>
+        <option value="recent">新着順</option>
+      </select>
+    </label>
+  </div>
+
   <div class="filter-row" data-filter-group="city" role="group" aria-label="都市">
     <span class="filter-label">都市</span>
     {

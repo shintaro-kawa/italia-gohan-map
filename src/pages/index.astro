@@ -43,9 +43,24 @@ const restaurants = await getRestaurants();
 <script>
   type Visit = 'all' | 'visited' | 'unvisited';
   type ExcludeTag = 'tourist' | 'mediocre' | 'skip';
-  type State = { cities: Set<string>; genres: Set<string>; visit: Visit; exclude: Set<ExcludeTag> };
+  type Sort = 'recommended' | 'rating' | 'name' | 'recent';
+  type State = {
+    cities: Set<string>;
+    genres: Set<string>;
+    visit: Visit;
+    exclude: Set<ExcludeTag>;
+    query: string;
+    sort: Sort;
+  };
 
-  const state: State = { cities: new Set(), genres: new Set(), visit: 'all', exclude: new Set() };
+  const state: State = {
+    cities: new Set(),
+    genres: new Set(),
+    visit: 'all',
+    exclude: new Set(),
+    query: '',
+    sort: 'recommended',
+  };
 
   function readFromUrl() {
     const params = new URLSearchParams(location.search);
@@ -53,6 +68,8 @@ const restaurants = await getRestaurants();
     const genres = params.get('genre');
     const visit = params.get('visit') as Visit | null;
     const exclude = params.get('exclude');
+    const q = params.get('q');
+    const sort = params.get('sort') as Sort | null;
     if (cities) cities.split(',').forEach((c) => state.cities.add(c));
     if (genres) genres.split(',').forEach((g) => state.genres.add(g));
     if (visit === 'visited' || visit === 'unvisited' || visit === 'all') state.visit = visit;
@@ -61,6 +78,8 @@ const restaurants = await getRestaurants();
         if (e === 'tourist' || e === 'mediocre' || e === 'skip') state.exclude.add(e);
       });
     }
+    if (q) state.query = q;
+    if (sort === 'rating' || sort === 'name' || sort === 'recent' || sort === 'recommended') state.sort = sort;
   }
 
   function writeToUrl() {
@@ -69,6 +88,8 @@ const restaurants = await getRestaurants();
     if (state.genres.size) params.set('genre', [...state.genres].join(','));
     if (state.visit !== 'all') params.set('visit', state.visit);
     if (state.exclude.size) params.set('exclude', [...state.exclude].join(','));
+    if (state.query) params.set('q', state.query);
+    if (state.sort !== 'recommended') params.set('sort', state.sort);
     const next = params.toString();
     const url = next ? `${location.pathname}?${next}` : location.pathname;
     history.replaceState(null, '', url);
@@ -91,10 +112,17 @@ const restaurants = await getRestaurants();
       const v = el.getAttribute('data-value');
       if (v) el.setAttribute('aria-pressed', state.exclude.has(v as ExcludeTag) ? 'true' : 'false');
     });
+    const input = document.getElementById('search-input');
+    if (input instanceof HTMLInputElement && input.value !== state.query) input.value = state.query;
+    const clearBtn = document.getElementById('search-clear');
+    if (clearBtn) clearBtn.hidden = state.query.length === 0;
+    const select = document.getElementById('sort-select');
+    if (select instanceof HTMLSelectElement && select.value !== state.sort) select.value = state.sort;
   }
 
   function applyToCards() {
     const cards = document.querySelectorAll<HTMLElement>('.card');
+    const query = state.query.trim().toLowerCase();
     let visibleCount = 0;
     cards.forEach((card) => {
       const city = card.dataset.city ?? '';
@@ -103,6 +131,7 @@ const restaurants = await getRestaurants();
       const isTourist = card.dataset.tourist === 'true';
       const isMediocre = card.dataset.mediocre === 'true';
       const isSkip = card.dataset.skip === 'true';
+      const search = card.dataset.search ?? '';
       const cityOk = state.cities.size === 0 || state.cities.has(city);
       const genreOk = state.genres.size === 0 || state.genres.has(genre);
       const visitOk =
@@ -111,12 +140,41 @@ const restaurants = await getRestaurants();
         !(state.exclude.has('tourist') && isTourist) &&
         !(state.exclude.has('mediocre') && isMediocre) &&
         !(state.exclude.has('skip') && isSkip);
-      const show = cityOk && genreOk && visitOk && excludeOk;
+      const queryOk = query.length === 0 || search.includes(query);
+      const show = cityOk && genreOk && visitOk && excludeOk && queryOk;
       card.hidden = !show;
       if (show) visibleCount++;
     });
     const empty = document.getElementById('empty-state');
     if (empty) empty.hidden = visibleCount > 0;
+  }
+
+  function applySort() {
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.card'));
+    const compare = (a: HTMLElement, b: HTMLElement): number => {
+      const ratingA = Number(a.dataset.sortRating ?? -1);
+      const ratingB = Number(b.dataset.sortRating ?? -1);
+      const verdictA = Number(a.dataset.sortVerdict ?? 0);
+      const verdictB = Number(b.dataset.sortVerdict ?? 0);
+      const nameA = a.dataset.sortName ?? '';
+      const nameB = b.dataset.sortName ?? '';
+      const analyzedA = a.dataset.sortAnalyzed ?? '';
+      const analyzedB = b.dataset.sortAnalyzed ?? '';
+      switch (state.sort) {
+        case 'rating':
+          return ratingB - ratingA || verdictB - verdictA || nameA.localeCompare(nameB);
+        case 'name':
+          return nameA.localeCompare(nameB);
+        case 'recent':
+          return analyzedB.localeCompare(analyzedA) || nameA.localeCompare(nameB);
+        case 'recommended':
+        default:
+          return verdictB - verdictA || ratingB - ratingA || nameA.localeCompare(nameB);
+      }
+    };
+    cards.sort(compare).forEach((card, idx) => {
+      card.style.order = String(idx);
+    });
   }
 
   function dispatchFilter() {
@@ -134,6 +192,7 @@ const restaurants = await getRestaurants();
   function update() {
     syncUI();
     applyToCards();
+    applySort();
     writeToUrl();
     dispatchFilter();
   }
@@ -171,6 +230,16 @@ const restaurants = await getRestaurants();
       state.cities.clear();
       state.genres.clear();
       state.visit = 'all';
+      state.exclude.clear();
+      state.query = '';
+      state.sort = 'recommended';
+      update();
+      return;
+    }
+
+    if (target.id === 'search-clear') {
+      e.stopPropagation();
+      state.query = '';
       update();
       return;
     }
@@ -191,6 +260,31 @@ const restaurants = await getRestaurants();
       }
     }
   });
+
+  // 検索入力（インクリメンタル、軽くデバウンス）
+  let searchTimer: number | undefined;
+  const searchInput = document.getElementById('search-input');
+  if (searchInput instanceof HTMLInputElement) {
+    searchInput.addEventListener('input', () => {
+      if (searchTimer) window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(() => {
+        state.query = searchInput.value;
+        update();
+      }, 80);
+    });
+  }
+
+  // ソート選択
+  const sortSelect = document.getElementById('sort-select');
+  if (sortSelect instanceof HTMLSelectElement) {
+    sortSelect.addEventListener('change', () => {
+      const v = sortSelect.value;
+      if (v === 'rating' || v === 'name' || v === 'recent' || v === 'recommended') {
+        state.sort = v;
+        update();
+      }
+    });
+  }
 
   readFromUrl();
   update();
