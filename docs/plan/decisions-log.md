@@ -51,7 +51,7 @@
 ## D-004: データソースに Google Sheets を採用
 
 - 日付: 2026-05-18
-- 状態: Active
+- 状態: **Superseded by D-024**（2026-05-18 に JSON へ転換）
 - 関連: [docs/design/tech-stack.md](../design/tech-stack.md), [docs/design/data-model.md](../design/data-model.md)
 - 決定: 店舗データの保存先として Google Sheets を採用
 - 根拠: ユーザーが「Notion / Google Sheets 連携」を選択。比較の結果、緯度経度の入力しやすさ、API レート制限の緩さ、認証不要の公開シート方式から Sheets を選択
@@ -218,6 +218,28 @@
 - 代替案: API 統合（Brave Search / Anthropic Search） → 鍵管理・コストが増えるため見送り
 - 影響: 1 ラウンドあたり WebSearch 1〜2 回 + WebFetch 2〜3 回。ToS 範囲内（公開ページ参照、レート過多なし）
 
+## D-024: Sheets 依存を解除、`data/restaurants.json` を source of truth に
+
+- 日付: 2026-05-18
+- 状態: **Active、Supersedes D-004**（Google Sheets as data source）
+- 関連: [data/restaurants.json](../../data/restaurants.json), [src/data/loader.ts](../../src/data/loader.ts), [agents/curation-integration-agent.md](../../agents/curation-integration-agent.md)
+- 決定: 当初 D-004 で Sheets を source of truth としていたが、運用実態が以下に変化したため転換:
+  - キュレーションサブチーム（D-020）導入後、データの 9 割以上が AI リサーチ経由で `data/restaurants.json` に直接書き込まれる
+  - Sheets ↔ JSON の二重管理がコストに見合わない（D-023 学習 1〜6 で観測）
+  - 「Step 1 で Sheets に貼り直し」が自動化困難（Google Sheets API 認証が必要）
+  → **`data/restaurants.json` を唯一の source of truth とし、Sheets は不要**
+- 実装:
+  - **コード変更不要**: loader.ts は既に `SHEETS_ID` 未設定で JSON フォールバックする実装
+  - Vercel から **`SHEETS_ID` 環境変数を削除** すれば自動的に JSON-only モードへ
+  - データ編集は `data/restaurants.json` を直接編集 → `git push` で自動デプロイ
+- 代替案（採用せず）:
+  - 案 A: Google Sheets API + サービスアカウントでフル自動化 → 初期セットアップ 10 分 + 鍵管理が必要、複雑
+  - 案 C: 部分自動化（Deploy Hook のみ）→ Step 1 が残り効果薄
+- 影響:
+  - 「旅先のスマホから Sheets で追加」は不可になる代わりに、**GitHub Mobile で `data/restaurants.json` を直接編集 + コミット** で代替可能
+  - キュレーション統合 AG の出力フォーマットを「Sheets 貼付 TSV」→「JSON 追記 + `git diff` プレビュー」に変更
+  - `scripts/json-to-tsv.mjs` と `docs/curation/sheets-import.tsv` は将来 Sheets 復活時のため保持（dormant）
+
 ## D-023: セッション #1〜#2 の運用学習を反映
 
 - 日付: 2026-05-18
@@ -281,3 +303,4 @@
 - 2026-05-18: D-020 を追加（キュレーション専門 3 エージェント体制を設立）
 - 2026-05-18: D-021, D-022 を追加（Web ツール統合 + 計画 AG のオーケストレーター化）
 - 2026-05-18: D-023 を追加（セッション #1〜#2 の運用学習 6 項目を反映）
+- 2026-05-18: D-024 を追加（Sheets 依存解除、JSON が source of truth）、D-004 を Superseded

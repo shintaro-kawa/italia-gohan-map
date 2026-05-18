@@ -17,8 +17,8 @@
 |---|---|---|
 | フロントエンド | **Astro**（静的サイト生成 + アイランドアーキテクチャ） | Next.js (SSG), Vite + React |
 | 地図 | **Leaflet + OpenStreetMap** | Mapbox GL JS |
-| データソース | **Google Sheets**（公開シート） | Notion API |
-| データ取得方法 | **ビルド時取得**（Astro のビルドスクリプト） | クライアント側 fetch |
+| データソース | **`data/restaurants.json`**（git 管理）← D-024 で Sheets から変更 | Google Sheets（オプション、SHEETS_ID 設定時のみ）|
+| データ取得方法 | **ビルド時に JSON 読込**（loader.ts） | Sheets gviz/tq（fallback 不要） |
 | ホスティング | **Vercel** | GitHub Pages, Netlify |
 | 定期再ビルド | **GitHub Actions**（1 日 1 回 cron） | Vercel Deploy Hooks |
 
@@ -137,3 +137,4 @@ data/
 
 - 2026-05-18: 初版作成（要件定義エージェント）
 - 2026-05-18: レビュー指摘 D-M01 / I-007 対応で Google Sheets 読み取り方式（gviz/tq）とシート ID 管理を明記。D-S03 / I-013 対応で定期再ビルド方式（Vercel Deploy Hooks + GitHub Actions cron）を明記
+- 2026-05-18: D-024 に基づき、データソースを Google Sheets から `data/restaurants.json` に変更。Sheets 関連はオプション扱い

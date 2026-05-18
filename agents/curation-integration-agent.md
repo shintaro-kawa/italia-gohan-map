@@ -2,7 +2,9 @@
 
 ## 役割
 
-リサーチエージェントが生成した候補リストを **品質チェック** し、**Sheets 貼り付け可能な TSV ブロック** とユーザー確認事項に整える。必要に応じて、コード側の修正（新ジャンル追加など）が必要なら既存の **要件定義エージェントへエスカレーション**。
+リサーチエージェントが生成した候補リストを **品質チェック** し、**`data/restaurants.json` への追記**（または Sheets 貼付用 TSV、Sheets 復活時のみ）に整える。必要に応じて、コード側の修正（新ジャンル追加など）が必要なら既存の **要件定義エージェントへエスカレーション**。
+
+> **D-024 以降の運用方針**: 通常モードでは `data/restaurants.json` を直接編集（Edit ツールで append）し、ユーザーは git diff を確認して commit/push する。TSV は Sheets 復活時のみ生成（`pnpm tsv` で再生成可能）。
 
 ## 入力
 
@@ -13,13 +15,37 @@
 - [docs/design/data-model.md](../docs/design/data-model.md) のスキーマ
 - 出典 / concern / highlight の閉じたタクソノミー
 
-## 成果物
+## 成果物（D-024 以降: JSON 直接編集モード）
 
-`docs/curation/curation-log.md` の R-NNN ブロック内に以下を追記:
+### 1. `data/restaurants.json` への追記
 
-### 1. 採用候補（TSV ブロック）
+リサーチエージェントの候補を **直接 JSON 配列の末尾に append**（Edit ツール使用）:
 
-ユーザーが Google Sheets に **そのまま貼り付け** られる形式:
+```json
+{
+  "id": "<city>-<hash8>",    // 自動生成（name + city からハッシュ）
+  "name": "...",
+  "city": "Rome|Florence|Sicily",
+  "area": "...",
+  "genre": "...",
+  // ... 他の Restaurant スキーマ準拠フィールド
+}
+```
+
+`docs/curation/curation-log.md` には追記したエントリの **id リスト** と **diff サマリー** を記録:
+
+```markdown
+**`data/restaurants.json` への追記（N 件）**
+- rome-abcd1234: Trattoria XXX
+- rome-efgh5678: Pizzeria YYY
+- ...
+```
+
+### 2. 採用候補 TSV（Sheets 復活時のみ、自動生成）
+
+Sheets を使う運用に戻したい場合は `pnpm tsv` を実行。`data/restaurants.json` から `docs/curation/sheets-import.tsv` を再生成し、ユーザーが Google Sheets に貼り付け可能な形式に整形。
+
+通常運用では生成不要。
 
 ```markdown
 **Sheets 貼り付け用 TSV（採用 N 件）**
@@ -87,10 +113,10 @@ Trattoria XXX	Rome	Trastevere	trattoria	€€	41.8896	12.4696	Via XXX	FALSE				
 
 ## 禁止事項
 
-- 直接 Google Sheets に書き込まない（ユーザーが貼り付ける）
-- 直接 `data/restaurants.json` を書き換えない（Sheets が source of truth）
 - 既存店の評価メタを上書きしない（再評価が必要なら別ラウンドで明示）
 - スキーマ違反の候補を「とりあえず入れる」ことをしない
+- 重複した id を生成しない（自動生成のハッシュが衝突する場合は suffix で回避）
+- ユーザーの確認なしに **commit/push しない**（差分提示までが AG の責務）
 
 ## エスカレーションの発生条件
 
@@ -104,10 +130,11 @@ Trattoria XXX	Rome	Trastevere	trattoria	€€	41.8896	12.4696	Via XXX	FALSE				
 | ソース信頼度の見直し（例: `food-blogger` を high に上げたい店多数） | 計画管理エージェント → 方針判断 |
 | 重複ロジックの限界（同じ店が表記揺れで通る） | 計画管理エージェント → ID 生成の見直し |
 
-## ハンドオフ
+## ハンドオフ（D-024 以降）
 
-1. TSV ブロックとユーザー確認事項を提示
-2. ユーザーが Sheets に貼る
-3. GitHub Actions の手動実行で再ビルド
-4. 反映確認後、`curation-log.md` のラウンドを `done` に更新
-5. 次ラウンドの提案があれば計画エージェントに戻す
+1. `data/restaurants.json` に **新候補を append**（Edit ツール）
+2. `curation-log.md` に id リスト + 確認事項を記録
+3. **ユーザーに `git diff` を提示** し、レビューを依頼
+4. ユーザーが OK なら `git add . && git commit && git push` → Vercel 自動デプロイ
+5. デプロイ完了確認後、`curation-log.md` のラウンドを `done` に更新
+6. 次ラウンドの提案があれば計画エージェントに戻す

@@ -37,8 +37,8 @@
 - **Astro 4**（静的サイト生成）
 - **Leaflet + OpenStreetMap**（地図）
 - **TypeScript**
-- **Google Sheets**（データソース、ビルド時に `gviz/tq` で取得）
-- **Vercel**（ホスティング）
+- **`data/restaurants.json`** をデータソースとして git 管理（D-024 以降。Google Sheets はオプション）
+- **Vercel**（ホスティング、git push で自動デプロイ）
 
 ## セットアップ
 
@@ -76,21 +76,20 @@ pnpm dev
 
 ブラウザで `http://localhost:4321` を開く。
 
-### Google Sheets を使わずローカルデータで起動する場合
+### 通常の運用（D-024 以降）
 
-そのまま `pnpm dev` で OK。`data/restaurants.json` がデータソースになる。
+`pnpm dev` で `data/restaurants.json` を読んでサイトをレンダリング。データを追加・編集するには:
 
-### Google Sheets と連携する場合
+1. `data/restaurants.json` を直接編集（VSCode / GitHub Mobile / 任意エディタ）
+2. `git add . && git commit && git push`
+3. Vercel が自動でビルド・デプロイ
+4. 数分後にサイト反映
 
-1. シートを「リンクを知っている全員が閲覧可能」に設定
-2. プロジェクトルートに `.env.local` を作成（`.env.local.example` を参考）
-   ```
-   SHEETS_ID=<シート URL の /d/ と /edit の間の文字列>
-   SHEET_NAME=restaurants
-   ```
-3. シートの 1 行目に以下のヘッダー（順不同）を入れる:
-   `name, city, area, genre, priceRange, lat, lng, address, visited, visitDate, rating, comment, url, tags`
-4. `pnpm dev` を再起動 → ビルド時にシートから取得される
+新規店舗の追加は AI リサーチでも可能（[キュレーションサブチーム](agents/curation-planning-agent.md) を参照）。
+
+### Google Sheets と連携する場合（オプション、現在は使用しない）
+
+`SHEETS_ID` 環境変数を Vercel に設定するとシートをデータソースとして使う。詳細は [DEPLOY.md](DEPLOY.md) の Sheets セクション。
 
 シートからの取得に失敗した場合は `data/restaurants.json` にフォールバック。
 
@@ -146,8 +145,10 @@ pnpm build
 - 地図ピン表示（訪問済みは緑、未訪問は赤、形状も区別）
 - 店舗詳細モーダル
 - フィルタ状態を URL に同期
-- 「+ 追加」リンクで Google Sheets を別タブで開く
 - **現在地表示**（F-10）: 地図タブの「📍 現在地」ボタンで Geolocation API による現在地表示。位置情報はクライアントのメモリのみで保持し、保存・送信しない
+- **AI キュレーション**: WebSearch + WebFetch でリサーチ → AI で評価 → `data/restaurants.json` に追記 → git push で反映
+
+> 「+ 追加」リンクは D-024 で外部 Sheets を切り離したため非表示（旧運用の参照用に DOM は残っている）
 
 ## 既知の制限事項
 
