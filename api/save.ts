@@ -1,9 +1,6 @@
-import type { APIRoute } from 'astro';
-import { checkAuth } from '@/lib/auth';
-import { appendRestaurant } from '@/lib/github';
-import type { Restaurant } from '@/types/restaurant';
-
-export const prerender = false;
+import { checkAuth } from '../src/lib/auth';
+import { appendRestaurant } from '../src/lib/github';
+import type { Restaurant } from '../src/types/restaurant';
 
 const VALID_GENRES = new Set([
   'pizzeria', 'trattoria', 'osteria', 'ristorante', 'enoteca',
@@ -42,7 +39,13 @@ function validate(input: unknown): Restaurant | string {
   };
 }
 
-export const POST: APIRoute = async ({ request }) => {
+export default async function handler(request: Request): Promise<Response> {
+  if (request.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'content-type': 'application/json' },
+    });
+  }
   const auth = checkAuth(request);
   if (!auth.ok) {
     return new Response(JSON.stringify({ error: auth.message }), {
@@ -83,4 +86,4 @@ export const POST: APIRoute = async ({ request }) => {
       headers: { 'content-type': 'application/json' },
     });
   }
-};
+}
