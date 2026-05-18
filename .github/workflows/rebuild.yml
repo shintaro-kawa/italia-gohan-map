@@ -1,0 +1,26 @@
+name: Daily Rebuild
+
+on:
+  schedule:
+    # UTC 03:00 = JST 12:00。Google Sheets の更新を 1 日 1 回サイトに反映
+    - cron: '0 3 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  trigger-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel Deploy Hook
+        env:
+          HOOK_URL: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$HOOK_URL" ]; then
+            echo "::error::VERCEL_DEPLOY_HOOK_URL secret is not configured"
+            exit 1
+          fi
+          response=$(curl -s -o /dev/null -w "%{http_code}" -X POST "$HOOK_URL")
+          echo "Vercel hook response: $response"
+          if [ "$response" -lt 200 ] || [ "$response" -ge 300 ]; then
+            echo "::error::Hook returned HTTP $response"
+            exit 1
+          fi

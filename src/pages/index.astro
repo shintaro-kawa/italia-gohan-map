@@ -1,0 +1,186 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import FilterBar from '@/components/FilterBar.astro';
+import RestaurantCard from '@/components/RestaurantCard.astro';
+import MapView from '@/components/Map.astro';
+import RestaurantModal from '@/components/RestaurantModal.astro';
+import { getRestaurants } from '@/data/loader';
+
+const restaurants = await getRestaurants();
+const sheetsId = process.env.SHEETS_ID;
+const sheetEditUrl = sheetsId ? `https://docs.google.com/spreadsheets/d/${sheetsId}/edit` : undefined;
+---
+
+<Layout title="イタリアご飯マップ">
+  <header class="app-header">
+    <h1>イタリアご飯マップ</h1>
+    {
+      sheetEditUrl ? (
+        <a class="add-link" href={sheetEditUrl} target="_blank" rel="noopener noreferrer">+ 追加</a>
+      ) : (
+        <span class="add-link" style="opacity:0.6;cursor:default;" title="SHEETS_ID 未設定">+ 追加</span>
+      )
+    }
+  </header>
+
+  <main>
+    <FilterBar />
+
+    <div class="tab-bar" role="tablist" aria-label="表示切替">
+      <button type="button" role="tab" data-tab="list" aria-selected="true">📋 リスト</button>
+      <button type="button" role="tab" data-tab="map" aria-selected="false">🗺 地図</button>
+    </div>
+
+    <div class="split">
+      <section data-pane="list" aria-label="店舗リスト">
+        <div class="cards" id="cards">
+          {restaurants.map((r) => <RestaurantCard restaurant={r} />)}
+        </div>
+        <div class="empty" id="empty-state" hidden>条件に一致する店舗がありません</div>
+      </section>
+
+      <section data-pane="map" hidden aria-label="地図表示">
+        <MapView restaurants={restaurants} />
+      </section>
+    </div>
+  </main>
+
+  <RestaurantModal restaurants={restaurants} />
+</Layout>
+
+<script>
+  type Visit = 'all' | 'visited' | 'unvisited';
+  type State = { cities: Set<string>; genres: Set<string>; visit: Visit };
+
+  const state: State = { cities: new Set(), genres: new Set(), visit: 'all' };
+
+  function readFromUrl() {
+    const params = new URLSearchParams(location.search);
+    const cities = params.get('city');
+    const genres = params.get('genre');
+    const visit = params.get('visit') as Visit | null;
+    if (cities) cities.split(',').forEach((c) => state.cities.add(c));
+    if (genres) genres.split(',').forEach((g) => state.genres.add(g));
+    if (visit === 'visited' || visit === 'unvisited' || visit === 'all') state.visit = visit;
+  }
+
+  function writeToUrl() {
+    const params = new URLSearchParams();
+    if (state.cities.size) params.set('city', [...state.cities].join(','));
+    if (state.genres.size) params.set('genre', [...state.genres].join(','));
+    if (state.visit !== 'all') params.set('visit', state.visit);
+    const next = params.toString();
+    const url = next ? `${location.pathname}?${next}` : location.pathname;
+    history.replaceState(null, '', url);
+  }
+
+  function syncUI() {
+    document.querySelectorAll('[data-filter-group="city"] .chip').forEach((el) => {
+      const v = el.getAttribute('data-value');
+      if (v) el.setAttribute('aria-pressed', state.cities.has(v) ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-filter-group="genre"] .chip').forEach((el) => {
+      const v = el.getAttribute('data-value');
+      if (v) el.setAttribute('aria-pressed', state.genres.has(v) ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-filter-group="visit"] button').forEach((el) => {
+      const v = el.getAttribute('data-value');
+      el.setAttribute('aria-pressed', v === state.visit ? 'true' : 'false');
+    });
+  }
+
+  function applyToCards() {
+    const cards = document.querySelectorAll<HTMLElement>('.card');
+    let visibleCount = 0;
+    cards.forEach((card) => {
+      const city = card.dataset.city ?? '';
+      const genre = card.dataset.genre ?? '';
+      const visited = card.dataset.visited === 'true';
+      const cityOk = state.cities.size === 0 || state.cities.has(city);
+      const genreOk = state.genres.size === 0 || state.genres.has(genre);
+      const visitOk =
+        state.visit === 'all' || (state.visit === 'visited' && visited) || (state.visit === 'unvisited' && !visited);
+      const show = cityOk && genreOk && visitOk;
+      card.hidden = !show;
+      if (show) visibleCount++;
+    });
+    const empty = document.getElementById('empty-state');
+    if (empty) empty.hidden = visibleCount > 0;
+  }
+
+  function dispatchFilter() {
+    document.dispatchEvent(
+      new CustomEvent('filter:change', {
+        detail: {
+          cities: [...state.cities],
+          genres: [...state.genres],
+          visit: state.visit,
+        },
+      }),
+    );
+  }
+
+  function update() {
+    syncUI();
+    applyToCards();
+    writeToUrl();
+    dispatchFilter();
+  }
+
+  document.addEventListener('click', (e) => {
+    const target = e.target;
+    if (!(target instanceof HTMLElement)) return;
+
+    const chip = target.closest('[data-filter-group="city"] .chip, [data-filter-group="genre"] .chip');
+    if (chip instanceof HTMLElement) {
+      e.stopPropagation();
+      const group = chip.parentElement?.getAttribute('data-filter-group');
+      const value = chip.getAttribute('data-value');
+      if (!group || !value) return;
+      const set = group === 'city' ? state.cities : state.genres;
+      if (set.has(value)) set.delete(value);
+      else set.add(value);
+      update();
+      return;
+    }
+
+    const visitBtn = target.closest('[data-filter-group="visit"] button');
+    if (visitBtn instanceof HTMLElement) {
+      e.stopPropagation();
+      const value = visitBtn.getAttribute('data-value') as Visit | null;
+      if (value) {
+        state.visit = value;
+        update();
+      }
+      return;
+    }
+
+    if (target.closest('[data-filter-reset]')) {
+      e.stopPropagation();
+      state.cities.clear();
+      state.genres.clear();
+      state.visit = 'all';
+      update();
+      return;
+    }
+
+    const tabBtn = target.closest('[role="tab"]');
+    if (tabBtn instanceof HTMLElement) {
+      const tab = tabBtn.getAttribute('data-tab');
+      document.querySelectorAll('[role="tab"]').forEach((t) => {
+        t.setAttribute('aria-selected', t === tabBtn ? 'true' : 'false');
+      });
+      document.querySelectorAll('[data-pane]').forEach((p) => {
+        if (p instanceof HTMLElement) {
+          p.hidden = p.getAttribute('data-pane') !== tab;
+        }
+      });
+      if (tab === 'map') {
+        window.dispatchEvent(new Event('resize'));
+      }
+    }
+  });
+
+  readFromUrl();
+  update();
+</script>

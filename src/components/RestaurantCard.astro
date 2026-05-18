@@ -1,0 +1,59 @@
+---
+import type { Restaurant } from '@/types/restaurant';
+import {
+  CONCERN_LABELS,
+  HIGHLIGHT_LABELS,
+  cityLabel,
+  genreLabel,
+  topConcern,
+  topHighlight,
+  verdictMeta,
+} from '@/types/restaurant';
+
+interface Props {
+  restaurant: Restaurant;
+}
+
+const { restaurant } = Astro.props;
+const meta = [cityLabel(restaurant.city), restaurant.area, restaurant.priceRange].filter(Boolean).join(' ・ ');
+const verdict = restaurant.verdict ? verdictMeta(restaurant.verdict) : undefined;
+const concern = topConcern(restaurant.concerns);
+const highlight = topHighlight(restaurant.highlights);
+
+const concernSeverity = concern?.severity ?? null;
+---
+
+<button
+  type="button"
+  class={`card ${restaurant.visited ? 'is-visited' : 'is-unvisited'}`}
+  data-restaurant-id={restaurant.id}
+  data-city={restaurant.city}
+  data-genre={restaurant.genre}
+  data-visited={restaurant.visited ? 'true' : 'false'}
+  data-verdict={restaurant.verdict ?? ''}
+  data-concerns={(restaurant.concerns ?? []).map((c) => `${c.type}:${c.severity}`).join(',')}
+>
+  <h3 class="card-title">
+    {verdict && <span class="verdict-badge" aria-label={`評価: ${verdict.label}`}>{verdict.emoji}</span>}
+    <span class="card-name">{restaurant.name}</span>
+    {restaurant.visited && <span class="visited-badge" aria-label="訪問済み">訪問済み</span>}
+  </h3>
+  <p class="card-meta">{meta}</p>
+  <div class="card-chips">
+    <span class="genre-pill">{genreLabel(restaurant.genre)}</span>
+    {
+      highlight && (
+        <span class="highlight-chip" title={highlight.note ?? ''}>
+          + {HIGHLIGHT_LABELS[highlight.type]}
+        </span>
+      )
+    }
+    {
+      concern && (
+        <span class={`concern-chip severity-${concernSeverity}`} title={concern.note ?? ''}>
+          ! {CONCERN_LABELS[concern.type]}
+        </span>
+      )
+    }
+  </div>
+</button>

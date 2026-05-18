@@ -1,0 +1,156 @@
+[
+  {
+    "id": "rome-da-enzo",
+    "name": "Trattoria Da Enzo al 29",
+    "city": "Rome",
+    "area": "Trastevere",
+    "genre": "trattoria",
+    "priceRange": "€€",
+    "lat": 41.8896,
+    "lng": 12.4696,
+    "address": "Via dei Vascellari, 29, 00153 Roma RM",
+    "visited": false,
+    "comment": "カチョエペペが名物。予約必須の人気店",
+    "url": "https://www.daenzoal29.com/",
+    "tags": ["pasta", "local", "reservation-required"],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      { "type": "long-wait", "severity": "medium", "note": "予約必須、ピーク時は待ち時間長" }
+    ],
+    "highlights": [
+      { "type": "signature-dish", "note": "カチョエペペ" },
+      { "type": "family-run" },
+      { "type": "locals-frequent" }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "rome-pizzarium",
+    "name": "Pizzarium Bonci",
+    "city": "Rome",
+    "area": "Prati",
+    "genre": "pizzeria",
+    "priceRange": "€",
+    "lat": 41.907,
+    "lng": 12.4537,
+    "address": "Via della Meloria, 43, 00136 Roma RM",
+    "visited": false,
+    "comment": "ローマ式ピザ・アル・タリオの名店。立ち食い",
+    "tags": ["pizza-al-taglio", "takeaway"],
+    "source": "50-top-pizza",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      { "type": "crowded-noisy", "severity": "low", "note": "立ち食いで席は限定的" }
+    ],
+    "highlights": [
+      { "type": "award-winning", "note": "50 Top Pizza 常連" },
+      { "type": "signature-dish", "note": "Bonci ブランドの地粉ピザ" },
+      { "type": "value-for-money" }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-trattoria-mario",
+    "name": "Trattoria Mario",
+    "city": "Florence",
+    "area": "San Lorenzo",
+    "genre": "trattoria",
+    "priceRange": "€€",
+    "lat": 43.7775,
+    "lng": 11.2538,
+    "address": "Via Rosina, 2/R, 50123 Firenze FI",
+    "visited": false,
+    "comment": "ビステッカ・アッラ・フィオレンティーナで有名。昼のみ営業・予約不可",
+    "tags": ["bistecca", "lunch-only", "no-reservation"],
+    "source": "slow-food",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      { "type": "long-wait", "severity": "high", "note": "予約不可で開店前から並ぶ必要あり" },
+      { "type": "crowded-noisy", "severity": "medium", "note": "相席が前提" }
+    ],
+    "highlights": [
+      { "type": "generations-old", "note": "1953 年創業" },
+      { "type": "family-run" },
+      { "type": "signature-dish", "note": "ビステッカ" },
+      { "type": "locals-frequent" }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "florence-gelateria-dei-neri",
+    "name": "Gelateria dei Neri",
+    "city": "Florence",
+    "area": "Santa Croce",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 43.7676,
+    "lng": 11.2602,
+    "address": "Via dei Neri, 9/11/r, 50122 Firenze FI",
+    "visited": false,
+    "comment": "フィレンツェ屈指のジェラート店",
+    "tags": ["gelato", "dessert"],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "concerns": [
+      { "type": "tourist-oriented", "severity": "medium", "note": "観光客にも有名で混雑する時間帯あり" },
+      { "type": "long-wait", "severity": "low" }
+    ],
+    "highlights": [
+      { "type": "fresh-ingredients", "note": "季節フルーツのジェラート" },
+      { "type": "value-for-money" }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "sicily-frida",
+    "name": "Pizzeria Frida",
+    "city": "Sicily",
+    "area": "Catania",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 37.5079,
+    "lng": 15.083,
+    "address": "Via Plebiscito, 192, 95124 Catania CT",
+    "visited": false,
+    "comment": "カターニアで人気のピッツェリア",
+    "tags": ["pizza", "catania"],
+    "source": "reddit-local",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "concerns": [],
+    "highlights": [
+      { "type": "locals-frequent" },
+      { "type": "value-for-money" }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  },
+  {
+    "id": "sicily-cappello",
+    "name": "Pasticceria Cappello",
+    "city": "Sicily",
+    "area": "Palermo",
+    "genre": "pasticceria",
+    "priceRange": "€",
+    "lat": 38.1157,
+    "lng": 13.3615,
+    "address": "Via Colonna Rotta, 68, 90134 Palermo PA",
+    "visited": false,
+    "comment": "セッテヴェーリ（七層ケーキ）発祥の店",
+    "tags": ["dessert", "palermo", "cassata"],
+    "source": "slow-food",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [],
+    "highlights": [
+      { "type": "signature-dish", "note": "セッテヴェーリ発祥" },
+      { "type": "generations-old" },
+      { "type": "innovative", "note": "伝統菓子への革新で知られる" }
+    ],
+    "lastAnalyzed": "2026-05-18"
+  }
+]

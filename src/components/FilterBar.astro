@@ -1,0 +1,37 @@
+---
+import { CITIES, GENRES } from '@/types/restaurant';
+---
+
+<section class="filter-bar" aria-label="絞り込み">
+  <div class="filter-row" data-filter-group="city" role="group" aria-label="都市">
+    <span class="filter-label">都市</span>
+    {
+      CITIES.map((c) => (
+        <button type="button" class="chip" data-value={c.value} aria-pressed="false">
+          {c.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="filter-row" data-filter-group="genre" role="group" aria-label="ジャンル">
+    <span class="filter-label">ジャンル</span>
+    {
+      GENRES.map((g) => (
+        <button type="button" class="chip" data-value={g.value} aria-pressed="false">
+          {g.label}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="filter-row">
+    <span class="filter-label">訪問</span>
+    <div class="visit-toggle" data-filter-group="visit" role="group" aria-label="訪問状態">
+      <button type="button" data-value="all" aria-pressed="true">すべて</button>
+      <button type="button" data-value="visited" aria-pressed="false">訪問済み</button>
+      <button type="button" data-value="unvisited" aria-pressed="false">未訪問</button>
+    </div>
+    <button type="button" class="reset-btn" data-filter-reset>リセット</button>
+  </div>
+</section>

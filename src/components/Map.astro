@@ -1,0 +1,233 @@
+---
+import type { Restaurant } from '@/types/restaurant';
+
+interface Props {
+  restaurants: Restaurant[];
+}
+
+const { restaurants } = Astro.props;
+const pins = restaurants.map((r) => ({
+  id: r.id,
+  name: r.name,
+  city: r.city,
+  genre: r.genre,
+  visited: r.visited,
+  lat: r.lat,
+  lng: r.lng,
+}));
+---
+
+<div id="map-container" aria-label="店舗の地図">
+  <div id="map" style="width:100%;height:100%;" data-pins={JSON.stringify(pins)}></div>
+  <button type="button" id="locate-btn" class="locate-btn" aria-label="現在地を表示">
+    <span aria-hidden="true">📍</span>
+    <span>現在地</span>
+  </button>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</div>
+
+<script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+
+  type Pin = {
+    id: string;
+    name: string;
+    city: 'Rome' | 'Florence' | 'Sicily';
+    genre: string;
+    visited: boolean;
+    lat: number;
+    lng: number;
+  };
+
+  type FilterState = {
+    cities: Set<string>;
+    genres: Set<string>;
+    visit: 'all' | 'visited' | 'unvisited';
+  };
+
+  function matches(pin: Pin, state: FilterState): boolean {
+    if (state.cities.size > 0 && !state.cities.has(pin.city)) return false;
+    if (state.genres.size > 0 && !state.genres.has(pin.genre)) return false;
+    if (state.visit === 'visited' && !pin.visited) return false;
+    if (state.visit === 'unvisited' && pin.visited) return false;
+    return true;
+  }
+
+  function buildIcon(visited: boolean): L.DivIcon {
+    const color = visited ? '#10b981' : '#ef4444';
+    const shape = visited
+      ? '<polygon points="12,2 22,12 12,22 2,12" fill="' + color + '" stroke="#fff" stroke-width="2"/>'
+      : '<circle cx="12" cy="12" r="10" fill="' + color + '" stroke="#fff" stroke-width="2"/>';
+    return L.divIcon({
+      className: 'pin-icon',
+      html: `<svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">${shape}</svg>`,
+      iconSize: [24, 24],
+      iconAnchor: [12, 12],
+    });
+  }
+
+  const el = document.getElementById('map');
+  if (el) {
+    const pinsRaw = el.getAttribute('data-pins');
+    const pins: Pin[] = pinsRaw ? JSON.parse(pinsRaw) : [];
+
+    const map = L.map(el, { zoomControl: true }).setView([42.5, 12.5], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+
+    const markers = new Map<string, L.Marker>();
+    const layer = L.layerGroup().addTo(map);
+
+    pins.forEach((p) => {
+      const marker = L.marker([p.lat, p.lng], { icon: buildIcon(p.visited) });
+      marker.bindPopup(
+        `<strong>${escapeHtml(p.name)}</strong><br/><button type="button" data-open-detail="${p.id}" style="background:none;border:0;color:#b53b2b;padding:0;cursor:pointer;text-decoration:underline;">詳細を見る</button>`,
+      );
+      marker.addTo(layer);
+      markers.set(p.id, marker);
+    });
+
+    function fitToVisible(state: FilterState) {
+      const visible: L.LatLngExpression[] = [];
+      pins.forEach((p) => {
+        if (matches(p, state)) visible.push([p.lat, p.lng]);
+      });
+      if (visible.length === 0) return;
+      if (visible.length === 1) {
+        map.setView(visible[0]!, 14);
+        return;
+      }
+      map.fitBounds(L.latLngBounds(visible), { padding: [40, 40] });
+    }
+
+    function applyFilter(state: FilterState) {
+      layer.clearLayers();
+      pins.forEach((p) => {
+        if (matches(p, state)) {
+          const m = markers.get(p.id);
+          if (m) layer.addLayer(m);
+        }
+      });
+      fitToVisible(state);
+    }
+
+    const initial: FilterState = { cities: new Set(), genres: new Set(), visit: 'all' };
+    applyFilter(initial);
+
+    document.addEventListener('filter:change', (e: Event) => {
+      const detail = (e as CustomEvent).detail as {
+        cities: string[];
+        genres: string[];
+        visit: 'all' | 'visited' | 'unvisited';
+      };
+      applyFilter({
+        cities: new Set(detail.cities),
+        genres: new Set(detail.genres),
+        visit: detail.visit,
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      const btn = target.closest('[data-open-detail]');
+      if (btn instanceof HTMLElement) {
+        const id = btn.getAttribute('data-open-detail');
+        if (id) {
+          document.dispatchEvent(new CustomEvent('restaurant:open', { detail: { id } }));
+        }
+      }
+    });
+
+    let currentLocation: { lat: number; lng: number; accuracy: number } | null = null;
+    const locationLayer = L.layerGroup().addTo(map);
+    const locateBtn = document.getElementById('locate-btn');
+    const toast = document.getElementById('toast');
+    let toastTimer: number | undefined;
+
+    function showToast(message: string) {
+      if (!toast) return;
+      toast.textContent = message;
+      toast.hidden = false;
+      if (toastTimer) window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => {
+        toast.hidden = true;
+      }, 3500);
+    }
+
+    function renderLocation(loc: { lat: number; lng: number; accuracy: number }) {
+      locationLayer.clearLayers();
+      L.circle([loc.lat, loc.lng], {
+        radius: loc.accuracy,
+        color: '#2563eb',
+        fillColor: '#2563eb',
+        fillOpacity: 0.12,
+        weight: 1,
+      }).addTo(locationLayer);
+      L.circleMarker([loc.lat, loc.lng], {
+        radius: 8,
+        color: '#fff',
+        weight: 3,
+        fillColor: '#2563eb',
+        fillOpacity: 1,
+      }).addTo(locationLayer);
+    }
+
+    function focusOnLocation(loc: { lat: number; lng: number }) {
+      map.setView([loc.lat, loc.lng], Math.max(map.getZoom(), 13));
+    }
+
+    function setLocateBusy(busy: boolean) {
+      if (!(locateBtn instanceof HTMLButtonElement)) return;
+      locateBtn.disabled = busy;
+      locateBtn.classList.toggle('is-loading', busy);
+    }
+
+    locateBtn?.addEventListener('click', () => {
+      if (currentLocation) {
+        focusOnLocation(currentLocation);
+        return;
+      }
+      if (!('geolocation' in navigator)) {
+        showToast('このブラウザは位置情報に対応していません');
+        return;
+      }
+      setLocateBusy(true);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const loc = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+            accuracy: pos.coords.accuracy,
+          };
+          currentLocation = loc;
+          renderLocation(loc);
+          focusOnLocation(loc);
+          setLocateBusy(false);
+        },
+        (err) => {
+          setLocateBusy(false);
+          const messages: Record<number, string> = {
+            1: '位置情報の利用が許可されていません',
+            2: '現在地を取得できませんでした',
+            3: '現在地の取得がタイムアウトしました',
+          };
+          showToast(messages[err.code] ?? '位置情報を取得できませんでした');
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
+      );
+    });
+
+    function escapeHtml(s: string): string {
+      return s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+  }
+</script>

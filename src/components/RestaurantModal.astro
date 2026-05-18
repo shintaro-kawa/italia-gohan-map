@@ -1,0 +1,242 @@
+---
+import type { Restaurant } from '@/types/restaurant';
+
+interface Props {
+  restaurants: Restaurant[];
+}
+
+const { restaurants } = Astro.props;
+---
+
+<script id="restaurants-data" type="application/json" set:html={JSON.stringify(restaurants)} />
+<div id="modal-root" hidden></div>
+
+<script>
+  type Concern = { type: string; severity: 'low' | 'medium' | 'high'; note?: string };
+  type Highlight = { type: string; note?: string };
+
+  type Restaurant = {
+    id: string;
+    name: string;
+    city: 'Rome' | 'Florence' | 'Sicily';
+    area?: string;
+    genre: string;
+    priceRange?: string;
+    lat: number;
+    lng: number;
+    address?: string;
+    visited: boolean;
+    visitDate?: string;
+    rating?: number;
+    comment?: string;
+    url?: string;
+    tags?: string[];
+    source?: string;
+    sourceTrust?: 'high' | 'medium' | 'low';
+    verdict?: 'recommended' | 'neutral' | 'caution' | 'skip';
+    concerns?: Concern[];
+    highlights?: Highlight[];
+    lastAnalyzed?: string;
+  };
+
+  const dataEl = document.getElementById('restaurants-data');
+  const root = document.getElementById('modal-root');
+  if (dataEl && root) {
+    const restaurants: Restaurant[] = JSON.parse(dataEl.textContent || '[]');
+    const byId = new Map<string, Restaurant>(restaurants.map((r) => [r.id, r]));
+
+    const genreLabels: Record<string, string> = {
+      pizzeria: 'ピッツェリア',
+      trattoria: 'トラットリア',
+      osteria: 'オステリア',
+      ristorante: 'リストランテ',
+      enoteca: 'エノテカ',
+      bar: 'バール',
+      gelateria: 'ジェラテリア',
+      paninoteca: 'パニノテカ',
+      pasticceria: 'パスティッチェリア',
+      other: 'その他',
+    };
+    const cityLabels: Record<string, string> = {
+      Rome: 'ローマ',
+      Florence: 'フィレンツェ',
+      Sicily: 'シチリア',
+    };
+    const sourceLabels: Record<string, string> = {
+      'gambero-rosso': 'Gambero Rosso',
+      '50-top-pizza': '50 Top Pizza',
+      'slow-food': 'Slow Food',
+      'identita-golose': 'Identità Golose',
+      'food-blogger': '食ブログ',
+      'reddit-local': 'Reddit (ローカル)',
+      friend: '友人推薦',
+      guidebook: 'ガイドブック',
+      'google-maps': 'Google Maps',
+      other: 'その他',
+    };
+    const concernLabels: Record<string, string> = {
+      'tourist-oriented': '観光客向け',
+      overpriced: '割高',
+      'mediocre-food': '味が平凡',
+      'quality-declined': '品質低下',
+      'not-authentic': '本場感薄い',
+      'service-issues': 'サービス難',
+      'hidden-fees': '隠れ料金',
+      'language-barrier-eng-only': '英語前提',
+      'long-wait': '待ち時間長',
+      'crowded-noisy': '混雑騒音',
+    };
+    const highlightLabels: Record<string, string> = {
+      'locals-frequent': '地元客多い',
+      'family-run': '家族経営',
+      'generations-old': '老舗',
+      'signature-dish': '名物料理',
+      'hidden-gem': '隠れた名店',
+      'award-winning': '受賞歴',
+      'seasonal-menu': '季節メニュー',
+      'fresh-ingredients': '地元食材',
+      innovative: '革新的',
+      'value-for-money': 'コスパ良',
+    };
+    const verdictMeta: Record<string, { label: string; emoji: string }> = {
+      recommended: { label: '推奨', emoji: '🟢' },
+      neutral: { label: '普通', emoji: '⚪' },
+      caution: { label: '要注意', emoji: '🟡' },
+      skip: { label: '非推奨', emoji: '🔴' },
+    };
+    const severityLabel: Record<string, string> = {
+      low: '低',
+      medium: '中',
+      high: '高',
+    };
+
+    function escape(s: string): string {
+      return s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function renderConcerns(concerns: Concern[]): string {
+      if (concerns.length === 0) return '';
+      const items = concerns
+        .map(
+          (c) => `
+        <li class="signal-item">
+          <span class="signal-tag concern-chip severity-${c.severity}">${escape(concernLabels[c.type] ?? c.type)} (${severityLabel[c.severity] ?? c.severity})</span>
+          ${c.note ? `<span class="signal-note">${escape(c.note)}</span>` : ''}
+        </li>`,
+        )
+        .join('');
+      return `<div class="field"><span class="field-label">注意点</span><ul class="signal-list">${items}</ul></div>`;
+    }
+
+    function renderHighlights(highlights: Highlight[]): string {
+      if (highlights.length === 0) return '';
+      const items = highlights
+        .map(
+          (h) => `
+        <li class="signal-item">
+          <span class="signal-tag highlight-chip">${escape(highlightLabels[h.type] ?? h.type)}</span>
+          ${h.note ? `<span class="signal-note">${escape(h.note)}</span>` : ''}
+        </li>`,
+        )
+        .join('');
+      return `<div class="field"><span class="field-label">良いところ</span><ul class="signal-list">${items}</ul></div>`;
+    }
+
+    function render(r: Restaurant): string {
+      const meta = [cityLabels[r.city] ?? r.city, r.area, r.priceRange].filter(Boolean).join(' ・ ');
+      const tags = (r.tags ?? []).map((t) => `<span class="tag">${escape(t)}</span>`).join('');
+      const visitedBadge = r.visited ? '<span class="visited-badge">訪問済み</span>' : '';
+      const verdict = r.verdict ? verdictMeta[r.verdict] : undefined;
+      const verdictBadge = verdict ? `<span class="verdict-badge" aria-label="評価: ${verdict.label}">${verdict.emoji} ${verdict.label}</span>` : '';
+
+      const rows: string[] = [];
+      if (r.address) rows.push(`<div class="field"><span class="field-label">住所</span>${escape(r.address)}</div>`);
+      if (r.visitDate) rows.push(`<div class="field"><span class="field-label">訪問日</span>${escape(r.visitDate)}</div>`);
+      if (r.rating != null) rows.push(`<div class="field"><span class="field-label">評価</span>★ ${r.rating}/5</div>`);
+      if (r.comment) rows.push(`<div class="field"><span class="field-label">コメント</span>${escape(r.comment)}</div>`);
+
+      if (r.highlights && r.highlights.length > 0) rows.push(renderHighlights(r.highlights));
+      if (r.concerns && r.concerns.length > 0) rows.push(renderConcerns(r.concerns));
+
+      if (r.source) {
+        const srcLabel = sourceLabels[r.source] ?? r.source;
+        const trust = r.sourceTrust ? `<span class="trust-badge trust-${r.sourceTrust}">${escape(r.sourceTrust)}</span>` : '';
+        rows.push(`<div class="field"><span class="field-label">出典</span>${escape(srcLabel)} ${trust}</div>`);
+      }
+      if (r.lastAnalyzed) rows.push(`<div class="field"><span class="field-label">分析日</span>${escape(r.lastAnalyzed)}</div>`);
+      if (r.url) rows.push(`<div class="field"><a href="${escape(r.url)}" target="_blank" rel="noopener noreferrer">公式サイトを開く</a></div>`);
+      if (tags) rows.push(`<div class="field"><div class="tags">${tags}</div></div>`);
+
+      return `
+        <div class="modal-backdrop" data-modal-backdrop>
+          <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+            <button type="button" class="close" data-modal-close aria-label="閉じる">×</button>
+            <h2 id="modal-title">${verdictBadge} ${escape(r.name)} ${visitedBadge}</h2>
+            <p class="card-meta">${escape(meta)}</p>
+            <p><span class="genre-pill">${escape(genreLabels[r.genre] ?? r.genre)}</span></p>
+            ${rows.join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    let lastFocused: HTMLElement | null = null;
+
+    function open(id: string) {
+      const r = byId.get(id);
+      if (!r) return;
+      lastFocused = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      root!.innerHTML = render(r);
+      root!.hidden = false;
+      document.body.style.overflow = 'hidden';
+      const closeBtn = root!.querySelector('[data-modal-close]');
+      if (closeBtn instanceof HTMLElement) closeBtn.focus();
+    }
+
+    function close() {
+      root!.hidden = true;
+      root!.innerHTML = '';
+      document.body.style.overflow = '';
+      if (lastFocused) {
+        lastFocused.focus();
+        lastFocused = null;
+      }
+    }
+
+    root.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (target.closest('[data-modal-close]')) {
+        close();
+        return;
+      }
+      if (target.hasAttribute('data-modal-backdrop')) {
+        close();
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !root!.hidden) close();
+    });
+
+    document.addEventListener('restaurant:open', (e) => {
+      const detail = (e as CustomEvent).detail as { id: string };
+      if (detail?.id) open(detail.id);
+    });
+
+    document.addEventListener('click', (e) => {
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      const card = target.closest('.card');
+      if (card instanceof HTMLElement) {
+        const id = card.getAttribute('data-restaurant-id');
+        if (id) open(id);
+      }
+    });
+  }
+</script>
