@@ -218,6 +218,21 @@
 - 代替案: API 統合（Brave Search / Anthropic Search） → 鍵管理・コストが増えるため見送り
 - 影響: 1 ラウンドあたり WebSearch 1〜2 回 + WebFetch 2〜3 回。ToS 範囲内（公開ページ参照、レート過多なし）
 
+## D-025: Phase 5 開始 — データ品質底上げ + UX 仕上げ + CI
+
+- 日付: 2026-05-18
+- 状態: Active
+- 関連: [docs/plan/project-plan.md](project-plan.md), [docs/requirements/03-functional-req.md](../requirements/03-functional-req.md)
+- 決定: Phase 4 公開後の運用レビューで判明した課題を Phase 5 として正式着手:
+  1. **F-14 画像 URL 表示** — 旅行サイトとして写真不足は致命的
+  2. **F-15 OSM Nominatim 自動ジオコーディング** — 既存 37 件の「要検証」緯度経度を一掃
+  3. **F-13 完成** — Phase 3 で仕様化したまま未実装だったネガティブフィルタを UI 化
+  4. **「+ 追加」残骸除去** — D-024 で意味を失った旧 Sheets 編集導線を削除
+  5. **CI 自動化** — GitHub Actions で push 時に型チェック + ビルドを実行
+- 根拠: 開発工程レビューでユーザーが優先度 1〜3 を「データ品質」「UX」「軽作業まとめて」と判断
+- 代替案: オフライン PWA 化を最優先 → 「中規模実装、現状でも localhost で使える」のため Phase 6 候補へ
+- 影響: 機能要件 +2、未実装要件の完成 +1、コード負債除去 +2
+
 ## D-024: Sheets 依存を解除、`data/restaurants.json` を source of truth に
 
 - 日付: 2026-05-18
@@ -304,3 +319,4 @@
 - 2026-05-18: D-021, D-022 を追加（Web ツール統合 + 計画 AG のオーケストレーター化）
 - 2026-05-18: D-023 を追加（セッション #1〜#2 の運用学習 6 項目を反映）
 - 2026-05-18: D-024 を追加（Sheets 依存解除、JSON が source of truth）、D-004 を Superseded
+- 2026-05-18: D-025 を追加（Phase 5 開始 — データ品質 + UX + CI）

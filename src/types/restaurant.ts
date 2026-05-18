@@ -161,6 +161,7 @@ export interface Restaurant {
   comment?: string;
   url?: string;
   tags?: string[];
+  imageUrl?: string;
   source?: Source;
   sourceTrust?: SourceTrust;
   verdict?: Verdict;

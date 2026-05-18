@@ -9,7 +9,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "tsv": "node scripts/json-to-tsv.mjs"
+    "tsv": "node scripts/json-to-tsv.mjs",
+    "geocode": "node scripts/geocode.mjs",
+    "geocode:apply": "node scripts/geocode.mjs --apply"
   },
   "dependencies": {
     "astro": "^4.16.0",

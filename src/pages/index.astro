@@ -7,20 +7,12 @@ import RestaurantModal from '@/components/RestaurantModal.astro';
 import { getRestaurants } from '@/data/loader';
 
 const restaurants = await getRestaurants();
-const sheetsId = process.env.SHEETS_ID;
-const sheetEditUrl = sheetsId ? `https://docs.google.com/spreadsheets/d/${sheetsId}/edit` : undefined;
 ---
 
 <Layout title="イタリアご飯マップ">
   <header class="app-header">
     <h1>イタリアご飯マップ</h1>
-    {
-      sheetEditUrl ? (
-        <a class="add-link" href={sheetEditUrl} target="_blank" rel="noopener noreferrer">+ 追加</a>
-      ) : (
-        <span class="add-link" style="opacity:0.6;cursor:default;" title="SHEETS_ID 未設定">+ 追加</span>
-      )
-    }
+    <span class="card-meta">{restaurants.length} 店舗</span>
   </header>
 
   <main>
@@ -50,18 +42,25 @@ const sheetEditUrl = sheetsId ? `https://docs.google.com/spreadsheets/d/${sheets
 
 <script>
   type Visit = 'all' | 'visited' | 'unvisited';
-  type State = { cities: Set<string>; genres: Set<string>; visit: Visit };
+  type ExcludeTag = 'tourist' | 'mediocre' | 'skip';
+  type State = { cities: Set<string>; genres: Set<string>; visit: Visit; exclude: Set<ExcludeTag> };
 
-  const state: State = { cities: new Set(), genres: new Set(), visit: 'all' };
+  const state: State = { cities: new Set(), genres: new Set(), visit: 'all', exclude: new Set() };
 
   function readFromUrl() {
     const params = new URLSearchParams(location.search);
     const cities = params.get('city');
     const genres = params.get('genre');
     const visit = params.get('visit') as Visit | null;
+    const exclude = params.get('exclude');
     if (cities) cities.split(',').forEach((c) => state.cities.add(c));
     if (genres) genres.split(',').forEach((g) => state.genres.add(g));
     if (visit === 'visited' || visit === 'unvisited' || visit === 'all') state.visit = visit;
+    if (exclude) {
+      exclude.split(',').forEach((e) => {
+        if (e === 'tourist' || e === 'mediocre' || e === 'skip') state.exclude.add(e);
+      });
+    }
   }
 
   function writeToUrl() {
@@ -69,6 +68,7 @@ const sheetEditUrl = sheetsId ? `https://docs.google.com/spreadsheets/d/${sheets
     if (state.cities.size) params.set('city', [...state.cities].join(','));
     if (state.genres.size) params.set('genre', [...state.genres].join(','));
     if (state.visit !== 'all') params.set('visit', state.visit);
+    if (state.exclude.size) params.set('exclude', [...state.exclude].join(','));
     const next = params.toString();
     const url = next ? `${location.pathname}?${next}` : location.pathname;
     history.replaceState(null, '', url);
@@ -87,6 +87,10 @@ const sheetEditUrl = sheetsId ? `https://docs.google.com/spreadsheets/d/${sheets
       const v = el.getAttribute('data-value');
       el.setAttribute('aria-pressed', v === state.visit ? 'true' : 'false');
     });
+    document.querySelectorAll('[data-filter-group="exclude"] .chip').forEach((el) => {
+      const v = el.getAttribute('data-value');
+      if (v) el.setAttribute('aria-pressed', state.exclude.has(v as ExcludeTag) ? 'true' : 'false');
+    });
   }
 
   function applyToCards() {
@@ -96,11 +100,18 @@ const sheetEditUrl = sheetsId ? `https://docs.google.com/spreadsheets/d/${sheets
       const city = card.dataset.city ?? '';
       const genre = card.dataset.genre ?? '';
       const visited = card.dataset.visited === 'true';
+      const isTourist = card.dataset.tourist === 'true';
+      const isMediocre = card.dataset.mediocre === 'true';
+      const isSkip = card.dataset.skip === 'true';
       const cityOk = state.cities.size === 0 || state.cities.has(city);
       const genreOk = state.genres.size === 0 || state.genres.has(genre);
       const visitOk =
         state.visit === 'all' || (state.visit === 'visited' && visited) || (state.visit === 'unvisited' && !visited);
-      const show = cityOk && genreOk && visitOk;
+      const excludeOk =
+        !(state.exclude.has('tourist') && isTourist) &&
+        !(state.exclude.has('mediocre') && isMediocre) &&
+        !(state.exclude.has('skip') && isSkip);
+      const show = cityOk && genreOk && visitOk && excludeOk;
       card.hidden = !show;
       if (show) visibleCount++;
     });

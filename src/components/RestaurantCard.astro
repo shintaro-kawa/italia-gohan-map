@@ -21,6 +21,14 @@ const concern = topConcern(restaurant.concerns);
 const highlight = topHighlight(restaurant.highlights);
 
 const concernSeverity = concern?.severity ?? null;
+
+const hasTouristConcern = (restaurant.concerns ?? []).some(
+  (c) => c.type === 'tourist-oriented' && (c.severity === 'medium' || c.severity === 'high'),
+);
+const hasMediocreConcern = (restaurant.concerns ?? []).some(
+  (c) => c.type === 'mediocre-food' && (c.severity === 'medium' || c.severity === 'high'),
+);
+const isSkip = restaurant.verdict === 'skip';
 ---
 
 <button
@@ -31,6 +39,9 @@ const concernSeverity = concern?.severity ?? null;
   data-genre={restaurant.genre}
   data-visited={restaurant.visited ? 'true' : 'false'}
   data-verdict={restaurant.verdict ?? ''}
+  data-tourist={hasTouristConcern ? 'true' : 'false'}
+  data-mediocre={hasMediocreConcern ? 'true' : 'false'}
+  data-skip={isSkip ? 'true' : 'false'}
   data-concerns={(restaurant.concerns ?? []).map((c) => `${c.type}:${c.severity}`).join(',')}
 >
   <h3 class="card-title">

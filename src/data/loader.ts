@@ -238,6 +238,7 @@ function transformRow(row: Record<string, string>): Restaurant | null {
     comment: row.comment?.trim() || undefined,
     url: row.url?.trim() || undefined,
     tags: parseTags(row.tags ?? ''),
+    imageUrl: row.imageUrl?.trim() || undefined,
     source,
     sourceTrust,
     verdict,

@@ -59,6 +59,7 @@
 | `comment` | string | No | 自由記述コメント |
 | `url` | string (URL) | No | 公式サイト or 参考リンク |
 | `tags` | array of string | No | 自由タグ（**小文字 + ハイフン区切り**、下記「タグ規約」参照） |
+| `imageUrl` | string (URL) | No | 詳細モーダルに表示する画像 URL（F-14、D-025）|
 | `source` | enum | No | 推薦元の出典スラグ（下記「出典タクソノミー」参照） |
 | `sourceTrust` | enum | No | `high` / `medium` / `low` |
 | `verdict` | enum | No | `recommended` / `neutral` / `caution` / `skip`（AI が付与） |

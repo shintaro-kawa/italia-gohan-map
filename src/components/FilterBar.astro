@@ -32,6 +32,13 @@ import { CITIES, GENRES } from '@/types/restaurant';
       <button type="button" data-value="visited" aria-pressed="false">訪問済み</button>
       <button type="button" data-value="unvisited" aria-pressed="false">未訪問</button>
     </div>
+  </div>
+
+  <div class="filter-row" data-filter-group="exclude" role="group" aria-label="除外">
+    <span class="filter-label">除外</span>
+    <button type="button" class="chip" data-value="tourist" aria-pressed="false">観光客向け</button>
+    <button type="button" class="chip" data-value="mediocre" aria-pressed="false">味の懸念</button>
+    <button type="button" class="chip" data-value="skip" aria-pressed="false">skip 判定</button>
     <button type="button" class="reset-btn" data-filter-reset>リセット</button>
   </div>
 </section>

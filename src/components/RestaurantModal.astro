@@ -31,6 +31,7 @@ const { restaurants } = Astro.props;
     comment?: string;
     url?: string;
     tags?: string[];
+    imageUrl?: string;
     source?: string;
     sourceTrust?: 'high' | 'medium' | 'low';
     verdict?: 'recommended' | 'neutral' | 'caution' | 'skip';
@@ -172,10 +173,15 @@ const { restaurants } = Astro.props;
       if (r.url) rows.push(`<div class="field"><a href="${escape(r.url)}" target="_blank" rel="noopener noreferrer">公式サイトを開く</a></div>`);
       if (tags) rows.push(`<div class="field"><div class="tags">${tags}</div></div>`);
 
+      const imageBlock = r.imageUrl
+        ? `<div class="modal-image"><img src="${escape(r.imageUrl)}" alt="${escape(r.name)}" loading="lazy" /></div>`
+        : '';
+
       return `
         <div class="modal-backdrop" data-modal-backdrop>
           <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
             <button type="button" class="close" data-modal-close aria-label="閉じる">×</button>
+            ${imageBlock}
             <h2 id="modal-title">${verdictBadge} ${escape(r.name)} ${visitedBadge}</h2>
             <p class="card-meta">${escape(meta)}</p>
             <p><span class="genre-pill">${escape(genreLabels[r.genre] ?? r.genre)}</span></p>
