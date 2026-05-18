@@ -1,4 +1,4 @@
-import { checkAuth } from '../src/lib/auth.js';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { chatWithClaude, extractJson } from '../src/lib/anthropic.js';
 import { fetchCurrentData } from '../src/lib/github.js';
 import type { Restaurant } from '../src/types/restaurant.js';
@@ -44,37 +44,23 @@ function sanitizeCandidates(raw: unknown[]): Restaurant[] {
   return out;
 }
 
-export default async function handler(request: Request): Promise<Response> {
-  if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'content-type': 'application/json' },
-    });
-  }
-  const auth = checkAuth(request);
-  if (!auth.ok) {
-    return new Response(JSON.stringify({ error: auth.message }), {
-      status: auth.status,
-      headers: { 'content-type': 'application/json' },
-    });
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  let body: { message?: string };
-  try {
-    body = await request.json();
-  } catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-      status: 400,
-      headers: { 'content-type': 'application/json' },
-    });
+  const expectedPassword = process.env.ADMIN_PASSWORD;
+  if (!expectedPassword) {
+    return res.status(500).json({ error: 'ADMIN_PASSWORD not configured on server' });
   }
+  const givenPassword = (req.headers['x-admin-password'] ?? '') as string;
+  if (!givenPassword) return res.status(401).json({ error: 'Missing X-Admin-Password header' });
+  if (givenPassword !== expectedPassword) return res.status(401).json({ error: 'Invalid password' });
 
-  const userMessage = body.message?.trim();
+  const body = req.body as { message?: string } | undefined;
+  const userMessage = body?.message?.trim();
   if (!userMessage) {
-    return new Response(JSON.stringify({ error: 'message required' }), {
-      status: 400,
-      headers: { 'content-type': 'application/json' },
-    });
+    return res.status(400).json({ error: 'message required' });
   }
 
   try {
@@ -82,21 +68,12 @@ export default async function handler(request: Request): Promise<Response> {
     const claudeText = await chatWithClaude(userMessage, existing);
     const parsed = extractJson(claudeText);
     if (!parsed) {
-      return new Response(
-        JSON.stringify({ message: claudeText, candidates: [], sources: [] }),
-        { status: 200, headers: { 'content-type': 'application/json' } },
-      );
+      return res.status(200).json({ message: claudeText, candidates: [], sources: [] });
     }
     const candidates = sanitizeCandidates(parsed.candidates);
-    return new Response(
-      JSON.stringify({ message: parsed.message, candidates, sources: parsed.sources ?? [] }),
-      { status: 200, headers: { 'content-type': 'application/json' } },
-    );
+    return res.status(200).json({ message: parsed.message, candidates, sources: parsed.sources ?? [] });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Unknown error';
-    return new Response(JSON.stringify({ error: 'Internal error: ' + msg }), {
-      status: 500,
-      headers: { 'content-type': 'application/json' },
-    });
+    return res.status(500).json({ error: 'Internal error: ' + msg });
   }
 }

@@ -1,4 +1,4 @@
-import { checkAuth } from '../src/lib/auth.js';
+import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { appendRestaurant } from '../src/lib/github.js';
 import type { Restaurant } from '../src/types/restaurant.js';
 
@@ -39,51 +39,31 @@ function validate(input: unknown): Restaurant | string {
   };
 }
 
-export default async function handler(request: Request): Promise<Response> {
-  if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'content-type': 'application/json' },
-    });
-  }
-  const auth = checkAuth(request);
-  if (!auth.ok) {
-    return new Response(JSON.stringify({ error: auth.message }), {
-      status: auth.status,
-      headers: { 'content-type': 'application/json' },
-    });
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  let body: { candidate?: unknown };
-  try {
-    body = await request.json();
-  } catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-      status: 400,
-      headers: { 'content-type': 'application/json' },
-    });
+  const expectedPassword = process.env.ADMIN_PASSWORD;
+  if (!expectedPassword) {
+    return res.status(500).json({ error: 'ADMIN_PASSWORD not configured on server' });
   }
+  const givenPassword = (req.headers['x-admin-password'] ?? '') as string;
+  if (!givenPassword) return res.status(401).json({ error: 'Missing X-Admin-Password header' });
+  if (givenPassword !== expectedPassword) return res.status(401).json({ error: 'Invalid password' });
 
-  const validated = validate(body.candidate);
+  const body = req.body as { candidate?: unknown } | undefined;
+  const validated = validate(body?.candidate);
   if (typeof validated === 'string') {
-    return new Response(JSON.stringify({ error: validated }), {
-      status: 400,
-      headers: { 'content-type': 'application/json' },
-    });
+    return res.status(400).json({ error: validated });
   }
 
   try {
     const { id, commitSha } = await appendRestaurant(validated);
-    return new Response(
-      JSON.stringify({ ok: true, id, commitSha, note: 'Vercel will rebuild in 1-2 minutes' }),
-      { status: 200, headers: { 'content-type': 'application/json' } },
-    );
+    return res.status(200).json({ ok: true, id, commitSha, note: 'Vercel will rebuild in 1-2 minutes' });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Unknown error';
     const status = msg.includes('Duplicate') ? 409 : 500;
-    return new Response(JSON.stringify({ error: msg }), {
-      status,
-      headers: { 'content-type': 'application/json' },
-    });
+    return res.status(status).json({ error: msg });
   }
 }
