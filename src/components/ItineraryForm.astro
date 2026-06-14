@@ -1,0 +1,141 @@
+---
+import { ITINERARY_TYPES } from '@/types/itinerary';
+---
+
+<button type="button" id="itinerary-add-toggle" class="itinerary-add-fab" aria-label="旅程アイテムを追加">
+  ＋ 追加
+</button>
+
+<div id="itinerary-form-modal" class="itinerary-modal" hidden role="dialog" aria-label="旅程アイテム編集">
+  <div class="itinerary-modal-backdrop" data-itinerary-close></div>
+
+  <div class="itinerary-modal-panel" role="document">
+    <header class="itinerary-modal-head">
+      <h2 id="itinerary-form-title">旅程アイテムを追加</h2>
+      <button type="button" class="itinerary-modal-close" data-itinerary-close aria-label="閉じる">×</button>
+    </header>
+
+    <div id="itinerary-auth" class="itinerary-auth">
+      <p>編集・追加・削除には管理パスワードが必要です。</p>
+      <input type="password" id="itinerary-password" placeholder="パスワード" autocomplete="current-password" />
+      <button type="button" id="itinerary-auth-submit">ロック解除</button>
+      <p class="itinerary-auth-error" id="itinerary-auth-error" hidden></p>
+    </div>
+
+    <form id="itinerary-form" class="itinerary-form" hidden>
+      <input type="hidden" id="if-id" />
+
+      <fieldset class="if-types" aria-label="種別">
+        {ITINERARY_TYPES.map((t, i) => (
+          <label class="if-type-chip">
+            <input
+              type="radio"
+              name="if-type"
+              value={t.value}
+              checked={i === 0}
+              data-if-type-input
+            />
+            <span>{t.emoji} {t.label}</span>
+          </label>
+        ))}
+      </fieldset>
+
+      <label class="if-row">
+        <span>タイトル</span>
+        <input type="text" id="if-title" required placeholder="例: ANA 215 / ホテル名 / Roma → Firenze" />
+      </label>
+
+      <div class="if-row-pair">
+        <label class="if-row">
+          <span>開始日時</span>
+          <input type="datetime-local" id="if-startAt" required />
+        </label>
+        <label class="if-row">
+          <span>終了日時 (任意)</span>
+          <input type="datetime-local" id="if-endAt" />
+        </label>
+      </div>
+
+      <details class="if-section" data-section="location">
+        <summary>場所</summary>
+        <div class="if-row-pair if-flight-only" hidden>
+          <label class="if-row"><span>出発 (IATA/駅)</span><input type="text" id="if-from" /></label>
+          <label class="if-row"><span>到着 (IATA/駅)</span><input type="text" id="if-to" /></label>
+        </div>
+        <label class="if-row if-non-flight">
+          <span>場所名</span>
+          <input type="text" id="if-loc-name" placeholder="例: Hotel Hassler / Colosseum" />
+        </label>
+        <label class="if-row if-non-flight">
+          <span>住所</span>
+          <input type="text" id="if-loc-address" placeholder="例: Piazza Trinità dei Monti 6, Roma" />
+        </label>
+      </details>
+
+      <details class="if-section" data-section="details">
+        <summary>詳細 (種別ごとに変化)</summary>
+
+        <div class="if-detail-fields" data-for="flight">
+          <label class="if-row"><span>航空会社</span><input type="text" data-detail="airline" placeholder="例: ITA Airways" /></label>
+          <label class="if-row"><span>便名</span><input type="text" data-detail="flightNumber" placeholder="例: AZ793" /></label>
+          <label class="if-row"><span>ターミナル</span><input type="text" data-detail="terminal" /></label>
+        </div>
+        <div class="if-detail-fields" data-for="hotel" hidden>
+          <label class="if-row"><span>部屋タイプ</span><input type="text" data-detail="roomType" placeholder="例: Deluxe" /></label>
+          <label class="if-row">
+            <span>朝食込み</span>
+            <select data-detail="breakfastIncluded">
+              <option value="">未指定</option>
+              <option value="true">はい</option>
+              <option value="false">いいえ</option>
+            </select>
+          </label>
+        </div>
+        <div class="if-detail-fields" data-for="train" hidden>
+          <label class="if-row"><span>運行会社</span><input type="text" data-detail="operator" placeholder="例: Trenitalia / Italo" /></label>
+          <label class="if-row"><span>列車番号</span><input type="text" data-detail="trainNumber" placeholder="例: FR9522" /></label>
+          <label class="if-row"><span>号車</span><input type="text" data-detail="carriageNumber" /></label>
+        </div>
+        <div class="if-detail-fields" data-for="attraction" hidden>
+          <label class="if-row"><span>チケット種別</span><input type="text" data-detail="ticketType" placeholder="例: Skip-the-line + Forum" /></label>
+          <label class="if-row"><span>人数</span><input type="number" min="1" data-detail="partySize" /></label>
+        </div>
+        <div class="if-detail-fields" data-for="restaurant" hidden>
+          <label class="if-row"><span>店舗 ID (リストから)</span><input type="text" data-detail="restaurantId" placeholder="例: rome-da-enzo" /></label>
+          <label class="if-row"><span>人数</span><input type="number" min="1" data-detail="partySize" /></label>
+        </div>
+        <div class="if-detail-fields" data-for="generic" hidden>
+          <p class="if-hint">任意の補足情報はメモ欄へ。</p>
+        </div>
+      </details>
+
+      <label class="if-row">
+        <span>メモ (公開)</span>
+        <textarea id="if-notes" rows="2" placeholder="共有してよい補足情報"></textarea>
+      </label>
+
+      <details class="if-section if-sensitive">
+        <summary>🔒 予約番号など (この端末のみに保存、GitHub には載りません)</summary>
+        <label class="if-row"><span>予約番号</span><input type="text" data-sensitive="confirmationNumber" /></label>
+        <label class="if-row"><span>ブッキング参照</span><input type="text" data-sensitive="bookingReference" /></label>
+        <label class="if-row"><span>座席番号</span><input type="text" data-sensitive="seatNumber" /></label>
+        <label class="if-row"><span>部屋番号</span><input type="text" data-sensitive="roomNumber" /></label>
+        <label class="if-row"><span>チェックインコード</span><input type="text" data-sensitive="checkInCode" /></label>
+        <label class="if-row"><span>チケット URL</span><input type="url" data-sensitive="ticketUrl" placeholder="https://..." /></label>
+        <label class="if-row"><span>添付 URL</span><input type="url" data-sensitive="attachmentUrl" placeholder="https://..." /></label>
+        <label class="if-row"><span>非公開メモ</span><textarea data-sensitive="privateNotes" rows="2"></textarea></label>
+      </details>
+
+      <label class="if-row if-private-toggle">
+        <input type="checkbox" id="if-private" checked />
+        <span>🔒 プライベート保存 (この端末のみ、GitHub に commit しない)</span>
+      </label>
+
+      <div class="if-actions">
+        <button type="button" class="if-cancel" data-itinerary-close>キャンセル</button>
+        <button type="submit" class="if-submit">保存</button>
+      </div>
+      <p class="if-status" id="if-status" hidden></p>
+    </form>
+  </div>
+</div>

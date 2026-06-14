@@ -8,3 +8,7 @@ dist/
 Thumbs.db
 *.log
 .vercel/
+
+# プライベート資料 (旅程インポートスニペット等、git に公開しない)
+private/
+data/_pending-candidates.json

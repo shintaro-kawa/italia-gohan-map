@@ -1,0 +1,678 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Itinerary from '@/components/Itinerary.astro';
+import ItineraryForm from '@/components/ItineraryForm.astro';
+import { getItinerary } from '@/data/itinerary-loader';
+
+const items = await getItinerary();
+---
+
+<Layout title="旅程 - イタリアご飯マップ">
+  <header class="app-header">
+    <h1>旅程</h1>
+    <nav class="app-nav">
+      <a href="/" class="app-nav-link">🗺 マップに戻る</a>
+    </nav>
+    <span class="card-meta" id="itinerary-count">{items.length} アイテム</span>
+  </header>
+
+  <main class="itinerary-main">
+    <Itinerary items={items} />
+  </main>
+
+  <ItineraryForm />
+
+  <script type="application/json" id="itinerary-data" is:inline set:html={JSON.stringify(items)} />
+</Layout>
+
+<script>
+  type Item = {
+    id: string;
+    type: 'flight' | 'hotel' | 'train' | 'attraction' | 'restaurant' | 'generic';
+    title: string;
+    startAt: string;
+    endAt?: string;
+    location?: { name?: string; address?: string; from?: string; to?: string; lat?: number; lng?: number };
+    details?: Record<string, string | number | boolean | null>;
+    notes?: string;
+  };
+
+  type Sensitive = {
+    confirmationNumber?: string;
+    bookingReference?: string;
+    seatNumber?: string;
+    roomNumber?: string;
+    checkInCode?: string;
+    ticketUrl?: string;
+    attachmentUrl?: string;
+    privateNotes?: string;
+  };
+
+  const PASSWORD_KEY = 'italia-gohan-chat-password';
+  const SENSITIVE_KEY = 'italia-gohan-itinerary-sensitive';
+  const PRIVATE_KEY = 'italia-gohan-itinerary-private';
+
+  const TYPE_META: Record<string, { emoji: string; label: string }> = {
+    flight: { emoji: '✈️', label: '飛行機' },
+    hotel: { emoji: '🏨', label: '宿泊' },
+    train: { emoji: '🚄', label: '列車・交通' },
+    attraction: { emoji: '🏛️', label: '観光・博物館' },
+    restaurant: { emoji: '🍝', label: 'レストラン予約' },
+    generic: { emoji: '📌', label: 'その他' },
+  };
+
+  const getPassword = () => sessionStorage.getItem(PASSWORD_KEY);
+  const setPassword = (p: string) => sessionStorage.setItem(PASSWORD_KEY, p);
+  const clearPassword = () => sessionStorage.removeItem(PASSWORD_KEY);
+
+  function loadAllSensitive(): Record<string, Sensitive> {
+    try {
+      const raw = localStorage.getItem(SENSITIVE_KEY);
+      if (!raw) return {};
+      return JSON.parse(raw);
+    } catch {
+      return {};
+    }
+  }
+  function saveAllSensitive(all: Record<string, Sensitive>) {
+    localStorage.setItem(SENSITIVE_KEY, JSON.stringify(all));
+  }
+  function getSensitive(id: string): Sensitive {
+    return loadAllSensitive()[id] ?? {};
+  }
+  function setSensitive(id: string, s: Sensitive) {
+    const all = loadAllSensitive();
+    const cleaned: Sensitive = {};
+    for (const [k, v] of Object.entries(s)) {
+      if (typeof v === 'string' && v.trim()) {
+        (cleaned as Record<string, string>)[k] = v.trim();
+      }
+    }
+    if (Object.keys(cleaned).length === 0) {
+      delete all[id];
+    } else {
+      all[id] = cleaned;
+    }
+    saveAllSensitive(all);
+  }
+  function clearSensitive(id: string) {
+    const all = loadAllSensitive();
+    delete all[id];
+    saveAllSensitive(all);
+  }
+
+  function loadPrivate(): Item[] {
+    try {
+      const raw = localStorage.getItem(PRIVATE_KEY);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? (parsed as Item[]) : [];
+    } catch {
+      return [];
+    }
+  }
+  function savePrivate(items: Item[]) {
+    localStorage.setItem(PRIVATE_KEY, JSON.stringify(items));
+  }
+  function upsertPrivate(item: Item) {
+    const all = loadPrivate();
+    const idx = all.findIndex((x) => x.id === item.id);
+    if (idx >= 0) all[idx] = item;
+    else all.push(item);
+    savePrivate(all);
+  }
+  function deletePrivate(id: string) {
+    savePrivate(loadPrivate().filter((x) => x.id !== id));
+  }
+  function findPrivate(id: string): Item | undefined {
+    return loadPrivate().find((x) => x.id === id);
+  }
+
+  function escape(s: string): string {
+    return s
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function dateKey(iso: string): string {
+    try {
+      const d = new Date(iso);
+      const pad = (n: number) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    } catch {
+      return iso.slice(0, 10);
+    }
+  }
+  function formatGroupDate(key: string): string {
+    try {
+      const d = new Date(key + 'T00:00:00');
+      return d.toLocaleDateString('ja-JP', { month: 'long', day: 'numeric', weekday: 'short' });
+    } catch {
+      return key;
+    }
+  }
+  function formatHm(iso: string): string {
+    const d = new Date(iso);
+    return d.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+  }
+  function formatRange(start: string, end?: string): string {
+    if (!end) return formatHm(start);
+    const sk = dateKey(start);
+    const ek = dateKey(end);
+    if (sk === ek) return `${formatHm(start)} – ${formatHm(end)}`;
+    return `${formatHm(start)} → ${ek.slice(5).replace('-', '/')} ${formatHm(end)}`;
+  }
+  function locationLine(loc?: Item['location']): string {
+    if (!loc) return '';
+    if (loc.from && loc.to) return `${loc.from} → ${loc.to}`;
+    if (loc.name) return loc.name;
+    if (loc.address) return loc.address;
+    return '';
+  }
+  function detailLines(item: Item): string[] {
+    const lines: string[] = [];
+    const d = item.details ?? {};
+    switch (item.type) {
+      case 'flight':
+        if (d.airline) lines.push(`✈️ ${d.airline}${d.flightNumber ? ` ${d.flightNumber}` : ''}`);
+        if (d.terminal) lines.push(`ターミナル: ${d.terminal}`);
+        break;
+      case 'hotel':
+        if (d.roomType) lines.push(`部屋: ${d.roomType}`);
+        if (d.breakfastIncluded === true) lines.push(`朝食込み`);
+        break;
+      case 'train':
+        if (d.operator) lines.push(`🚄 ${d.operator}${d.trainNumber ? ` ${d.trainNumber}` : ''}`);
+        if (d.carriageNumber) lines.push(`号車: ${d.carriageNumber}`);
+        break;
+      case 'attraction':
+        if (d.ticketType) lines.push(`チケット: ${d.ticketType}`);
+        if (d.partySize) lines.push(`人数: ${d.partySize}`);
+        break;
+      case 'restaurant':
+        if (d.partySize) lines.push(`人数: ${d.partySize}`);
+        if (d.restaurantId) lines.push(`店舗 ID: ${d.restaurantId}`);
+        break;
+    }
+    return lines;
+  }
+
+  function buildCardHtml(item: Item, isPrivate: boolean): string {
+    const meta = TYPE_META[item.type] ?? TYPE_META.generic;
+    const loc = locationLine(item.location);
+    const lines = detailLines(item);
+    const privBadge = isPrivate
+      ? `<span class="itinerary-priv-badge" title="この端末のみに保存">🔒 ローカル</span>`
+      : '';
+    return `
+      <li class="itinerary-card" data-id="${escape(item.id)}" data-type="${escape(item.type)}" data-source="${isPrivate ? 'private' : 'json'}" tabindex="0">
+        <div class="itinerary-card-time">${escape(formatRange(item.startAt, item.endAt))}</div>
+        <div class="itinerary-card-body">
+          <div class="itinerary-card-head">
+            <span class="itinerary-type-badge" data-type="${escape(item.type)}">
+              <span aria-hidden="true">${meta.emoji}</span> ${escape(meta.label)}
+            </span>
+            ${privBadge}
+            <h3 class="itinerary-card-title">${escape(item.title)}</h3>
+          </div>
+          ${loc ? `<p class="itinerary-card-loc">📍 ${escape(loc)}</p>` : ''}
+          ${lines.map((l) => `<p class="itinerary-card-line">${escape(l)}</p>`).join('')}
+          ${item.notes ? `<p class="itinerary-card-notes">${escape(item.notes)}</p>` : ''}
+          <p class="itinerary-card-sensitive" data-sensitive-for="${escape(item.id)}" hidden></p>
+        </div>
+        <div class="itinerary-card-actions">
+          <button type="button" class="itinerary-edit" data-edit-id="${escape(item.id)}" aria-label="編集">✎</button>
+          <button type="button" class="itinerary-delete" data-delete-id="${escape(item.id)}" aria-label="削除">🗑</button>
+        </div>
+      </li>
+    `;
+  }
+
+  function ensureDayGroup(date: string): HTMLOListElement {
+    const root = document.querySelector('.itinerary');
+    if (!root) throw new Error('itinerary root missing');
+    const existing = root.querySelector<HTMLOListElement>(`.itinerary-day[data-date="${date}"] .itinerary-items`);
+    if (existing) return existing;
+    const wrap = document.createElement('div');
+    wrap.className = 'itinerary-day';
+    wrap.setAttribute('data-date', date);
+    wrap.innerHTML = `<h2 class="itinerary-day-head">${escape(formatGroupDate(date))}</h2><ol class="itinerary-items"></ol>`;
+    const all = Array.from(root.querySelectorAll<HTMLElement>('.itinerary-day'));
+    let inserted = false;
+    for (const el of all) {
+      const d = el.getAttribute('data-date') ?? '';
+      if (date < d) {
+        root.insertBefore(wrap, el);
+        inserted = true;
+        break;
+      }
+    }
+    if (!inserted) root.appendChild(wrap);
+    return wrap.querySelector<HTMLOListElement>('.itinerary-items')!;
+  }
+
+  function insertCardSorted(list: HTMLOListElement, cardHtml: string, item: Item) {
+    const tmp = document.createElement('template');
+    tmp.innerHTML = cardHtml.trim();
+    const card = tmp.content.firstElementChild as HTMLElement;
+    if (!card) return;
+    const targetStart = new Date(item.startAt).getTime();
+    const siblings = Array.from(list.children) as HTMLElement[];
+    for (const sib of siblings) {
+      const sibId = sib.getAttribute('data-id');
+      const isJsonSib = sib.getAttribute('data-source') === 'json';
+      let sibStart = 0;
+      if (isJsonSib) {
+        const found = loadInlineItems().find((x) => x.id === sibId);
+        sibStart = found ? new Date(found.startAt).getTime() : 0;
+      } else {
+        const found = findPrivate(sibId ?? '');
+        sibStart = found ? new Date(found.startAt).getTime() : 0;
+      }
+      if (targetStart < sibStart) {
+        list.insertBefore(card, sib);
+        return;
+      }
+    }
+    list.appendChild(card);
+  }
+
+  function loadInlineItems(): Item[] {
+    const el = document.getElementById('itinerary-data');
+    if (!el || !el.textContent) return [];
+    try {
+      return JSON.parse(el.textContent);
+    } catch {
+      return [];
+    }
+  }
+
+  function hideEmptyStateIfHasItems() {
+    const empty = document.querySelector<HTMLElement>('.itinerary-empty');
+    if (!empty) return;
+    const hasCards = document.querySelectorAll('.itinerary-card').length > 0;
+    empty.hidden = hasCards;
+  }
+
+  function attachCardListeners(scope: ParentNode = document) {
+    scope.querySelectorAll<HTMLButtonElement>('[data-edit-id]').forEach((btn) => {
+      if (btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-edit-id');
+        if (!id) return;
+        const target = findPrivate(id) ?? loadInlineItems().find((x) => x.id === id);
+        modalOpen(target);
+      });
+    });
+    scope.querySelectorAll<HTMLButtonElement>('[data-delete-id]').forEach((btn) => {
+      if (btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-delete-id');
+        if (!id) return;
+        const ok = confirm('このアイテムを削除しますか？');
+        if (!ok) return;
+        const isPriv = !!findPrivate(id);
+        if (isPriv) {
+          deletePrivate(id);
+          clearSensitive(id);
+          const card = document.querySelector(`[data-id="${id}"]`);
+          card?.remove();
+          updateCount();
+          hideEmptyStateIfHasItems();
+        } else {
+          submitToApi('delete', { id, type: 'generic', title: '', startAt: '' });
+        }
+      });
+    });
+  }
+
+  function updateCount() {
+    const countEl = document.getElementById('itinerary-count');
+    if (!countEl) return;
+    const n = document.querySelectorAll('.itinerary-card').length;
+    countEl.textContent = `${n} アイテム`;
+  }
+
+  function renderPrivateItems() {
+    const items = loadPrivate();
+    if (items.length === 0) return;
+    items
+      .slice()
+      .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())
+      .forEach((it) => {
+        const dk = dateKey(it.startAt);
+        const list = ensureDayGroup(dk);
+        const html = buildCardHtml(it, true);
+        insertCardSorted(list, html, it);
+      });
+    attachCardListeners();
+    hideEmptyStateIfHasItems();
+    updateCount();
+  }
+
+  function renderSensitiveLines() {
+    const all = loadAllSensitive();
+    document.querySelectorAll<HTMLElement>('[data-sensitive-for]').forEach((el) => {
+      const id = el.getAttribute('data-sensitive-for');
+      if (!id) return;
+      const s = all[id];
+      if (!s || Object.keys(s).length === 0) {
+        el.hidden = true;
+        return;
+      }
+      const parts: string[] = [];
+      if (s.confirmationNumber) parts.push(`予約 #${s.confirmationNumber}`);
+      if (s.bookingReference) parts.push(`参照 ${s.bookingReference}`);
+      if (s.seatNumber) parts.push(`座席 ${s.seatNumber}`);
+      if (s.roomNumber) parts.push(`部屋 ${s.roomNumber}`);
+      if (s.checkInCode) parts.push(`コード ${s.checkInCode}`);
+      el.textContent = `🔒 ${parts.join(' / ')}`;
+      el.hidden = false;
+    });
+  }
+
+  function modalOpen(prefill?: Item) {
+    const modal = document.getElementById('itinerary-form-modal');
+    if (!modal) return;
+    modal.hidden = false;
+    const titleEl = document.getElementById('itinerary-form-title');
+    if (titleEl) titleEl.textContent = prefill ? '旅程アイテムを編集' : '旅程アイテムを追加';
+    const privEl = document.getElementById('if-private') as HTMLInputElement | null;
+    if (privEl) {
+      if (prefill) {
+        privEl.checked = !!findPrivate(prefill.id);
+      } else {
+        privEl.checked = true;
+      }
+    }
+    if (getPassword() || (privEl && privEl.checked)) {
+      showForm();
+    } else {
+      showAuth();
+    }
+    fillForm(prefill);
+  }
+  function modalClose() {
+    const modal = document.getElementById('itinerary-form-modal');
+    if (modal) modal.hidden = true;
+  }
+
+  function showAuth() {
+    (document.getElementById('itinerary-auth') as HTMLElement).hidden = false;
+    (document.getElementById('itinerary-form') as HTMLElement).hidden = true;
+  }
+  function showForm() {
+    (document.getElementById('itinerary-auth') as HTMLElement).hidden = true;
+    (document.getElementById('itinerary-form') as HTMLElement).hidden = false;
+  }
+
+  function fillForm(item?: Item) {
+    (document.getElementById('if-id') as HTMLInputElement).value = item?.id ?? '';
+    (document.getElementById('if-title') as HTMLInputElement).value = item?.title ?? '';
+    (document.getElementById('if-startAt') as HTMLInputElement).value = toLocalInput(item?.startAt);
+    (document.getElementById('if-endAt') as HTMLInputElement).value = toLocalInput(item?.endAt);
+    (document.getElementById('if-from') as HTMLInputElement).value = item?.location?.from ?? '';
+    (document.getElementById('if-to') as HTMLInputElement).value = item?.location?.to ?? '';
+    (document.getElementById('if-loc-name') as HTMLInputElement).value = item?.location?.name ?? '';
+    (document.getElementById('if-loc-address') as HTMLInputElement).value = item?.location?.address ?? '';
+    (document.getElementById('if-notes') as HTMLTextAreaElement).value = item?.notes ?? '';
+
+    const type = item?.type ?? 'flight';
+    document.querySelectorAll<HTMLInputElement>('[data-if-type-input]').forEach((r) => {
+      r.checked = r.value === type;
+    });
+    refreshTypeView(type);
+
+    document.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>('[data-detail]').forEach((el) => {
+      const key = el.getAttribute('data-detail')!;
+      const v = item?.details?.[key];
+      el.value = v == null ? '' : String(v);
+    });
+
+    const sens = item ? getSensitive(item.id) : {};
+    document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-sensitive]').forEach((el) => {
+      const key = el.getAttribute('data-sensitive') as keyof Sensitive;
+      el.value = sens[key] ?? '';
+    });
+
+    const status = document.getElementById('if-status');
+    if (status) {
+      status.hidden = true;
+      status.textContent = '';
+    }
+  }
+
+  function refreshTypeView(type: string) {
+    document.querySelectorAll<HTMLElement>('.if-detail-fields').forEach((el) => {
+      el.hidden = el.getAttribute('data-for') !== type;
+    });
+    const flightOnly = document.querySelector<HTMLElement>('.if-flight-only');
+    if (flightOnly) flightOnly.hidden = type !== 'flight' && type !== 'train';
+    document.querySelectorAll<HTMLElement>('.if-non-flight').forEach((el) => {
+      el.hidden = type === 'flight' || type === 'train';
+    });
+  }
+
+  function toLocalInput(iso?: string): string {
+    if (!iso) return '';
+    try {
+      const d = new Date(iso);
+      const pad = (n: number) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    } catch {
+      return '';
+    }
+  }
+  function fromLocalInput(local: string): string | undefined {
+    if (!local) return undefined;
+    try {
+      const d = new Date(local);
+      return d.toISOString();
+    } catch {
+      return undefined;
+    }
+  }
+
+  function gatherFormItem(): Item | string {
+    const id = (document.getElementById('if-id') as HTMLInputElement).value.trim();
+    const typeEl = document.querySelector<HTMLInputElement>('[data-if-type-input]:checked');
+    if (!typeEl) return '種別を選択してください';
+    const type = typeEl.value as Item['type'];
+    const title = (document.getElementById('if-title') as HTMLInputElement).value.trim();
+    if (!title) return 'タイトルを入力してください';
+    const startLocal = (document.getElementById('if-startAt') as HTMLInputElement).value;
+    const startAt = fromLocalInput(startLocal);
+    if (!startAt) return '開始日時を入力してください';
+    const endAt = fromLocalInput((document.getElementById('if-endAt') as HTMLInputElement).value);
+
+    const location: Item['location'] = {};
+    const from = (document.getElementById('if-from') as HTMLInputElement).value.trim();
+    const to = (document.getElementById('if-to') as HTMLInputElement).value.trim();
+    const name = (document.getElementById('if-loc-name') as HTMLInputElement).value.trim();
+    const address = (document.getElementById('if-loc-address') as HTMLInputElement).value.trim();
+    if (from) location.from = from;
+    if (to) location.to = to;
+    if (name) location.name = name;
+    if (address) location.address = address;
+
+    const details: Record<string, string | number | boolean | null> = {};
+    document
+      .querySelectorAll<HTMLElement>(`.if-detail-fields[data-for="${type}"] [data-detail]`)
+      .forEach((el) => {
+        const input = el as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+        const key = input.getAttribute('data-detail')!;
+        const raw = input.value.trim();
+        if (!raw) return;
+        if (input instanceof HTMLInputElement && input.type === 'number') {
+          const n = Number(raw);
+          if (Number.isFinite(n)) details[key] = n;
+        } else if (raw === 'true') {
+          details[key] = true;
+        } else if (raw === 'false') {
+          details[key] = false;
+        } else {
+          details[key] = raw;
+        }
+      });
+
+    const notes = (document.getElementById('if-notes') as HTMLTextAreaElement).value.trim();
+
+    const item: Item = {
+      id: id || `${type}-${cryptoRandomShort()}`,
+      type,
+      title,
+      startAt,
+      ...(endAt ? { endAt } : {}),
+      ...(Object.keys(location).length > 0 ? { location } : {}),
+      ...(Object.keys(details).length > 0 ? { details } : {}),
+      ...(notes ? { notes } : {}),
+    };
+    return item;
+  }
+
+  function gatherFormSensitive(): Sensitive {
+    const out: Sensitive = {};
+    document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('[data-sensitive]').forEach((el) => {
+      const key = el.getAttribute('data-sensitive') as keyof Sensitive;
+      const v = el.value.trim();
+      if (v) (out as Record<string, string>)[key] = v;
+    });
+    return out;
+  }
+
+  function cryptoRandomShort(): string {
+    const arr = new Uint8Array(4);
+    crypto.getRandomValues(arr);
+    return Array.from(arr).map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function submitToApi(action: 'upsert' | 'delete', item: Item) {
+    const password = getPassword();
+    if (!password) {
+      showAuth();
+      return;
+    }
+    const status = document.getElementById('if-status');
+    if (status) {
+      status.hidden = false;
+      status.textContent = action === 'delete' ? '削除中…' : '保存中…';
+    }
+    const res = await fetch('/api/save-itinerary', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-admin-password': password },
+      body: JSON.stringify({ action, item }),
+    });
+    let json: { ok?: boolean; error?: string; commitSha?: string } = {};
+    try {
+      json = await res.json();
+    } catch {
+      // ignore
+    }
+    if (res.status === 401) {
+      clearPassword();
+      showAuth();
+      if (status) {
+        status.hidden = false;
+        status.textContent = 'パスワード無効';
+      }
+      return;
+    }
+    if (!res.ok) {
+      if (status) {
+        status.hidden = false;
+        status.textContent = `エラー: ${json.error ?? `HTTP ${res.status}`}`;
+      }
+      return;
+    }
+    if (status) {
+      status.hidden = false;
+      status.textContent = `✓ commit ${json.commitSha?.slice(0, 7) ?? 'ok'} — 1〜2 分でデプロイ反映`;
+    }
+    if (action === 'delete') {
+      clearSensitive(item.id);
+    } else {
+      setSensitive(item.id, gatherFormSensitive());
+    }
+    setTimeout(() => location.reload(), 1500);
+  }
+
+  function submitToPrivate(item: Item) {
+    upsertPrivate(item);
+    setSensitive(item.id, gatherFormSensitive());
+    const status = document.getElementById('if-status');
+    if (status) {
+      status.hidden = false;
+      status.textContent = '✓ プライベート保存 (この端末のみ)';
+    }
+    const existing = document.querySelector(`[data-id="${item.id}"]`);
+    if (existing) existing.remove();
+    const list = ensureDayGroup(dateKey(item.startAt));
+    insertCardSorted(list, buildCardHtml(item, true), item);
+    attachCardListeners();
+    renderSensitiveLines();
+    hideEmptyStateIfHasItems();
+    updateCount();
+    setTimeout(modalClose, 800);
+  }
+
+  document.getElementById('itinerary-add-toggle')?.addEventListener('click', () => modalOpen());
+
+  document.querySelectorAll<HTMLElement>('[data-itinerary-close]').forEach((el) => {
+    el.addEventListener('click', modalClose);
+  });
+
+  document.getElementById('itinerary-auth-submit')?.addEventListener('click', () => {
+    const input = document.getElementById('itinerary-password') as HTMLInputElement;
+    const value = input.value.trim();
+    if (!value) return;
+    setPassword(value);
+    showForm();
+  });
+
+  document.querySelectorAll<HTMLInputElement>('[data-if-type-input]').forEach((r) => {
+    r.addEventListener('change', () => refreshTypeView(r.value));
+  });
+
+  document.getElementById('if-private')?.addEventListener('change', () => {
+    const priv = (document.getElementById('if-private') as HTMLInputElement).checked;
+    if (priv) {
+      showForm();
+    } else if (!getPassword()) {
+      showAuth();
+    }
+  });
+
+  document.getElementById('itinerary-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const item = gatherFormItem();
+    if (typeof item === 'string') {
+      const status = document.getElementById('if-status');
+      if (status) {
+        status.hidden = false;
+        status.textContent = item;
+      }
+      return;
+    }
+    const priv = (document.getElementById('if-private') as HTMLInputElement).checked;
+    if (priv) {
+      submitToPrivate(item);
+    } else {
+      submitToApi('upsert', item);
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('itinerary-form-modal');
+      if (modal && !modal.hidden) modalClose();
+    }
+  });
+
+  renderPrivateItems();
+  attachCardListeners();
+  renderSensitiveLines();
+</script>

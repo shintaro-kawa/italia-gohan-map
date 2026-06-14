@@ -13,7 +13,9 @@
     "geocode": "node scripts/geocode.mjs",
     "geocode:apply": "node scripts/geocode.mjs --apply",
     "images": "node scripts/extract-images.mjs",
-    "images:apply": "node scripts/extract-images.mjs --apply"
+    "images:apply": "node scripts/extract-images.mjs --apply",
+    "expand": "node scripts/expand-coverage.mjs",
+    "expand:apply": "node scripts/expand-coverage.mjs --apply"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",

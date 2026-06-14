@@ -26,6 +26,8 @@ const USER_AGENT = 'italia-gohan-map/0.1 (https://github.com/shintaro-kawa/itali
 const CITY_NAME_MAP = {
   Rome: ['roma'],
   Florence: ['firenze'],
+  Palermo: ['palermo'],
+  Taormina: ['taormina'],
   Sicily: ['sicilia'],
 };
 

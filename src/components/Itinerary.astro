@@ -1,0 +1,124 @@
+---
+import { itineraryDateKey, ITINERARY_TYPES } from '@/types/itinerary';
+import type { ItineraryItem } from '@/types/itinerary';
+
+interface Props {
+  items: ItineraryItem[];
+}
+const { items } = Astro.props;
+
+const groups: { date: string; items: ItineraryItem[] }[] = [];
+for (const item of items) {
+  const key = itineraryDateKey(item.startAt);
+  let g = groups.find((x) => x.date === key);
+  if (!g) {
+    g = { date: key, items: [] };
+    groups.push(g);
+  }
+  g.items.push(item);
+}
+groups.sort((a, b) => a.date.localeCompare(b.date));
+
+function emoji(type: string): string {
+  return ITINERARY_TYPES.find((t) => t.value === type)?.emoji ?? '📌';
+}
+function label(type: string): string {
+  return ITINERARY_TYPES.find((t) => t.value === type)?.label ?? type;
+}
+function formatHm(iso: string): string {
+  const d = new Date(iso);
+  return d.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+}
+function formatRange(start: string, end?: string): string {
+  if (!end) return formatHm(start);
+  const startKey = itineraryDateKey(start);
+  const endKey = itineraryDateKey(end);
+  if (startKey === endKey) return `${formatHm(start)} – ${formatHm(end)}`;
+  const endD = new Date(end);
+  return `${formatHm(start)} → ${endKey.slice(5).replace('-', '/')} ${formatHm(end)}`;
+}
+function formatGroupDate(key: string): string {
+  try {
+    const d = new Date(key + 'T00:00:00');
+    return d.toLocaleDateString('ja-JP', { month: 'long', day: 'numeric', weekday: 'short' });
+  } catch {
+    return key;
+  }
+}
+function locationLine(loc: ItineraryItem['location']): string {
+  if (!loc) return '';
+  if (loc.from && loc.to) return `${loc.from} → ${loc.to}`;
+  if (loc.name) return loc.name;
+  if (loc.address) return loc.address;
+  return '';
+}
+function detailLines(item: ItineraryItem): string[] {
+  const lines: string[] = [];
+  const d = item.details ?? {};
+  switch (item.type) {
+    case 'flight':
+      if (d.airline) lines.push(`✈️ ${d.airline}${d.flightNumber ? ` ${d.flightNumber}` : ''}`);
+      if (d.terminal) lines.push(`ターミナル: ${d.terminal}`);
+      break;
+    case 'hotel':
+      if (d.roomType) lines.push(`部屋: ${d.roomType}`);
+      if (d.breakfastIncluded) lines.push(`朝食込み`);
+      break;
+    case 'train':
+      if (d.operator) lines.push(`🚄 ${d.operator}${d.trainNumber ? ` ${d.trainNumber}` : ''}`);
+      if (d.carriageNumber) lines.push(`号車: ${d.carriageNumber}`);
+      break;
+    case 'attraction':
+      if (d.ticketType) lines.push(`チケット: ${d.ticketType}`);
+      if (d.partySize) lines.push(`人数: ${d.partySize}`);
+      break;
+    case 'restaurant':
+      if (d.partySize) lines.push(`人数: ${d.partySize}`);
+      if (d.restaurantId) lines.push(`店舗 ID: ${d.restaurantId}`);
+      break;
+  }
+  return lines;
+}
+---
+
+<section class="itinerary" data-itinerary-root>
+  {groups.length === 0 && (
+    <div class="itinerary-empty">
+      <p>まだ旅程アイテムがありません。</p>
+      <p>右下の <strong>+ 追加</strong> から飛行機・ホテル・列車・観光などを登録できます。</p>
+    </div>
+  )}
+
+  {groups.map((g) => (
+    <div class="itinerary-day" data-date={g.date}>
+      <h2 class="itinerary-day-head">{formatGroupDate(g.date)}</h2>
+      <ol class="itinerary-items">
+        {g.items.map((item) => (
+          <li class="itinerary-card" data-id={item.id} data-type={item.type} tabindex="0">
+            <div class="itinerary-card-time">{formatRange(item.startAt, item.endAt)}</div>
+            <div class="itinerary-card-body">
+              <div class="itinerary-card-head">
+                <span class="itinerary-type-badge" data-type={item.type}>
+                  <span aria-hidden="true">{emoji(item.type)}</span> {label(item.type)}
+                </span>
+                <h3 class="itinerary-card-title">{item.title}</h3>
+              </div>
+              {locationLine(item.location) && (
+                <p class="itinerary-card-loc">📍 {locationLine(item.location)}</p>
+              )}
+              {detailLines(item).map((line) => (
+                <p class="itinerary-card-line">{line}</p>
+              ))}
+              {item.notes && <p class="itinerary-card-notes">{item.notes}</p>}
+              <p class="itinerary-card-sensitive" data-sensitive-for={item.id} hidden></p>
+            </div>
+            <div class="itinerary-card-actions">
+              <button type="button" class="itinerary-edit" data-edit-id={item.id} aria-label="編集">✎</button>
+              <button type="button" class="itinerary-delete" data-delete-id={item.id} aria-label="削除">🗑</button>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  ))}
+</section>

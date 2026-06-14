@@ -1,0 +1,42 @@
+{
+  "_comment": "expand-coverage.mjs が読み込む目標値。city x genre = 件数。0 または未指定なら拡張対象外。",
+  "_updated": "2026-05-24",
+  "_decision": "D-029 (target = 20 per active cell, 4 cities)",
+  "targets": {
+    "Rome": {
+      "trattoria": 20,
+      "pizzeria": 20,
+      "gelateria": 20,
+      "pasticceria": 20,
+      "ristorante": 20,
+      "enoteca": 20,
+      "osteria": 20
+    },
+    "Florence": {
+      "trattoria": 20,
+      "pizzeria": 20,
+      "gelateria": 20,
+      "pasticceria": 20,
+      "ristorante": 20,
+      "enoteca": 20,
+      "osteria": 20
+    },
+    "Palermo": {
+      "trattoria": 20,
+      "pizzeria": 20,
+      "gelateria": 20,
+      "pasticceria": 20,
+      "ristorante": 20,
+      "paninoteca": 20,
+      "osteria": 20
+    },
+    "Taormina": {
+      "trattoria": 20,
+      "pizzeria": 20,
+      "gelateria": 20,
+      "pasticceria": 20,
+      "ristorante": 20,
+      "osteria": 20
+    }
+  }
+}

@@ -361,6 +361,73 @@
 - 代替案: 既存の Plan Manager + Implementation で兼務 → 役割が混在し、データ品質の議論と機能開発の議論が混ざる
 - 影響: agents/ 配下に 3 ファイル追加。workflow.md に「キュレーションサブチーム」セクションを追記。docs/curation/ で各ラウンドを記録
 
+## D-028: City タクソノミーを 4 都市に再編 (Sicily を Palermo / Taormina に分割)
+
+- 日付: 2026-05-24
+- 状態: Active、Supersedes D-008（Rome / Florence / Sicily の 3 都市枠）
+- 関連: [src/types/restaurant.ts](../../src/types/restaurant.ts), [data/restaurants.json](../../data/restaurants.json), [scripts/geocode.mjs](../../scripts/geocode.mjs)
+- 決定: ユーザー旅程の解像度が「Sicily 全体」ではなく **Palermo と Taormina の 2 都市** に固まったため、city タクソノミーを `Rome | Florence | Palermo | Taormina` に再編。既存 `Sicily` 値は legacy 専用として残す（移行漏れの 4 件は Acireale / Catania / Messina / Altavilla Milicia）
+- 移行内容:
+  - Sicily/Palermo の 13 件 → city: 'Palermo' に書き換え
+  - Sicily/Taormina の 3 件 → city: 'Taormina' に書き換え
+  - 残り 4 件は city: 'Sicily' で温存（旅程外、削除は惜しい）
+  - ID は既存値を保持（`sicily-xxxx` のままで OK、URL 互換性のため）
+  - CITIES enum と CITY_CENTERS に Palermo (38.1157, 13.3615) / Taormina (37.8516, 15.2853) を追加
+  - api/chat.ts と src/lib/anthropic.ts の VALID_CITIES / system prompt も更新
+- 根拠: 旅程に沿った絞り込みを UI で即座に行えるようにする。Sicily 単位だと Palermo と Taormina が混在して絞れない
+- 代替案:
+  - 案 A（採用せず）: city を Sicily 固定で area フィルタを使う → UI 二段階で手数増
+  - 案 C（採用せず）: legacy 4 件を削除 → 高品質 50 Top Pizza 由来なので惜しい
+- 影響: フィルタチップが 4 → 5 個（Sicily ラベルは「シチリア (その他)」と明示）、地図中心は fitBounds 維持
+
+## D-029: カバレッジ目標を「各 city × 各 active genre = 20 件」に引き上げ
+
+- 日付: 2026-05-24
+- 状態: Active、Supersedes [docs/curation/coverage-target.md](../curation/coverage-target.md) の中規模目標 (56 件)
+- 関連: [data/coverage-targets.json](../../data/coverage-targets.json), [scripts/expand-coverage.mjs](../../scripts/expand-coverage.mjs)
+- 決定: 各 (city × genre) ペアの目標を 20 件に統一。4 都市 × 6〜7 genre = 約 27 cell × 20 = 約 540 件が論理上の最大。実際は枯渇で停止する想定
+- target 内訳（data/coverage-targets.json）:
+  - Rome: trattoria / pizzeria / gelateria / pasticceria / ristorante / enoteca / osteria
+  - Florence: 同上
+  - Palermo: trattoria / pizzeria / gelateria / pasticceria / ristorante / paninoteca / osteria
+  - Taormina: trattoria / pizzeria / gelateria / pasticceria / ristorante / osteria
+- 根拠: ユーザー要望（2026-05-24）「各都市の各ジャンルで 20 個ほど候補を確保したい」
+- 代替案:
+  - 案 A（採用せず）: 全 10 ジャンル × 20 = 800 件目標 → bar や enoteca の Taormina で枯渇必至、無駄
+  - 案 B（採用）: city ごとに active genre を絞って各 20。
+  - 案 C（採用せず）: 都市ごとに重み付け（Rome は多め、Taormina は少なめ）→ 設定が複雑、まずフラット 20 で枯渇傾向を観測してから調整
+- 影響: 既存 docs/curation/coverage-target.md は dormant（参考用）。新規は data/coverage-targets.json が source of truth
+
+## D-030: 自動カバレッジ拡張エンジン (`pnpm expand`)
+
+- 日付: 2026-05-24
+- 状態: Active
+- 関連: [scripts/expand-coverage.mjs](../../scripts/expand-coverage.mjs), [data/coverage-targets.json](../../data/coverage-targets.json), [docs/curation/auto-expand-log.md](../curation/auto-expand-log.md)
+- 決定: 「自動で拡張し続ける仕組み」として、**CLI スクリプト 1 本** を最小実装とする。スケジューラ (Vercel Cron / GitHub Actions cron) は **作らない**
+- 機能:
+  - `pnpm expand` → dry-run（gap 計算 + ターゲット表示のみ、Claude 呼ばず）
+  - `pnpm expand:apply` → 最大 5 ラウンド、各 cell で Claude API + web_search を呼んで候補生成
+  - フラグ: `--rounds N`, `--per-round N`, `--city XX`, `--genre YY`, `--verbose`
+  - ロジック: gap の大きい (city, genre) から順に充填、schema 検証 + 重複排除 (name + city, address) を経て JSON に append
+  - 各セッションを `docs/curation/auto-expand-log.md` に追記
+- 根拠:
+  - ユーザーの「pivot on complexity」スタイルに従い、まず CLI のみで始める
+  - 自動 commit / PR machinery は意図しないデプロイのリスクを生む → 人間レビュー (git diff + push) を必須化
+  - 既存の 3-agent キュレーションサブチーム（D-020）の責務をスクリプトに圧縮（運用負荷削減）
+- 代替案:
+  - 案 A（採用せず）: Vercel Cron で毎晩自動 commit → 品質ドリフト + コスト見えにくい
+  - 案 B（採用せず、将来検討）: GitHub Actions cron で週次に走らせて自動 PR → コア engine が安定したら薄いラッパとして追加可
+  - 案 D（採用せず）: 既存 /api/chat を拡張して admin UI から呼ぶ → UI が増える、CLI の方が再現性 + ログ性で勝る
+- ガードレール:
+  - APPLY フラグなしでは Claude を呼ばない（dry-run safe）
+  - ANTHROPIC_API_KEY 未設定で apply は早期失敗
+  - 重複検出: 名前正規化（小文字 + 記号除去）+ city 一致、住所完全一致
+  - city / genre が指定セルと不一致なら却下
+- コスト見積:
+  - Sonnet 4.6 + web_search ≈ $0.05〜0.10 / ラウンド
+  - 5 ラウンド = 約 $0.5、25 ラウンド = 約 $2.5
+- 影響: 依存追加なし（@anthropic-ai/sdk は Phase 6 で導入済み）
+
 ## 更新履歴
 
 - 2026-05-18: D-001 〜 D-007 を初期登録
@@ -372,3 +439,64 @@
 - 2026-05-18: D-023 を追加（セッション #1〜#2 の運用学習 6 項目を反映）
 - 2026-05-18: D-024 を追加（Sheets 依存解除、JSON が source of truth）、D-004 を Superseded
 - 2026-05-18: D-025 を追加（Phase 5 開始 — データ品質 + UX + CI）
+- 2026-05-24: D-028 (city 4 都市再編), D-029 (target = 20/cell), D-030 (auto-expand CLI) を追加、D-008 Superseded
+- 2026-05-25: D-031 (Phase 7 旅程管理機能) を追加
+
+## D-031: Phase 7 — 旅程管理機能 (Itinerary, F-18)
+
+- 日付: 2026-05-25
+- 状態: Active
+- 関連: [src/types/itinerary.ts](../../src/types/itinerary.ts), [data/itinerary.json](../../data/itinerary.json), [src/pages/itinerary.astro](../../src/pages/itinerary.astro), [api/save-itinerary.ts](../../../api/save-itinerary.ts)
+- 決定: 旅行の旅程（飛行機・宿泊・列車・観光・レストラン予約・その他イベント）を管理する新ページ `/itinerary` を追加。ハイブリッド保存方式で、公開情報は GitHub の `data/itinerary.json` に commit、予約番号などの個人情報は端末ローカル localStorage に分離
+- ユーザー確認事項（2026-05-25）:
+  - 画面構成: 別ページ `/itinerary` (マップから独立)
+  - データ保存: ハイブリッド（公開: JSON commit / 機密: localStorage）
+  - アイテム種別: 6 種 (flight / hotel / train / attraction / restaurant / generic)
+  - 追加方法: AI チャット + 手動フォーム両方 (Phase 7d で AI 拡張)
+- 段階:
+  - **Phase 7a-7c (このコミット)**: スキーマ、ローダー、ページ、コンポーネント (Itinerary + ItineraryForm)、手動 CRUD、localStorage helper、/api/save-itinerary、CSS、index.astro からのナビ
+  - **Phase 7d (次回)**: 既存 /api/chat を拡張、予約メール/PDF テキスト貼付 → AI が項目自動抽出 → 提案カード
+  - **Phase 7e (次回)**: 既存マップに旅程アイテムのピンを重畳表示
+- スキーマ要点:
+  ```ts
+  type ItineraryType = 'flight'|'hotel'|'train'|'attraction'|'restaurant'|'generic';
+  interface ItineraryItem {
+    id: string; type: ItineraryType; title: string;
+    startAt: string; endAt?: string;
+    location?: { name?, address?, lat?, lng?, from?, to? };
+    details?: Record<string, string|number|boolean|null>;
+    notes?: string;
+  }
+  ```
+- 機密フィールド（localStorage 側）:
+  - confirmationNumber, bookingReference, seatNumber, roomNumber, checkInCode, ticketUrl, attachmentUrl, privateNotes
+  - キー: `italia-gohan-itinerary-sensitive` の `Record<itemId, ItinerarySensitive>`
+- セキュリティ:
+  - 編集/追加/削除は ADMIN_PASSWORD で保護（既存チャット認証と sessionStorage 共有）
+  - 公開情報は GitHub public repo に載るため、予約番号や個人特定情報は機密側へ
+  - フォームの 🔒 セクションで明示「この端末のみに保存、GitHub には載りません」
+- 根拠: ユーザー要望（2026-05-25）「旅程管理機能を入れたい、飛行機・ホテル・電車・博物館予約などを管理」。restaurant マップとは独立した管理対象だが、レストラン予約は既存データへリンク可能
+- 代替案:
+  - 案 A（採用せず）: 全て localStorage → デバイス間共有不可、URL シェア時に旅程が見えない
+  - 案 C（採用せず）: 全て JSON commit → 予約番号が公開 repo に載るプライバシーリスク
+  - 案（採用せず）: タブで切替 → 画面増えすぎ、別ページの方がシンプル
+- 影響:
+  - 新規ファイル: `src/types/itinerary.ts`, `src/data/itinerary-loader.ts`, `src/components/Itinerary.astro`, `src/components/ItineraryForm.astro`, `src/pages/itinerary.astro`, `src/lib/github-itinerary.ts`, `api/save-itinerary.ts`, `data/itinerary.json`
+  - `src/pages/index.astro`: ヘッダーに 📅 旅程リンク追加
+  - `src/styles/global.css`: itinerary 関連スタイル追加（~380 行）
+  - 既存 ADMIN_PASSWORD / GITHUB_TOKEN を流用（追加環境変数なし）
+
+### 2026-05-25 追加: プライベートモード
+
+ユーザー要望（同日）「本旅程は完全に私のプライベートな奴なので git に公表しないで」を受けて、**プライベートモード** を追加実装:
+
+- フォームに「🔒 プライベート保存 (この端末のみ、GitHub に commit しない)」チェックボックス、**デフォルト ON**
+- ON で保存時: `/api/save-itinerary` を呼ばず、`localStorage.italia-gohan-itinerary-private` に完全な ItineraryItem を保存
+- ページ表示時にクライアント側 JS で localStorage の private items を読み込み、JSON items と一緒にタイムラインへ動的挿入
+- 各カードに `data-source="private|json"` 属性、private は 🔒 ローカルバッジ表示
+- 編集/削除: 同じく source を判定して localStorage または API へルーティング
+- パスワード認証スキップ: プライベートモード ON ならパスワード不要 (端末ローカル操作のため)
+
+これにより、機密性の高い旅程をホスト/公開リポジトリに一切上げずに管理可能。`/api/save-itinerary` を使うハイブリッドパスは「友人と共有したい高レベル予定」用に残置。
+
+`.gitignore` に `private/` と `data/_pending-candidates.json` を追加。`private/itinerary-import-snippet.js` は実旅程データを含むため `private/` 配下に配置し追跡対象外。

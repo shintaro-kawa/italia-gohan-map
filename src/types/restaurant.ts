@@ -23,17 +23,21 @@ export const GENRES: ReadonlyArray<{ value: Genre; label: string }> = [
   { value: 'other', label: 'その他' },
 ];
 
-export type City = 'Rome' | 'Florence' | 'Sicily';
+export type City = 'Rome' | 'Florence' | 'Palermo' | 'Taormina' | 'Sicily';
 
 export const CITIES: ReadonlyArray<{ value: City; label: string }> = [
   { value: 'Rome', label: 'ローマ' },
   { value: 'Florence', label: 'フィレンツェ' },
-  { value: 'Sicily', label: 'シチリア' },
+  { value: 'Palermo', label: 'パレルモ' },
+  { value: 'Taormina', label: 'タオルミーナ' },
+  { value: 'Sicily', label: 'シチリア (その他)' },
 ];
 
 export const CITY_CENTERS: Record<City, [number, number]> = {
   Rome: [41.9028, 12.4964],
   Florence: [43.7696, 11.2558],
+  Palermo: [38.1157, 13.3615],
+  Taormina: [37.8516, 15.2853],
   Sicily: [37.6, 14.0152],
 };
 

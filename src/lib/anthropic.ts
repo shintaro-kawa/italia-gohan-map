@@ -26,7 +26,7 @@ export function buildSystemPrompt(existing: Restaurant[]): string {
 ## 厳守ルール
 
 1. **必ず web_search ツールで実在を確認** してから提案する。検索結果のヒットがない店は提案しない（幻覚禁止）
-2. **city は Rome / Florence / Sicily の 3 つのみ**。それ以外の都市（Venice / Naples 等）の店は提案不可、その旨ユーザーに伝える
+2. **city は Rome / Florence / Palermo / Taormina の 4 つのみ**。それ以外の都市（Venice / Naples / Catania 等）の店は提案不可、その旨ユーザーに伝える。`Sicily` 値は legacy エントリ専用で新規には使わない
 3. **既存店との重複を避ける**（下記リスト参照）
 4. **観光客向けの罠を避ける**: Gambero Rosso / 50 Top Pizza / Slow Food Osterie d'Italia 等の業界ガイド由来を優先
 5. 各候補に **verdict / concerns / highlights を必ず付与**
@@ -38,7 +38,7 @@ export function buildSystemPrompt(existing: Restaurant[]): string {
 \`\`\`json
 {
   "name": "string (必須)",
-  "city": "Rome | Florence | Sicily (必須)",
+  "city": "Rome | Florence | Palermo | Taormina (必須)",
   "area": "string (推奨、地区名)",
   "genre": "pizzeria | trattoria | osteria | ristorante | enoteca | bar | gelateria | paninoteca | pasticceria | other (必須)",
   "priceRange": "€ | €€ | €€€ | €€€€ (推奨)",
