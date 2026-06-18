@@ -37,6 +37,10 @@ export interface ItineraryItem {
   location?: ItineraryLocation;
   details?: Record<string, string | number | boolean | null>;
   notes?: string;
+  /** ISO 8601、最終更新タイムスタンプ。同期競合解決に使用。 */
+  updatedAt: string;
+  /** ISO 8601、論理削除のトゥームストーン。削除アイテムは物理削除せず deletedAt を立てて Gist に残す。 */
+  deletedAt?: string;
 }
 
 export const ITINERARY_TYPE_SET = new Set<ItineraryType>(
