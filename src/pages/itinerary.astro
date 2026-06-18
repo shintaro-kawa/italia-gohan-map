@@ -12,6 +12,8 @@ const items = await getItinerary();
     <h1>旅程</h1>
     <nav class="app-nav">
       <a href="/" class="app-nav-link">🗺 マップに戻る</a>
+      <button type="button" id="itinerary-sync-btn" class="app-nav-link" title="同期" aria-label="今すぐ同期">🔄</button>
+      <span id="itinerary-sync-status" class="itinerary-sync-status" data-state="idle" aria-live="polite" aria-atomic="true">—</span>
     </nav>
     <span class="card-meta" id="itinerary-count">{items.length} アイテム</span>
   </header>
@@ -871,6 +873,29 @@ const items = await getItinerary();
     await drainQueue();
     updateSyncBadge();
   })();
+
+  document.getElementById('itinerary-sync-btn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.setAttribute('aria-busy', 'true');
+    const statusEl = document.getElementById('itinerary-sync-status');
+    if (statusEl) {
+      statusEl.dataset.state = 'syncing';
+      statusEl.textContent = '🔄 同期中…';
+    }
+    try {
+      const latest = await fetchLatestFromServer();
+      if (latest) applyServerItems(latest);
+      await drainQueue();
+    } catch (err) {
+      console.warn('[sync] manual sync failed', err);
+    } finally {
+      btn.disabled = false;
+      btn.removeAttribute('aria-busy');
+      updateSyncBadge();
+    }
+  });
 
   window.addEventListener('online', () => { void drainQueue(); updateSyncBadge(); });
   window.addEventListener('offline', () => { updateSyncBadge(); });
