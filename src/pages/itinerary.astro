@@ -35,6 +35,8 @@ const items = await getItinerary();
     location?: { name?: string; address?: string; from?: string; to?: string; lat?: number; lng?: number };
     details?: Record<string, string | number | boolean | null>;
     notes?: string;
+    updatedAt?: string;
+    deletedAt?: string;
   };
 
   type Sensitive = {
@@ -51,6 +53,10 @@ const items = await getItinerary();
   const PASSWORD_KEY = 'italia-gohan-chat-password';
   const SENSITIVE_KEY = 'italia-gohan-itinerary-sensitive';
   const PRIVATE_KEY = 'italia-gohan-itinerary-private';
+  const QUEUE_KEY = 'italia-gohan-itinerary-queue';
+  const LAST_SYNC_KEY = 'italia-gohan-itinerary-last-sync';
+
+  let draining = false;
 
   const TYPE_META: Record<string, { emoji: string; label: string }> = {
     flight: { emoji: '✈️', label: '飛行機' },
@@ -99,6 +105,36 @@ const items = await getItinerary();
     const all = loadAllSensitive();
     delete all[id];
     saveAllSensitive(all);
+  }
+
+  function loadQueue(): Record<string, Item> {
+    try {
+      const raw = localStorage.getItem(QUEUE_KEY);
+      if (!raw) return {};
+      const p = JSON.parse(raw);
+      return typeof p === 'object' && p ? (p as Record<string, Item>) : {};
+    } catch {
+      return {};
+    }
+  }
+  function saveQueue(q: Record<string, Item>) {
+    localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
+  }
+  function enqueueWrite(item: Item) {
+    const q = loadQueue();
+    q[item.id] = item;
+    saveQueue(q);
+  }
+  function dequeueWrite(id: string) {
+    const q = loadQueue();
+    delete q[id];
+    saveQueue(q);
+  }
+  function getLastSync(): string | null {
+    return localStorage.getItem(LAST_SYNC_KEY);
+  }
+  function setLastSync(ts: string) {
+    localStorage.setItem(LAST_SYNC_KEY, ts);
   }
 
   function loadPrivate(): Item[] {
@@ -317,12 +353,18 @@ const items = await getItinerary();
         if (!ok) return;
         const isPriv = !!findPrivate(id);
         if (isPriv) {
+          const target = findPrivate(id);
+          if (target) {
+            const tombstone: Item = { ...target, deletedAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+            enqueueWrite(tombstone);
+          }
           deletePrivate(id);
           clearSensitive(id);
           const card = document.querySelector(`[data-id="${id}"]`);
           card?.remove();
           updateCount();
           hideEmptyStateIfHasItems();
+          void drainQueue();
         } else {
           submitToApi('delete', { id, type: 'generic', title: '', startAt: '' });
         }
@@ -335,6 +377,24 @@ const items = await getItinerary();
     if (!countEl) return;
     const n = document.querySelectorAll('.itinerary-card').length;
     countEl.textContent = `${n} アイテム`;
+  }
+
+  /**
+   * 既存 localStorage アイテム (Phase 7 のスニペット由来) は updatedAt 欠落の可能性が高い。
+   * Gist は新規セットアップで空配列なので、now() を当てて初回 sync で push しても
+   * サーバー側の既存値を上書きするリスクは無い。
+   */
+  function migrateLocalItems() {
+    const items = loadPrivate();
+    let changed = false;
+    for (const it of items) {
+      if (!(it as Partial<Item>).updatedAt) {
+        it.updatedAt = new Date().toISOString();
+        enqueueWrite(it);
+        changed = true;
+      }
+    }
+    if (changed) savePrivate(items);
   }
 
   function renderPrivateItems() {
@@ -550,6 +610,129 @@ const items = await getItinerary();
     return Array.from(arr).map((b) => b.toString(16).padStart(2, '0')).join('');
   }
 
+  async function fetchLatestFromServer(): Promise<Item[] | null> {
+    const password = getPassword();
+    if (!password) return null;
+    if (!navigator.onLine) return null;
+    try {
+      const res = await fetch('/api/sync-itinerary', {
+        method: 'GET',
+        headers: { 'x-admin-password': password },
+      });
+      if (res.status === 401) { clearPassword(); return null; }
+      if (!res.ok) return null;
+      const json = await res.json();
+      if (!Array.isArray(json.items)) return null;
+      setLastSync(json.serverTimestamp ?? new Date().toISOString());
+      return json.items as Item[];
+    } catch {
+      return null;
+    }
+  }
+
+  async function drainQueue() {
+    if (draining) return;
+    const password = getPassword();
+    if (!password) return;
+    if (!navigator.onLine) return;
+    const snapshot = loadQueue();
+    const writes = Object.values(snapshot);
+    if (writes.length === 0) return;
+    draining = true;
+    try {
+      const res = await fetch('/api/sync-itinerary', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify({ writes }),
+      });
+      if (!res.ok) {
+        console.warn('[sync] drain POST failed', res.status);
+        return;
+      }
+      const json = await res.json();
+      // Only dequeue an id if its queue entry hasn't been replaced by a newer write
+      const safelyDequeue = (id: string) => {
+        const current = loadQueue()[id];
+        const sent = snapshot[id];
+        if (current && sent && current.updatedAt === sent.updatedAt) {
+          dequeueWrite(id);
+        }
+      };
+      (json.applied ?? []).forEach((id: string) => safelyDequeue(id));
+      (json.skipped ?? []).forEach((s: { id: string }) => safelyDequeue(s.id));
+      // Fix #2: dequeue rejected items too (they'll never succeed without payload change)
+      (json.rejected ?? []).forEach((r: { index: number; reason: string }) => {
+        const sentItem = writes[r.index];
+        if (sentItem) {
+          console.warn('[sync] write rejected by server', sentItem.id, r.reason);
+          safelyDequeue(sentItem.id);
+        }
+      });
+      if (Array.isArray(json.items)) {
+        applyServerItems(json.items as Item[]);
+      }
+      setLastSync(json.serverTimestamp ?? new Date().toISOString());
+    } catch (e) {
+      console.warn('[sync] drain network error', e);
+      // keep queue, retry next time
+    } finally {
+      draining = false;
+    }
+  }
+
+  function applyServerItems(serverItems: Item[]) {
+    const queue = loadQueue();
+    const next = serverItems.filter((x) => !x.deletedAt);
+    for (const [id, qItem] of Object.entries(queue)) {
+      const sIdx = next.findIndex((x) => x.id === id);
+      const sItem = sIdx >= 0 ? next[sIdx] : null;
+      const qTime = qItem.updatedAt ? new Date(qItem.updatedAt).getTime() : 0;
+      const sTime = sItem?.updatedAt ? new Date(sItem.updatedAt).getTime() : 0;
+      if (qTime > sTime && !qItem.deletedAt) {
+        if (sIdx >= 0) next[sIdx] = qItem;
+        else next.push(qItem);
+      }
+    }
+    savePrivate(next);
+    rerenderTimeline();
+  }
+
+  function rerenderTimeline() {
+    document.querySelectorAll<HTMLElement>('[data-source="private"]').forEach((el) => el.remove());
+    document.querySelectorAll<HTMLElement>('.itinerary-day').forEach((day) => {
+      if (!day.querySelector('.itinerary-card')) day.remove();
+    });
+    renderPrivateItems();
+    hideEmptyStateIfHasItems();
+    updateCount();
+  }
+
+  function updateSyncBadge() {
+    const el = document.getElementById('itinerary-sync-status');
+    if (!el) return;
+    const queueSize = Object.keys(loadQueue()).length;
+    const ls = getLastSync();
+    if (!navigator.onLine) {
+      el.dataset.state = 'offline';
+      el.textContent = queueSize > 0 ? `📴 オフライン (${queueSize} 件保留)` : '📴 オフライン';
+      return;
+    }
+    if (queueSize > 0) {
+      el.dataset.state = 'syncing';
+      el.textContent = `🔄 同期中 (${queueSize})`;
+      return;
+    }
+    if (ls) {
+      const d = new Date(ls);
+      const hm = d.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+      el.dataset.state = 'ok';
+      el.textContent = `✓ 同期済み ${hm}`;
+    } else {
+      el.dataset.state = 'idle';
+      el.textContent = '—';
+    }
+  }
+
   async function submitToApi(action: 'upsert' | 'delete', item: Item) {
     const password = getPassword();
     if (!password) {
@@ -601,12 +784,16 @@ const items = await getItinerary();
   }
 
   function submitToPrivate(item: Item) {
+    item.updatedAt = new Date().toISOString();
     upsertPrivate(item);
+    enqueueWrite(item);
     setSensitive(item.id, gatherFormSensitive());
     const status = document.getElementById('if-status');
     if (status) {
       status.hidden = false;
-      status.textContent = '✓ プライベート保存 (この端末のみ)';
+      status.textContent = navigator.onLine
+        ? '✓ 保存 (同期中…)'
+        : '✓ 保存 (オフライン、復帰時に同期)';
     }
     const existing = document.querySelector(`[data-id="${item.id}"]`);
     if (existing) existing.remove();
@@ -616,6 +803,7 @@ const items = await getItinerary();
     renderSensitiveLines();
     hideEmptyStateIfHasItems();
     updateCount();
+    void drainQueue();
     setTimeout(modalClose, 800);
   }
 
@@ -672,7 +860,19 @@ const items = await getItinerary();
     }
   });
 
+  migrateLocalItems();
   renderPrivateItems();
   attachCardListeners();
   renderSensitiveLines();
+
+  void (async () => {
+    const latest = await fetchLatestFromServer();
+    if (latest) applyServerItems(latest);
+    await drainQueue();
+    updateSyncBadge();
+  })();
+
+  window.addEventListener('online', () => { void drainQueue(); updateSyncBadge(); });
+  window.addEventListener('offline', () => { updateSyncBadge(); });
+  setInterval(updateSyncBadge, 30_000);
 </script>
