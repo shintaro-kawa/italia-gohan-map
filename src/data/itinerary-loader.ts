@@ -20,6 +20,11 @@ function sanitize(item: unknown): ItineraryItem | null {
       ? r.id
       : generateId(r.type, r.title, r.startAt);
 
+  const updatedAt =
+    typeof r.updatedAt === 'string' && r.updatedAt.trim()
+      ? r.updatedAt
+      : new Date().toISOString();
+
   return {
     id,
     type: r.type as ItineraryType,
@@ -29,6 +34,8 @@ function sanitize(item: unknown): ItineraryItem | null {
     location: typeof r.location === 'object' && r.location ? (r.location as ItineraryItem['location']) : undefined,
     details: typeof r.details === 'object' && r.details ? (r.details as ItineraryItem['details']) : undefined,
     notes: typeof r.notes === 'string' ? r.notes : undefined,
+    updatedAt,
+    deletedAt: typeof r.deletedAt === 'string' && r.deletedAt.trim() ? r.deletedAt : undefined,
   };
 }
 
@@ -37,7 +44,7 @@ export async function getItinerary(): Promise<ItineraryItem[]> {
   const items: ItineraryItem[] = [];
   for (const r of raw) {
     const s = sanitize(r);
-    if (s) items.push(s);
+    if (s && !s.deletedAt) items.push(s);
   }
   return items.sort(compareItineraryItems);
 }
