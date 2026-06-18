@@ -500,3 +500,18 @@
 これにより、機密性の高い旅程をホスト/公開リポジトリに一切上げずに管理可能。`/api/save-itinerary` を使うハイブリッドパスは「友人と共有したい高レベル予定」用に残置。
 
 `.gitignore` に `private/` と `data/_pending-candidates.json` を追加。`private/itinerary-import-snippet.js` は実旅程データを含むため `private/` 配下に配置し追跡対象外。
+
+### 2026-06-18 追加: 複数端末同期 (Private Gist)
+
+ユーザー要望「スマホからアクセスした際にも旅程出るようにして」を受けて、**複数端末双方向同期** を追加実装:
+
+- Private GitHub Gist を Source of Truth として 1 ファイル `itinerary.json` で全アイテム管理 (tombstone 含む)
+- `/api/sync-itinerary` (GET + POST) を新設、認証は `ADMIN_PASSWORD`、Gist 操作は既存 `GITHUB_TOKEN` (要 `gist` scope)
+- `ItineraryItem` に `updatedAt` (必須) と `deletedAt` (省略可、tombstone) を追加
+- マージ: last-write-wins per `id`、`updatedAt` で比較 (純関数 `src/lib/itinerary-merge.ts`)
+- localStorage は (1) キャッシュ (`italia-gohan-itinerary-private`)、(2) 未送信キュー (`italia-gohan-itinerary-queue`)、(3) 最終同期時刻 (`italia-gohan-itinerary-last-sync`) の 3 キー
+- オフライン対応: `online`/`offline` イベントでキューを自動ドレイン、UI にステータスバッジ表示 (`✓ 同期済み HH:MM` / `🔄 同期中 (N)` / `📴 オフライン (N 件保留)`)
+- 既存ローカル 13 件は初回 sync 時に `updatedAt = now()` 自動付与 + キュー push でサーバーへ反映
+- 新環境変数: `ITINERARY_GIST_ID` (Vercel、`scripts/setup-itinerary-gist.mjs` で取得)
+
+設計書: `docs/superpowers/specs/2026-06-18-itinerary-sync-design.md`、実装プラン: `docs/superpowers/plans/2026-06-18-itinerary-sync.md`
