@@ -515,3 +515,49 @@
 - 新環境変数: `ITINERARY_GIST_ID` (Vercel、`scripts/setup-itinerary-gist.mjs` で取得)
 
 設計書: `docs/superpowers/specs/2026-06-18-itinerary-sync-design.md`、実装プラン: `docs/superpowers/plans/2026-06-18-itinerary-sync.md`
+
+
+## D-032: Phase 8 — 旅行 ToDo リスト機能
+
+- 日付: 2026-06-23
+- 状態: Active
+- 関連: [src/types/todo.ts](../../src/types/todo.ts), [src/pages/todo.astro](../../src/pages/todo.astro), [api/sync-todos.ts](../../../api/sync-todos.ts)
+- 決定: 旅行前準備タスク (ホテル決定、コロッセオ予約、レストラン予約等) を管理する新ページ `/todo` を追加。D-031 (旅程 sync) の Private Gist インフラを再利用、同 Gist 内に `todos.json` を新設
+- ユーザー確認事項 (2026-06-23):
+  - 既存データとの連携: 完全に独立した task list (旅程/レストランへのリンクなし)
+  - 保存先: 既存 Private Gist の別ファイル `todos.json`、新規 env var なし
+  - UI: 新規ページ `/todo`、ヘッダーに ✓ ToDo リンク
+  - 分類: 都市別グルーピング (Rome / Florence / Palermo / Taormina / Sicily / 全般) + フィルタチップ
+- スキーマ要点:
+  ```ts
+  type TodoCity = 'Rome'|'Florence'|'Palermo'|'Taormina'|'Sicily'|'全般';
+  interface Todo {
+    id: string; title: string; done: boolean;
+    city?: TodoCity; notes?: string; deadline?: string;
+    createdAt: string; updatedAt: string; deletedAt?: string;
+  }
+  ```
+- 機能:
+  - クイック追加 (タイトル + 都市のみ、Enter で確定)
+  - チェックボックスで done toggle、即同期
+  - ✎ で編集モーダル (タイトル/都市/期限/メモ)
+  - 🗑 削除 → tombstone 伝播
+  - 期限視覚化: 超過 🔴 / 7日以内 🟠 / 通常 / 期限なし
+  - 並び替え: 未完了 → 完了の順、未完了内は期限超過 → 期限近い → 期限なし → 新着順
+  - フィルタ: 都市チップ + 未完了のみトグル
+- 同期:
+  - `/api/sync-todos` (GET + POST) 新設、ロジックは `/api/sync-itinerary` と同形
+  - 純関数 `mergeTodos` (`src/lib/todos-merge.ts`)、last-write-wins per id
+  - localStorage 3 キー: cache / queue / last-sync
+  - オフライン対応: `online`/`offline` イベントで自動 drain
+- 根拠: ユーザー要望 (2026-06-23)「旅行に向けての ToDo を整理したい」
+- 代替案 (採用せず):
+  - 既存エンティティへの紐付け → 旅程/レストランとの整合性管理コスト高、予約以外の ToDo (両替等) を扱いにくい
+  - 新規 Gist 作成 → setup スクリプト再実行、env var 追加で運用負荷
+  - localStorage のみ → スマホ ↔ PC 同期不可、本末転倒
+- 影響:
+  - 新規ファイル 9 個 (`src/types/todo.ts`, `data/todos.json`, `src/data/todo-loader.ts`, `src/lib/todos-merge.ts`, `scripts/test-todos-merge.mjs`, `api/sync-todos.ts`, `src/components/TodoList.astro`, `TodoForm.astro`, `src/pages/todo.astro`)
+  - 改変 5 個 (`src/lib/github-gist.ts`, `src/pages/index.astro`, `src/pages/itinerary.astro`, `src/styles/global.css`, `docs/plan/decisions-log.md`)
+  - 新規環境変数なし (既存 `ITINERARY_GIST_ID` / `GITHUB_TOKEN` / `ADMIN_PASSWORD` 再利用)
+
+設計書: `docs/superpowers/specs/2026-06-23-todo-design.md`、実装プラン: `docs/superpowers/plans/2026-06-23-todo.md`
