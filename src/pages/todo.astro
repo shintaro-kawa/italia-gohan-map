@@ -1,0 +1,576 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import TodoList from '@/components/TodoList.astro';
+import TodoForm from '@/components/TodoForm.astro';
+import { TODO_CITIES } from '@/types/todo';
+import { getTodos } from '@/data/todo-loader';
+
+const todos = await getTodos();
+---
+
+<Layout title="ToDo - イタリアご飯マップ">
+  <header class="app-header">
+    <h1>ToDo</h1>
+    <nav class="app-nav">
+      <a href="/" class="app-nav-link">🗺 マップ</a>
+      <a href="/itinerary" class="app-nav-link">📅 旅程</a>
+      <button type="button" id="todo-sync-btn" class="app-nav-link" title="同期" aria-label="今すぐ同期">🔄</button>
+      <span id="todo-sync-status" class="itinerary-sync-status" data-state="idle" aria-live="polite" aria-atomic="true">—</span>
+    </nav>
+    <span class="card-meta" id="todo-count">{todos.length} 件</span>
+  </header>
+
+  <main class="todo-main">
+    <div class="todo-quick-add">
+      <input type="text" id="quick-add-title" placeholder="新しい ToDo を入力 → Enter" maxlength="120" />
+      <select id="quick-add-city" aria-label="都市">
+        {TODO_CITIES.map((c, i) => (
+          <option value={c.value} selected={i === TODO_CITIES.length - 1}>{c.label}</option>
+        ))}
+      </select>
+      <button type="button" id="quick-add-btn">追加</button>
+    </div>
+
+    <div class="todo-filter-bar">
+      <div class="todo-city-chips" role="group" aria-label="都市フィルタ">
+        <button type="button" class="todo-chip is-active" data-filter-city="">すべて</button>
+        {TODO_CITIES.map((c) => (
+          <button type="button" class="todo-chip" data-filter-city={c.value}>{c.label}</button>
+        ))}
+      </div>
+      <label class="todo-hide-done">
+        <input type="checkbox" id="hide-done-toggle" checked />
+        <span>未完了のみ</span>
+      </label>
+    </div>
+
+    <TodoList todos={todos} />
+  </main>
+
+  <TodoForm />
+
+  <script type="application/json" id="todo-data" is:inline set:html={JSON.stringify(todos)} />
+</Layout>
+
+<script>
+  type TodoCity = 'Rome' | 'Florence' | 'Palermo' | 'Taormina' | 'Sicily' | '全般';
+  type Todo = {
+    id: string;
+    title: string;
+    done: boolean;
+    city?: TodoCity;
+    notes?: string;
+    deadline?: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt?: string;
+  };
+
+  const PASSWORD_KEY = 'italia-gohan-chat-password';
+  const CACHE_KEY = 'italia-gohan-todo-cache';
+  const QUEUE_KEY = 'italia-gohan-todo-queue';
+  const LAST_SYNC_KEY = 'italia-gohan-todo-last-sync';
+
+  let draining = false;
+
+  const getPassword = () => sessionStorage.getItem(PASSWORD_KEY);
+  const setPassword = (p: string) => sessionStorage.setItem(PASSWORD_KEY, p);
+  const clearPassword = () => sessionStorage.removeItem(PASSWORD_KEY);
+
+  function loadCache(): Todo[] {
+    try {
+      const raw = localStorage.getItem(CACHE_KEY);
+      if (!raw) return [];
+      const p = JSON.parse(raw);
+      return Array.isArray(p) ? (p as Todo[]) : [];
+    } catch { return []; }
+  }
+  function saveCache(items: Todo[]) {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(items));
+  }
+  function upsertCache(item: Todo) {
+    const all = loadCache();
+    const idx = all.findIndex((x) => x.id === item.id);
+    if (idx >= 0) all[idx] = item; else all.push(item);
+    saveCache(all);
+  }
+  function deleteCache(id: string) {
+    saveCache(loadCache().filter((x) => x.id !== id));
+  }
+  function findCache(id: string): Todo | undefined {
+    return loadCache().find((x) => x.id === id);
+  }
+
+  function loadQueue(): Record<string, Todo> {
+    try {
+      const raw = localStorage.getItem(QUEUE_KEY);
+      if (!raw) return {};
+      const p = JSON.parse(raw);
+      return typeof p === 'object' && p ? (p as Record<string, Todo>) : {};
+    } catch { return {}; }
+  }
+  function saveQueue(q: Record<string, Todo>) {
+    localStorage.setItem(QUEUE_KEY, JSON.stringify(q));
+  }
+  function enqueueWrite(item: Todo) {
+    const q = loadQueue();
+    q[item.id] = item;
+    saveQueue(q);
+  }
+  function dequeueWrite(id: string) {
+    const q = loadQueue();
+    delete q[id];
+    saveQueue(q);
+  }
+  function getLastSync(): string | null {
+    return localStorage.getItem(LAST_SYNC_KEY);
+  }
+  function setLastSync(ts: string) {
+    localStorage.setItem(LAST_SYNC_KEY, ts);
+  }
+
+  function inlineSeed(): Todo[] {
+    const el = document.getElementById('todo-data');
+    if (!el || !el.textContent) return [];
+    try { return JSON.parse(el.textContent); } catch { return []; }
+  }
+
+  function mergeInitialCache() {
+    const cache = loadCache();
+    if (cache.length === 0) {
+      const seed = inlineSeed();
+      if (seed.length > 0) saveCache(seed);
+    }
+  }
+
+  function escapeHtml(s: string): string {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function deadlineUrgency(deadline: string | undefined, today: Date = new Date()): 'overdue' | 'soon' | 'normal' | 'far' | 'none' {
+    if (!deadline) return 'none';
+    const d = new Date(deadline);
+    if (!Number.isFinite(d.getTime())) return 'none';
+    const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+    const target = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+    const diff = Math.floor((target - startOfToday) / (1000 * 60 * 60 * 24));
+    if (diff < 0) return 'overdue';
+    if (diff <= 7) return 'soon';
+    if (diff <= 30) return 'normal';
+    return 'far';
+  }
+
+  function deadlineBadgeText(t: Todo): { text: string; urgency: string } {
+    const u = deadlineUrgency(t.deadline);
+    if (u === 'none' || !t.deadline) return { text: '', urgency: 'none' };
+    const target = new Date(t.deadline);
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const targetT = new Date(target.getFullYear(), target.getMonth(), target.getDate()).getTime();
+    const diff = Math.floor((targetT - startOfToday) / (1000 * 60 * 60 * 24));
+    if (u === 'overdue') return { text: `⚠ ${Math.abs(diff)}日超過`, urgency: 'overdue' };
+    if (u === 'soon') return { text: `⏰ あと${diff}日`, urgency: 'soon' };
+    const m = String(target.getMonth() + 1);
+    const d = String(target.getDate());
+    return { text: `📅 ${m}月${d}日`, urgency: u };
+  }
+
+  function compareTodos(a: Todo, b: Todo): number {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    if (a.done && b.done) return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+    const aHas = !!a.deadline; const bHas = !!b.deadline;
+    if (aHas && bHas) {
+      const at = new Date(a.deadline!).getTime();
+      const bt = new Date(b.deadline!).getTime();
+      if (at !== bt) return at - bt;
+    } else if (aHas !== bHas) return aHas ? -1 : 1;
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  }
+
+  const CITY_LABEL: Record<string, string> = {
+    Rome: 'ローマ', Florence: 'フィレンツェ', Palermo: 'パレルモ',
+    Taormina: 'タオルミーナ', Sicily: 'シチリア', '全般': '全般',
+  };
+  const CITY_ORDER: TodoCity[] = ['Rome', 'Florence', 'Palermo', 'Taormina', 'Sicily', '全般'];
+
+  function renderAll() {
+    const root = document.querySelector('.todo-list');
+    if (!root) return;
+    const all = loadCache().filter((x) => !x.deletedAt);
+    const filterCity = (document.querySelector('.todo-chip.is-active') as HTMLElement | null)?.getAttribute('data-filter-city') ?? '';
+    const hideDone = (document.getElementById('hide-done-toggle') as HTMLInputElement | null)?.checked ?? true;
+    const filtered = all.filter((t) => {
+      if (filterCity && (t.city ?? '全般') !== filterCity) return false;
+      if (hideDone && t.done) return false;
+      return true;
+    }).sort(compareTodos);
+
+    if (filtered.length === 0) {
+      root.innerHTML = `<div class="todo-empty"><p>該当する ToDo がありません。</p></div>`;
+      updateCount();
+      return;
+    }
+
+    const groups: { city: TodoCity; items: Todo[] }[] = [];
+    for (const city of CITY_ORDER) {
+      const items = filtered.filter((t) => (t.city ?? '全般') === city);
+      if (items.length > 0) groups.push({ city, items });
+    }
+
+    root.innerHTML = groups.map((g) => `
+      <div class="todo-city-group" data-city="${escapeHtml(g.city)}">
+        <h2 class="todo-city-head">${escapeHtml(CITY_LABEL[g.city] ?? g.city)} <span class="todo-city-count">(${g.items.length})</span></h2>
+        <ul class="todo-items">
+          ${g.items.map((t) => {
+            const b = deadlineBadgeText(t);
+            return `
+              <li class="todo-card${t.done ? ' is-done' : ''}" data-id="${escapeHtml(t.id)}" data-city="${escapeHtml(t.city ?? '全般')}">
+                <label class="todo-check">
+                  <input type="checkbox" data-todo-check="${escapeHtml(t.id)}" ${t.done ? 'checked' : ''} />
+                  <span class="todo-check-box" aria-hidden="true"></span>
+                </label>
+                <div class="todo-body">
+                  <p class="todo-title">${escapeHtml(t.title)}</p>
+                  ${t.notes ? `<p class="todo-notes">${escapeHtml(t.notes)}</p>` : ''}
+                </div>
+                ${b.text ? `<span class="todo-deadline-badge" data-urgency="${escapeHtml(b.urgency)}">${escapeHtml(b.text)}</span>` : ''}
+                <div class="todo-actions">
+                  <button type="button" class="todo-edit" data-edit-id="${escapeHtml(t.id)}" aria-label="編集">✎</button>
+                  <button type="button" class="todo-delete" data-delete-id="${escapeHtml(t.id)}" aria-label="削除">🗑</button>
+                </div>
+              </li>`;
+          }).join('')}
+        </ul>
+      </div>`).join('');
+
+    attachCardListeners();
+    updateCount();
+  }
+
+  function updateCount() {
+    const el = document.getElementById('todo-count');
+    if (!el) return;
+    const total = loadCache().filter((x) => !x.deletedAt).length;
+    el.textContent = `${total} 件`;
+  }
+
+  function updateSyncBadge() {
+    const el = document.getElementById('todo-sync-status');
+    if (!el) return;
+    const queueSize = Object.keys(loadQueue()).length;
+    const ls = getLastSync();
+    if (!navigator.onLine) {
+      el.dataset.state = 'offline';
+      el.textContent = queueSize > 0 ? `📴 オフライン (${queueSize} 件保留)` : '📴 オフライン';
+      return;
+    }
+    if (queueSize > 0) {
+      el.dataset.state = 'syncing';
+      el.textContent = `🔄 同期中 (${queueSize})`;
+      return;
+    }
+    if (ls) {
+      const d = new Date(ls);
+      const hm = d.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+      el.dataset.state = 'ok';
+      el.textContent = `✓ 同期済み ${hm}`;
+    } else {
+      el.dataset.state = 'idle';
+      el.textContent = '—';
+    }
+  }
+
+  async function fetchLatestFromServer(): Promise<Todo[] | null> {
+    const password = getPassword();
+    if (!password || !navigator.onLine) return null;
+    try {
+      const res = await fetch('/api/sync-todos', {
+        method: 'GET',
+        headers: { 'x-admin-password': password },
+      });
+      if (res.status === 401) { clearPassword(); return null; }
+      if (!res.ok) return null;
+      const json = await res.json();
+      if (!Array.isArray(json.todos)) return null;
+      setLastSync(json.serverTimestamp ?? new Date().toISOString());
+      return json.todos as Todo[];
+    } catch { return null; }
+  }
+
+  async function drainQueue() {
+    if (draining) return;
+    const password = getPassword();
+    if (!password || !navigator.onLine) return;
+    const snapshot = loadQueue();
+    const writes = Object.values(snapshot);
+    if (writes.length === 0) return;
+    draining = true;
+    try {
+      const res = await fetch('/api/sync-todos', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify({ writes }),
+      });
+      if (!res.ok) { console.warn('[sync-todos] drain failed', res.status); return; }
+      const json = await res.json();
+      const safeDequeue = (id: string) => {
+        const current = loadQueue()[id];
+        const sent = snapshot[id];
+        if (current && sent && current.updatedAt === sent.updatedAt) dequeueWrite(id);
+      };
+      (json.applied ?? []).forEach((id: string) => safeDequeue(id));
+      (json.skipped ?? []).forEach((s: { id: string }) => safeDequeue(s.id));
+      (json.rejected ?? []).forEach((r: { index: number; reason: string }) => {
+        const sent = writes[r.index];
+        if (sent) {
+          console.warn('[sync-todos] write rejected', sent.id, r.reason);
+          safeDequeue(sent.id);
+        }
+      });
+      if (Array.isArray(json.todos)) applyServerTodos(json.todos as Todo[]);
+      setLastSync(json.serverTimestamp ?? new Date().toISOString());
+    } catch (e) {
+      console.warn('[sync-todos] network error', e);
+    } finally {
+      draining = false;
+      updateSyncBadge();
+    }
+  }
+
+  function applyServerTodos(serverItems: Todo[]) {
+    const queue = loadQueue();
+    const next = serverItems.filter((x) => !x.deletedAt);
+    for (const [id, qItem] of Object.entries(queue)) {
+      const sIdx = next.findIndex((x) => x.id === id);
+      const sItem = sIdx >= 0 ? next[sIdx] : null;
+      const qTime = qItem.updatedAt ? new Date(qItem.updatedAt).getTime() : 0;
+      const sTime = sItem?.updatedAt ? new Date(sItem.updatedAt).getTime() : 0;
+      if (qTime > sTime && !qItem.deletedAt) {
+        if (sIdx >= 0) next[sIdx] = qItem; else next.push(qItem);
+      }
+    }
+    saveCache(next);
+    renderAll();
+  }
+
+  function cryptoRandomShort(): string {
+    const arr = new Uint8Array(4);
+    crypto.getRandomValues(arr);
+    return Array.from(arr).map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function quickAdd() {
+    const titleEl = document.getElementById('quick-add-title') as HTMLInputElement;
+    const cityEl = document.getElementById('quick-add-city') as HTMLSelectElement;
+    const title = titleEl.value.trim();
+    if (!title) return;
+    const now = new Date().toISOString();
+    const item: Todo = {
+      id: `todo-${cryptoRandomShort()}`,
+      title,
+      done: false,
+      city: cityEl.value as TodoCity,
+      createdAt: now,
+      updatedAt: now,
+    };
+    upsertCache(item);
+    enqueueWrite(item);
+    titleEl.value = '';
+    titleEl.focus();
+    renderAll();
+    updateSyncBadge();
+    void drainQueue();
+  }
+
+  function toggleDone(id: string) {
+    const t = findCache(id);
+    if (!t) return;
+    const updated: Todo = { ...t, done: !t.done, updatedAt: new Date().toISOString() };
+    upsertCache(updated);
+    enqueueWrite(updated);
+    renderAll();
+    updateSyncBadge();
+    void drainQueue();
+  }
+
+  function attachCardListeners() {
+    document.querySelectorAll<HTMLInputElement>('[data-todo-check]').forEach((cb) => {
+      if (cb.dataset.bound === '1') return;
+      cb.dataset.bound = '1';
+      cb.addEventListener('change', () => {
+        const id = cb.getAttribute('data-todo-check');
+        if (id) toggleDone(id);
+      });
+    });
+    document.querySelectorAll<HTMLButtonElement>('[data-edit-id]').forEach((btn) => {
+      if (btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-edit-id');
+        if (id) openEditModal(id);
+      });
+    });
+    document.querySelectorAll<HTMLButtonElement>('[data-delete-id]').forEach((btn) => {
+      if (btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-delete-id');
+        if (!id) return;
+        if (!confirm('この ToDo を削除しますか？')) return;
+        const t = findCache(id);
+        if (!t) return;
+        const tomb: Todo = { ...t, deletedAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+        enqueueWrite(tomb);
+        deleteCache(id);
+        renderAll();
+        updateSyncBadge();
+        void drainQueue();
+      });
+    });
+  }
+
+  function openEditModal(id: string) {
+    const t = findCache(id);
+    const modal = document.getElementById('todo-form-modal');
+    if (!modal) return;
+    modal.hidden = false;
+    const auth = document.getElementById('todo-auth') as HTMLElement;
+    const form = document.getElementById('todo-form') as HTMLElement;
+    if (getPassword()) { auth.hidden = true; form.hidden = false; }
+    else { auth.hidden = false; form.hidden = true; }
+    fillForm(t);
+  }
+  function closeModal() {
+    const modal = document.getElementById('todo-form-modal');
+    if (modal) modal.hidden = true;
+  }
+
+  function fillForm(t?: Todo) {
+    (document.getElementById('tf-id') as HTMLInputElement).value = t?.id ?? '';
+    (document.getElementById('tf-title') as HTMLInputElement).value = t?.title ?? '';
+    (document.getElementById('tf-deadline') as HTMLInputElement).value = t?.deadline ?? '';
+    (document.getElementById('tf-notes') as HTMLTextAreaElement).value = t?.notes ?? '';
+    const city = t?.city ?? '全般';
+    document.querySelectorAll<HTMLInputElement>('[data-tf-city-input]').forEach((r) => {
+      r.checked = r.value === city;
+    });
+    const status = document.getElementById('tf-status');
+    if (status) { status.hidden = true; status.textContent = ''; }
+  }
+
+  function gatherForm(): Todo | string {
+    const id = (document.getElementById('tf-id') as HTMLInputElement).value.trim();
+    if (!id) return 'id missing';
+    const title = (document.getElementById('tf-title') as HTMLInputElement).value.trim();
+    if (!title) return 'タイトルを入力してください';
+    const deadline = (document.getElementById('tf-deadline') as HTMLInputElement).value;
+    const notes = (document.getElementById('tf-notes') as HTMLTextAreaElement).value.trim();
+    const cityInput = document.querySelector<HTMLInputElement>('[data-tf-city-input]:checked');
+    const city = (cityInput?.value ?? '全般') as TodoCity;
+
+    const existing = findCache(id);
+    if (!existing) return '対象が見つかりません';
+    const now = new Date().toISOString();
+    return {
+      ...existing,
+      title,
+      city,
+      ...(deadline ? { deadline } : { deadline: undefined }),
+      ...(notes ? { notes } : { notes: undefined }),
+      updatedAt: now,
+    };
+  }
+
+  function submitEdit() {
+    const v = gatherForm();
+    if (typeof v === 'string') {
+      const status = document.getElementById('tf-status');
+      if (status) { status.hidden = false; status.textContent = v; }
+      return;
+    }
+    upsertCache(v);
+    enqueueWrite(v);
+    renderAll();
+    updateSyncBadge();
+    void drainQueue();
+    closeModal();
+  }
+
+  // === filter chips ===
+  document.querySelectorAll<HTMLButtonElement>('[data-filter-city]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('[data-filter-city]').forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      renderAll();
+    });
+  });
+  document.getElementById('hide-done-toggle')?.addEventListener('change', () => renderAll());
+
+  // === quick add ===
+  const quickInput = document.getElementById('quick-add-title') as HTMLInputElement | null;
+  quickInput?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); quickAdd(); }
+  });
+  document.getElementById('quick-add-btn')?.addEventListener('click', () => quickAdd());
+
+  // === modal ===
+  document.querySelectorAll<HTMLElement>('[data-todo-close]').forEach((el) => {
+    el.addEventListener('click', closeModal);
+  });
+  document.getElementById('todo-auth-submit')?.addEventListener('click', () => {
+    const input = document.getElementById('todo-password') as HTMLInputElement;
+    const v = input.value.trim();
+    if (!v) return;
+    setPassword(v);
+    (document.getElementById('todo-auth') as HTMLElement).hidden = true;
+    (document.getElementById('todo-form') as HTMLElement).hidden = false;
+  });
+  document.getElementById('todo-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    submitEdit();
+  });
+
+  // === sync button ===
+  document.getElementById('todo-sync-btn')?.addEventListener('click', async (e) => {
+    const btn = e.currentTarget as HTMLButtonElement;
+    if (btn.disabled) return;
+    btn.disabled = true;
+    btn.setAttribute('aria-busy', 'true');
+    const statusEl = document.getElementById('todo-sync-status');
+    if (statusEl) { statusEl.dataset.state = 'syncing'; statusEl.textContent = '🔄 同期中…'; }
+    try {
+      const latest = await fetchLatestFromServer();
+      if (latest) applyServerTodos(latest);
+      await drainQueue();
+    } catch (err) {
+      console.warn('[sync-todos] manual sync failed', err);
+    } finally {
+      btn.disabled = false;
+      btn.removeAttribute('aria-busy');
+      updateSyncBadge();
+    }
+  });
+
+  // === init ===
+  mergeInitialCache();
+  renderAll();
+
+  void (async () => {
+    const latest = await fetchLatestFromServer();
+    if (latest) applyServerTodos(latest);
+    await drainQueue();
+    updateSyncBadge();
+  })();
+
+  window.addEventListener('online', () => { void drainQueue(); updateSyncBadge(); });
+  window.addEventListener('offline', () => { updateSyncBadge(); });
+  setInterval(updateSyncBadge, 30_000);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const modal = document.getElementById('todo-form-modal');
+      if (modal && !modal.hidden) closeModal();
+    }
+  });
+</script>
