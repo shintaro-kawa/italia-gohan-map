@@ -1,5 +1,6 @@
 import { Octokit } from '@octokit/rest';
 import type { ItineraryItem } from '../types/itinerary.js';
+import type { Todo } from '../types/todo.js';
 
 const FILE_NAME = 'itinerary.json';
 
@@ -58,6 +59,55 @@ export async function updateItineraryGist(items: ItineraryItem[]): Promise<GistC
     gist_id: gistId(),
     files: {
       [FILE_NAME]: { content: JSON.stringify(content, null, 2) },
+    },
+  });
+  return content;
+}
+
+const TODOS_FILE_NAME = 'todos.json';
+
+export interface TodosGistContent {
+  version: 1;
+  todos: Todo[];
+  lastModifiedAt: string;
+}
+
+/**
+ * Private Gist から todos データを取得。
+ * `todos.json` がまだ存在しない (初回) ケースでは空の構造を返す。
+ */
+export async function fetchTodosGist(): Promise<TodosGistContent> {
+  const gh = client();
+  const res = await gh.gists.get({ gist_id: gistId() });
+  const file = res.data.files?.[TODOS_FILE_NAME];
+  if (!file || !file.content) {
+    return { version: 1, todos: [], lastModifiedAt: new Date().toISOString() };
+  }
+  try {
+    const parsed = JSON.parse(file.content);
+    if (parsed && parsed.version === 1 && Array.isArray(parsed.todos)) {
+      return parsed as TodosGistContent;
+    }
+  } catch {
+    // fall through
+  }
+  return { version: 1, todos: [], lastModifiedAt: new Date().toISOString() };
+}
+
+/**
+ * Private Gist の todos データを更新。`itinerary.json` には触らない。
+ */
+export async function updateTodosGist(todos: Todo[]): Promise<TodosGistContent> {
+  const gh = client();
+  const content: TodosGistContent = {
+    version: 1,
+    todos,
+    lastModifiedAt: new Date().toISOString(),
+  };
+  await gh.gists.update({
+    gist_id: gistId(),
+    files: {
+      [TODOS_FILE_NAME]: { content: JSON.stringify(content, null, 2) },
     },
   });
   return content;
