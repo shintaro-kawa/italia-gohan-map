@@ -1,0 +1,73 @@
+---
+import { TODO_CITIES, todoCityLabel, deadlineUrgency } from '@/types/todo';
+import type { Todo, TodoCity } from '@/types/todo';
+
+interface Props {
+  todos: Todo[];
+}
+const { todos } = Astro.props;
+
+const orderedCities: ReadonlyArray<TodoCity> = [
+  'Rome', 'Florence', 'Palermo', 'Taormina', 'Sicily', '全般',
+];
+
+const groups: { city: TodoCity; items: Todo[] }[] = [];
+for (const city of orderedCities) {
+  const items = todos.filter((t) => (t.city ?? '全般') === city);
+  if (items.length > 0) groups.push({ city, items });
+}
+
+function deadlineBadge(t: Todo): { text: string; urgency: string } {
+  const u = deadlineUrgency(t.deadline);
+  if (u === 'none' || !t.deadline) return { text: '', urgency: 'none' };
+  const target = new Date(t.deadline);
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const targetT = new Date(target.getFullYear(), target.getMonth(), target.getDate()).getTime();
+  const diff = Math.floor((targetT - startOfToday) / (1000 * 60 * 60 * 24));
+  if (u === 'overdue') return { text: `⚠ ${Math.abs(diff)}日超過`, urgency: 'overdue' };
+  if (u === 'soon') return { text: `⏰ あと${diff}日`, urgency: 'soon' };
+  const m = String(target.getMonth() + 1);
+  const d = String(target.getDate());
+  return { text: `📅 ${m}月${d}日`, urgency: u };
+}
+---
+
+<section class="todo-list" data-todo-root>
+  {todos.length === 0 && (
+    <div class="todo-empty">
+      <p>まだ ToDo がありません。</p>
+      <p>上の入力欄から追加できます。</p>
+    </div>
+  )}
+
+  {groups.map((g) => (
+    <div class="todo-city-group" data-city={g.city}>
+      <h2 class="todo-city-head">{todoCityLabel(g.city)} <span class="todo-city-count">({g.items.length})</span></h2>
+      <ul class="todo-items">
+        {g.items.map((t) => {
+          const badge = deadlineBadge(t);
+          return (
+            <li class={`todo-card${t.done ? ' is-done' : ''}`} data-id={t.id} data-city={t.city ?? '全般'}>
+              <label class="todo-check">
+                <input type="checkbox" data-todo-check={t.id} checked={t.done} />
+                <span class="todo-check-box" aria-hidden="true"></span>
+              </label>
+              <div class="todo-body">
+                <p class="todo-title">{t.title}</p>
+                {t.notes && <p class="todo-notes">{t.notes}</p>}
+              </div>
+              {badge.text && (
+                <span class="todo-deadline-badge" data-urgency={badge.urgency}>{badge.text}</span>
+              )}
+              <div class="todo-actions">
+                <button type="button" class="todo-edit" data-edit-id={t.id} aria-label="編集">✎</button>
+                <button type="button" class="todo-delete" data-delete-id={t.id} aria-label="削除">🗑</button>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  ))}
+</section>
