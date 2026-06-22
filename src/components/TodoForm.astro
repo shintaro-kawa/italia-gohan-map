@@ -1,0 +1,56 @@
+---
+import { TODO_CITIES } from '@/types/todo';
+---
+
+<div id="todo-form-modal" class="todo-modal" hidden role="dialog" aria-label="ToDo 編集">
+  <div class="todo-modal-backdrop" data-todo-close></div>
+
+  <div class="todo-modal-panel" role="document">
+    <header class="todo-modal-head">
+      <h2 id="todo-form-title">ToDo を編集</h2>
+      <button type="button" class="todo-modal-close" data-todo-close aria-label="閉じる">×</button>
+    </header>
+
+    <div id="todo-auth" class="todo-auth">
+      <p>編集・削除には管理パスワードが必要です。</p>
+      <input type="password" id="todo-password" placeholder="パスワード" autocomplete="current-password" />
+      <button type="button" id="todo-auth-submit">ロック解除</button>
+      <p class="todo-auth-error" id="todo-auth-error" hidden></p>
+    </div>
+
+    <form id="todo-form" class="todo-form" hidden>
+      <input type="hidden" id="tf-id" />
+
+      <label class="tf-row">
+        <span>タイトル</span>
+        <input type="text" id="tf-title" required maxlength="120" />
+      </label>
+
+      <fieldset class="tf-cities" aria-label="都市">
+        <legend>都市</legend>
+        {TODO_CITIES.map((c, i) => (
+          <label class="tf-city-chip">
+            <input type="radio" name="tf-city" value={c.value} checked={i === TODO_CITIES.length - 1} data-tf-city-input />
+            <span>{c.label}</span>
+          </label>
+        ))}
+      </fieldset>
+
+      <label class="tf-row">
+        <span>期限 (任意)</span>
+        <input type="date" id="tf-deadline" />
+      </label>
+
+      <label class="tf-row">
+        <span>メモ (任意)</span>
+        <textarea id="tf-notes" rows="3" placeholder="補足、予約 URL、参考リンク等"></textarea>
+      </label>
+
+      <div class="tf-actions">
+        <button type="button" class="tf-cancel" data-todo-close>キャンセル</button>
+        <button type="submit" class="tf-submit">保存</button>
+      </div>
+      <p class="tf-status" id="tf-status" hidden></p>
+    </form>
+  </div>
+</div>
