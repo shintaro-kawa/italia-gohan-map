@@ -1611,6 +1611,70 @@ main {
   word-break: break-word;
 }
 
+.todo-amount-badge {
+  font-size: 0.78rem;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  font-weight: 600;
+  white-space: nowrap;
+  align-self: center;
+}
+.todo-amount-badge[data-currency="JPY"] {
+  background: #eff6ff;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+.todo-amount-badge .todo-paid-by {
+  font-weight: 400;
+  margin-left: 2px;
+  opacity: 0.85;
+}
+
+.todo-totals {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+  font-size: 0.9rem;
+}
+.todo-totals-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 4px 0;
+}
+.todo-totals-row + .todo-totals-row {
+  border-top: 1px dashed var(--color-border);
+}
+.todo-totals-label {
+  font-weight: 600;
+  color: var(--color-text-muted);
+  min-width: 5.5em;
+}
+.todo-totals-value {
+  font-weight: 600;
+  color: var(--color-text);
+}
+.todo-totals-payer {
+  display: inline-block;
+  margin-right: 14px;
+  font-weight: 500;
+}
+
+.tf-row-pair {
+  display: grid;
+  grid-template-columns: 1fr 110px;
+  gap: 10px;
+}
+.tf-row-currency select {
+  width: 100%;
+}
+
 .todo-deadline-badge {
   font-size: 0.75rem;
   padding: 3px 8px;

@@ -41,6 +41,15 @@ function validateWrite(input: unknown): Todo | string {
   }
   if (typeof r.notes === 'string' && r.notes.trim()) todo.notes = r.notes.trim();
   if (typeof r.deadline === 'string' && r.deadline.trim()) todo.deadline = r.deadline;
+  if (typeof r.amount === 'number' && Number.isFinite(r.amount) && r.amount >= 0) {
+    todo.amount = r.amount;
+  }
+  if (r.currency === 'EUR' || r.currency === 'JPY') {
+    todo.currency = r.currency;
+  }
+  if (typeof r.paidBy === 'string' && r.paidBy.trim()) {
+    todo.paidBy = r.paidBy.trim();
+  }
   return todo;
 }
 

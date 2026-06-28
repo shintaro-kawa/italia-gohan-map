@@ -32,6 +32,17 @@ const todos = await getTodos();
     </div>
     <p id="quick-add-hint" class="todo-quick-add-hint" hidden></p>
 
+    <div id="todo-totals" class="todo-totals" hidden>
+      <div class="todo-totals-row">
+        <span class="todo-totals-label">💴 合計</span>
+        <span id="todo-totals-currencies" class="todo-totals-value"></span>
+      </div>
+      <div id="todo-totals-payers-row" class="todo-totals-row" hidden>
+        <span class="todo-totals-label">支払者別</span>
+        <span id="todo-totals-payers" class="todo-totals-value"></span>
+      </div>
+    </div>
+
     <div class="todo-filter-bar">
       <div class="todo-city-chips" role="group" aria-label="都市フィルタ">
         <button type="button" class="todo-chip is-active" data-filter-city="">すべて</button>
@@ -55,6 +66,7 @@ const todos = await getTodos();
 
 <script>
   type TodoCity = 'Rome' | 'Florence' | 'Palermo' | 'Taormina' | 'Sicily' | '全般';
+  type TodoCurrency = 'EUR' | 'JPY';
   type Todo = {
     id: string;
     title: string;
@@ -62,6 +74,9 @@ const todos = await getTodos();
     city?: TodoCity;
     notes?: string;
     deadline?: string;
+    amount?: number;
+    currency?: TodoCurrency;
+    paidBy?: string;
     createdAt: string;
     updatedAt: string;
     deletedAt?: string;
@@ -207,6 +222,8 @@ const todos = await getTodos();
       return true;
     }).sort(compareTodos);
 
+    updateTotals(filtered);
+
     if (filtered.length === 0) {
       root.innerHTML = `<div class="todo-empty"><p>該当する ToDo がありません。</p></div>`;
       updateCount();
@@ -235,6 +252,7 @@ const todos = await getTodos();
                   <p class="todo-title">${escapeHtml(t.title)}</p>
                   ${t.notes ? `<p class="todo-notes">${escapeHtml(t.notes)}</p>` : ''}
                 </div>
+                ${typeof t.amount === 'number' && t.amount > 0 ? `<span class="todo-amount-badge" data-currency="${escapeHtml(t.currency ?? 'EUR')}">${escapeHtml(formatAmount(t.amount, t.currency ?? 'EUR'))}${t.paidBy ? ` <span class="todo-paid-by">(${escapeHtml(t.paidBy)})</span>` : ''}</span>` : ''}
                 ${b.text ? `<span class="todo-deadline-badge" data-urgency="${escapeHtml(b.urgency)}">${escapeHtml(b.text)}</span>` : ''}
                 <div class="todo-actions">
                   <button type="button" class="todo-edit" data-edit-id="${escapeHtml(t.id)}" aria-label="編集">✎</button>
@@ -247,6 +265,50 @@ const todos = await getTodos();
 
     attachCardListeners();
     updateCount();
+  }
+
+  function updateTotals(items: Todo[]) {
+    const root = document.getElementById('todo-totals');
+    if (!root) return;
+    const withAmount = items.filter((t) => typeof t.amount === 'number' && t.amount > 0);
+    if (withAmount.length === 0) { root.hidden = true; return; }
+    root.hidden = false;
+
+    const byCurrency: Record<string, number> = {};
+    for (const t of withAmount) {
+      const c = (t.currency ?? 'EUR') as TodoCurrency;
+      byCurrency[c] = (byCurrency[c] ?? 0) + (t.amount ?? 0);
+    }
+    const totalEl = document.getElementById('todo-totals-currencies');
+    if (totalEl) {
+      totalEl.textContent = Object.entries(byCurrency)
+        .map(([c, v]) => formatAmount(v, c as TodoCurrency))
+        .join(' ・ ');
+    }
+
+    const byPayer: Record<string, Record<string, number>> = {};
+    for (const t of withAmount) {
+      const p = (t.paidBy ?? '').trim();
+      if (!p) continue;
+      const c = (t.currency ?? 'EUR') as TodoCurrency;
+      byPayer[p] ??= {};
+      byPayer[p][c] = (byPayer[p][c] ?? 0) + (t.amount ?? 0);
+    }
+    const payerRow = document.getElementById('todo-totals-payers-row');
+    const payerEl = document.getElementById('todo-totals-payers');
+    if (Object.keys(byPayer).length === 0) {
+      if (payerRow) payerRow.hidden = true;
+    } else {
+      if (payerRow) payerRow.hidden = false;
+      if (payerEl) payerEl.innerHTML = Object.entries(byPayer)
+        .map(([p, currs]) => {
+          const parts = Object.entries(currs)
+            .map(([c, v]) => formatAmount(v, c as TodoCurrency))
+            .join(' + ');
+          return `<span class="todo-totals-payer">${escapeHtml(p)}: ${parts}</span>`;
+        })
+        .join('');
+    }
   }
 
   function updateCount() {
@@ -487,6 +549,11 @@ const todos = await getTodos();
     (document.getElementById('tf-title') as HTMLInputElement).value = t?.title ?? '';
     (document.getElementById('tf-deadline') as HTMLInputElement).value = t?.deadline ?? '';
     (document.getElementById('tf-notes') as HTMLTextAreaElement).value = t?.notes ?? '';
+    (document.getElementById('tf-amount') as HTMLInputElement).value =
+      typeof t?.amount === 'number' ? String(t.amount) : '';
+    (document.getElementById('tf-currency') as HTMLSelectElement).value = t?.currency ?? 'EUR';
+    (document.getElementById('tf-paid-by') as HTMLInputElement).value = t?.paidBy ?? '';
+    refreshPaidByDatalist();
     const city = t?.city ?? '全般';
     document.querySelectorAll<HTMLInputElement>('[data-tf-city-input]').forEach((r) => {
       r.checked = r.value === city;
@@ -505,6 +572,13 @@ const todos = await getTodos();
     const cityInput = document.querySelector<HTMLInputElement>('[data-tf-city-input]:checked');
     const city = (cityInput?.value ?? '全般') as TodoCity;
 
+    const amountRaw = (document.getElementById('tf-amount') as HTMLInputElement).value.trim();
+    const amountNum = amountRaw === '' ? NaN : Number(amountRaw);
+    const hasAmount = Number.isFinite(amountNum) && amountNum >= 0;
+    const currencyRaw = (document.getElementById('tf-currency') as HTMLSelectElement).value;
+    const currency: TodoCurrency = currencyRaw === 'JPY' ? 'JPY' : 'EUR';
+    const paidBy = (document.getElementById('tf-paid-by') as HTMLInputElement).value.trim();
+
     const existing = findCache(id);
     if (!existing) return '対象が見つかりません';
     const now = new Date().toISOString();
@@ -514,8 +588,27 @@ const todos = await getTodos();
       city,
       ...(deadline ? { deadline } : { deadline: undefined }),
       ...(notes ? { notes } : { notes: undefined }),
+      ...(hasAmount ? { amount: amountNum, currency } : { amount: undefined, currency: undefined }),
+      ...(paidBy ? { paidBy } : { paidBy: undefined }),
       updatedAt: now,
     };
+  }
+
+  function refreshPaidByDatalist() {
+    const dl = document.getElementById('tf-paid-by-list');
+    if (!dl) return;
+    const seen = new Set<string>();
+    for (const t of loadCache()) {
+      if (t.paidBy && t.paidBy.trim()) seen.add(t.paidBy.trim());
+    }
+    dl.innerHTML = Array.from(seen).map((p) => `<option value="${escapeHtml(p)}"></option>`).join('');
+  }
+
+  function formatAmount(amount: number, currency: TodoCurrency): string {
+    if (currency === 'JPY') {
+      return `¥${Math.round(amount).toLocaleString('ja-JP')}`;
+    }
+    return `€${amount.toFixed(2)}`;
   }
 
   function submitEdit() {
