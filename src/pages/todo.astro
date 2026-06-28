@@ -30,6 +30,7 @@ const todos = await getTodos();
       </select>
       <button type="button" id="quick-add-btn">追加</button>
     </div>
+    <p id="quick-add-hint" class="todo-quick-add-hint" hidden></p>
 
     <div class="todo-filter-bar">
       <div class="todo-city-chips" role="group" aria-label="都市フィルタ">
@@ -366,21 +367,56 @@ const todos = await getTodos();
     const title = titleEl.value.trim();
     if (!title) return;
     const now = new Date().toISOString();
+    const stashedDeadline = titleEl.dataset.prefilledDeadline;
     const item: Todo = {
       id: `todo-${cryptoRandomShort()}`,
       title,
       done: false,
       city: cityEl.value as TodoCity,
+      ...(stashedDeadline ? { deadline: stashedDeadline } : {}),
       createdAt: now,
       updatedAt: now,
     };
     upsertCache(item);
     enqueueWrite(item);
     titleEl.value = '';
+    delete titleEl.dataset.prefilledDeadline;
+    hidePrefillHint();
     titleEl.focus();
     renderAll();
     updateSyncBadge();
     void drainQueue();
+  }
+
+  function hidePrefillHint() {
+    const hint = document.getElementById('quick-add-hint');
+    if (hint) hint.hidden = true;
+  }
+
+  function prefillFromQuery() {
+    const params = new URLSearchParams(location.search);
+    const title = params.get('title');
+    const city = params.get('city');
+    const deadline = params.get('deadline');
+    if (!title && !city && !deadline) return;
+    const titleEl = document.getElementById('quick-add-title') as HTMLInputElement | null;
+    const cityEl = document.getElementById('quick-add-city') as HTMLSelectElement | null;
+    if (titleEl && title) titleEl.value = title;
+    if (cityEl && city) {
+      const exists = Array.from(cityEl.options).some((o) => o.value === city);
+      if (exists) cityEl.value = city;
+    }
+    if (titleEl && deadline) {
+      titleEl.dataset.prefilledDeadline = deadline;
+      const hint = document.getElementById('quick-add-hint');
+      if (hint) {
+        hint.textContent = `📅 期限: ${deadline} (旅程から)`;
+        hint.hidden = false;
+      }
+    }
+    history.replaceState(null, '', location.pathname);
+    titleEl?.focus();
+    titleEl?.select();
   }
 
   function toggleDone(id: string) {
@@ -555,6 +591,7 @@ const todos = await getTodos();
   // === init ===
   mergeInitialCache();
   renderAll();
+  prefillFromQuery();
 
   void (async () => {
     const latest = await fetchLatestFromServer();

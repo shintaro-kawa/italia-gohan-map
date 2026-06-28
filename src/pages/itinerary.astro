@@ -238,6 +238,32 @@ const items = await getItinerary();
     return lines;
   }
 
+  function deriveCityForTodo(item: Item): string {
+    const text = [
+      item.location?.name ?? '',
+      item.location?.address ?? '',
+      item.location?.from ?? '',
+      item.location?.to ?? '',
+      item.title,
+    ].join(' ');
+    if (/rome|roma|colosseo|colosseum|vatican|vaticano/i.test(text)) return 'Rome';
+    if (/florence|firenze/i.test(text)) return 'Florence';
+    if (/palermo/i.test(text)) return 'Palermo';
+    if (/taormina/i.test(text)) return 'Taormina';
+    if (/sicil(y|ia)|catania/i.test(text)) return 'Sicily';
+    return '全般';
+  }
+
+  function deadlineBeforeStartAt(iso: string): string {
+    const d = new Date(iso);
+    if (!Number.isFinite(d.getTime())) return '';
+    d.setDate(d.getDate() - 1);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
   function buildCardHtml(item: Item, isPrivate: boolean): string {
     const meta = TYPE_META[item.type] ?? TYPE_META.generic;
     const loc = locationLine(item.location);
@@ -245,6 +271,8 @@ const items = await getItinerary();
     const privBadge = isPrivate
       ? `<span class="itinerary-priv-badge" title="この端末のみに保存">🔒 ローカル</span>`
       : '';
+    const todoCity = deriveCityForTodo(item);
+    const todoDeadline = deadlineBeforeStartAt(item.startAt);
     return `
       <li class="itinerary-card" data-id="${escape(item.id)}" data-type="${escape(item.type)}" data-source="${isPrivate ? 'private' : 'json'}" tabindex="0">
         <div class="itinerary-card-time">${escape(formatRange(item.startAt, item.endAt))}</div>
@@ -262,6 +290,7 @@ const items = await getItinerary();
           <p class="itinerary-card-sensitive" data-sensitive-for="${escape(item.id)}" hidden></p>
         </div>
         <div class="itinerary-card-actions">
+          <button type="button" class="itinerary-todo-add" data-todo-add data-todo-title="${escape(item.title)}" data-todo-city="${escape(todoCity)}" data-todo-deadline="${escape(todoDeadline)}" aria-label="ToDo に追加" title="ToDo に追加">✓＋</button>
           <button type="button" class="itinerary-edit" data-edit-id="${escape(item.id)}" aria-label="編集">✎</button>
           <button type="button" class="itinerary-delete" data-delete-id="${escape(item.id)}" aria-label="削除">🗑</button>
         </div>
@@ -336,6 +365,21 @@ const items = await getItinerary();
   }
 
   function attachCardListeners(scope: ParentNode = document) {
+    scope.querySelectorAll<HTMLButtonElement>('[data-todo-add]').forEach((btn) => {
+      if (btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const title = btn.getAttribute('data-todo-title') ?? '';
+        const city = btn.getAttribute('data-todo-city') ?? '全般';
+        const deadline = btn.getAttribute('data-todo-deadline') ?? '';
+        const params = new URLSearchParams();
+        if (title) params.set('title', title);
+        if (city) params.set('city', city);
+        if (deadline) params.set('deadline', deadline);
+        const qs = params.toString();
+        location.href = qs ? `/todo?${qs}` : '/todo';
+      });
+    });
     scope.querySelectorAll<HTMLButtonElement>('[data-edit-id]').forEach((btn) => {
       if (btn.dataset.bound === '1') return;
       btn.dataset.bound = '1';

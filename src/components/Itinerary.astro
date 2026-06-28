@@ -52,6 +52,32 @@ function locationLine(loc: ItineraryItem['location']): string {
   if (loc.address) return loc.address;
   return '';
 }
+function deriveCityForTodo(item: ItineraryItem): string {
+  const text = [
+    item.location?.name ?? '',
+    item.location?.address ?? '',
+    item.location?.from ?? '',
+    item.location?.to ?? '',
+    item.title,
+  ].join(' ');
+  if (/rome|roma|colosseo|colosseum|vatican|vaticano/i.test(text)) return 'Rome';
+  if (/florence|firenze/i.test(text)) return 'Florence';
+  if (/palermo/i.test(text)) return 'Palermo';
+  if (/taormina/i.test(text)) return 'Taormina';
+  if (/sicil(y|ia)|catania/i.test(text)) return 'Sicily';
+  return '全般';
+}
+
+function deadlineBeforeStartAt(iso: string): string {
+  const d = new Date(iso);
+  if (!Number.isFinite(d.getTime())) return '';
+  d.setDate(d.getDate() - 1);
+  const yyyy = d.getFullYear();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
 function detailLines(item: ItineraryItem): string[] {
   const lines: string[] = [];
   const d = item.details ?? {};
@@ -113,6 +139,15 @@ function detailLines(item: ItineraryItem): string[] {
               <p class="itinerary-card-sensitive" data-sensitive-for={item.id} hidden></p>
             </div>
             <div class="itinerary-card-actions">
+              <button
+                type="button"
+                class="itinerary-todo-add"
+                data-todo-add
+                data-todo-title={item.title}
+                data-todo-city={deriveCityForTodo(item)}
+                data-todo-deadline={deadlineBeforeStartAt(item.startAt)}
+                aria-label="ToDo に追加"
+                title="ToDo に追加">✓＋</button>
               <button type="button" class="itinerary-edit" data-edit-id={item.id} aria-label="編集">✎</button>
               <button type="button" class="itinerary-delete" data-delete-id={item.id} aria-label="削除">🗑</button>
             </div>
