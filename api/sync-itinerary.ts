@@ -38,6 +38,15 @@ function validateWrite(input: unknown): ItineraryItem | string {
     item.details = r.details as ItineraryItem['details'];
   }
   if (typeof r.notes === 'string' && r.notes.trim()) item.notes = r.notes.trim();
+  if (typeof r.amount === 'number' && Number.isFinite(r.amount) && r.amount >= 0) {
+    item.amount = r.amount;
+  }
+  if (r.currency === 'EUR' || r.currency === 'JPY') {
+    item.currency = r.currency;
+  }
+  if (typeof r.paidBy === 'string' && r.paidBy.trim()) {
+    item.paidBy = r.paidBy.trim();
+  }
   return item;
 }
 

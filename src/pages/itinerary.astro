@@ -20,6 +20,17 @@ const items = await getItinerary();
   </header>
 
   <main class="itinerary-main">
+    <div id="itinerary-totals" class="itinerary-totals" hidden>
+      <div class="itinerary-totals-row">
+        <span class="itinerary-totals-label">💴 旅程 合計</span>
+        <span id="itinerary-totals-currencies" class="itinerary-totals-value"></span>
+      </div>
+      <div id="itinerary-totals-payers-row" class="itinerary-totals-row" hidden>
+        <span class="itinerary-totals-label">支払者別</span>
+        <span id="itinerary-totals-payers" class="itinerary-totals-value"></span>
+      </div>
+    </div>
+
     <Itinerary items={items} />
   </main>
 
@@ -29,6 +40,7 @@ const items = await getItinerary();
 </Layout>
 
 <script>
+  type Currency = 'EUR' | 'JPY';
   type Item = {
     id: string;
     type: 'flight' | 'hotel' | 'train' | 'attraction' | 'restaurant' | 'generic';
@@ -38,6 +50,9 @@ const items = await getItinerary();
     location?: { name?: string; address?: string; from?: string; to?: string; lat?: number; lng?: number };
     details?: Record<string, string | number | boolean | null>;
     notes?: string;
+    amount?: number;
+    currency?: Currency;
+    paidBy?: string;
     updatedAt?: string;
     deletedAt?: string;
   };
@@ -286,6 +301,7 @@ const items = await getItinerary();
           </div>
           ${loc ? `<p class="itinerary-card-loc">📍 ${escape(loc)}</p>` : ''}
           ${lines.map((l) => `<p class="itinerary-card-line">${escape(l)}</p>`).join('')}
+          ${typeof item.amount === 'number' && item.amount > 0 ? `<p class="itinerary-card-amount"><span class="itinerary-amount-badge" data-currency="${escape(item.currency ?? 'EUR')}">💴 ${escape(formatAmount(item.amount, (item.currency ?? 'EUR') as Currency))}</span>${item.paidBy ? ` <span class="itinerary-paid-by">支払: ${escape(item.paidBy)}</span>` : ''}</p>` : ''}
           ${item.notes ? `<p class="itinerary-card-notes">${escape(item.notes)}</p>` : ''}
           <p class="itinerary-card-sensitive" data-sensitive-for="${escape(item.id)}" hidden></p>
         </div>
@@ -424,6 +440,59 @@ const items = await getItinerary();
     if (!countEl) return;
     const n = document.querySelectorAll('.itinerary-card').length;
     countEl.textContent = `${n} アイテム`;
+    updateTotals();
+  }
+
+  function updateTotals() {
+    const root = document.getElementById('itinerary-totals');
+    if (!root) return;
+    const all: Item[] = [...loadInlineItems(), ...loadPrivate()].filter((x) => !x.deletedAt);
+    const seen = new Set<string>();
+    const dedup: Item[] = [];
+    for (const it of all) {
+      if (seen.has(it.id)) continue;
+      seen.add(it.id);
+      dedup.push(it);
+    }
+    const withAmount = dedup.filter((t) => typeof t.amount === 'number' && t.amount > 0);
+    if (withAmount.length === 0) { root.hidden = true; return; }
+    root.hidden = false;
+
+    const byCurrency: Record<string, number> = {};
+    for (const t of withAmount) {
+      const c = (t.currency ?? 'EUR') as Currency;
+      byCurrency[c] = (byCurrency[c] ?? 0) + (t.amount ?? 0);
+    }
+    const totalEl = document.getElementById('itinerary-totals-currencies');
+    if (totalEl) {
+      totalEl.textContent = Object.entries(byCurrency)
+        .map(([c, v]) => formatAmount(v, c as Currency))
+        .join(' ・ ');
+    }
+
+    const byPayer: Record<string, Record<string, number>> = {};
+    for (const t of withAmount) {
+      const p = (t.paidBy ?? '').trim();
+      if (!p) continue;
+      const c = (t.currency ?? 'EUR') as Currency;
+      byPayer[p] ??= {};
+      byPayer[p][c] = (byPayer[p][c] ?? 0) + (t.amount ?? 0);
+    }
+    const payerRow = document.getElementById('itinerary-totals-payers-row');
+    const payerEl = document.getElementById('itinerary-totals-payers');
+    if (Object.keys(byPayer).length === 0) {
+      if (payerRow) payerRow.hidden = true;
+    } else {
+      if (payerRow) payerRow.hidden = false;
+      if (payerEl) payerEl.innerHTML = Object.entries(byPayer)
+        .map(([p, currs]) => {
+          const parts = Object.entries(currs)
+            .map(([c, v]) => formatAmount(v, c as Currency))
+            .join(' + ');
+          return `<span class="itinerary-totals-payer">${escape(p)}: ${parts}</span>`;
+        })
+        .join('');
+    }
   }
 
   /**
@@ -527,6 +596,11 @@ const items = await getItinerary();
     (document.getElementById('if-loc-name') as HTMLInputElement).value = item?.location?.name ?? '';
     (document.getElementById('if-loc-address') as HTMLInputElement).value = item?.location?.address ?? '';
     (document.getElementById('if-notes') as HTMLTextAreaElement).value = item?.notes ?? '';
+    (document.getElementById('if-amount') as HTMLInputElement).value =
+      typeof item?.amount === 'number' ? String(item.amount) : '';
+    (document.getElementById('if-currency') as HTMLSelectElement).value = item?.currency ?? 'EUR';
+    (document.getElementById('if-paid-by') as HTMLInputElement).value = item?.paidBy ?? '';
+    refreshPaidByDatalist();
 
     const type = item?.type ?? 'flight';
     document.querySelectorAll<HTMLInputElement>('[data-if-type-input]').forEach((r) => {
@@ -628,6 +702,13 @@ const items = await getItinerary();
 
     const notes = (document.getElementById('if-notes') as HTMLTextAreaElement).value.trim();
 
+    const amountRaw = (document.getElementById('if-amount') as HTMLInputElement).value.trim();
+    const amountNum = amountRaw === '' ? NaN : Number(amountRaw);
+    const hasAmount = Number.isFinite(amountNum) && amountNum >= 0;
+    const currencyVal = (document.getElementById('if-currency') as HTMLSelectElement).value;
+    const currency: Currency = currencyVal === 'JPY' ? 'JPY' : 'EUR';
+    const paidBy = (document.getElementById('if-paid-by') as HTMLInputElement).value.trim();
+
     const item: Item = {
       id: id || `${type}-${cryptoRandomShort()}`,
       type,
@@ -637,8 +718,29 @@ const items = await getItinerary();
       ...(Object.keys(location).length > 0 ? { location } : {}),
       ...(Object.keys(details).length > 0 ? { details } : {}),
       ...(notes ? { notes } : {}),
+      ...(hasAmount ? { amount: amountNum, currency } : {}),
+      ...(paidBy ? { paidBy } : {}),
     };
     return item;
+  }
+
+  function refreshPaidByDatalist() {
+    const dl = document.getElementById('if-paid-by-list');
+    if (!dl) return;
+    const seen = new Set<string>();
+    const fromInline = loadInlineItems();
+    for (const it of fromInline) {
+      if (it.paidBy && it.paidBy.trim()) seen.add(it.paidBy.trim());
+    }
+    for (const it of loadPrivate()) {
+      if (it.paidBy && it.paidBy.trim()) seen.add(it.paidBy.trim());
+    }
+    dl.innerHTML = Array.from(seen).map((p) => `<option value="${escape(p)}"></option>`).join('');
+  }
+
+  function formatAmount(amount: number, currency: Currency): string {
+    if (currency === 'JPY') return `¥${Math.round(amount).toLocaleString('ja-JP')}`;
+    return `€${amount.toFixed(2)}`;
   }
 
   function gatherFormSensitive(): Sensitive {

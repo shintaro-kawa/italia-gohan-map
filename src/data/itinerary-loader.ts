@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import type { ItineraryItem, ItineraryType } from '@/types/itinerary';
+import type { ItineraryCurrency, ItineraryItem, ItineraryType } from '@/types/itinerary';
 import { ITINERARY_TYPE_SET, compareItineraryItems } from '@/types/itinerary';
 import itineraryJson from '../../data/itinerary.json';
 
@@ -34,6 +34,14 @@ function sanitize(item: unknown): ItineraryItem | null {
     location: typeof r.location === 'object' && r.location ? (r.location as ItineraryItem['location']) : undefined,
     details: typeof r.details === 'object' && r.details ? (r.details as ItineraryItem['details']) : undefined,
     notes: typeof r.notes === 'string' ? r.notes : undefined,
+    amount:
+      typeof r.amount === 'number' && Number.isFinite(r.amount) && r.amount >= 0
+        ? r.amount
+        : undefined,
+    currency:
+      r.currency === 'EUR' || r.currency === 'JPY' ? (r.currency as ItineraryCurrency) : undefined,
+    paidBy:
+      typeof r.paidBy === 'string' && r.paidBy.trim() ? r.paidBy.trim() : undefined,
     updatedAt,
     deletedAt: typeof r.deletedAt === 'string' && r.deletedAt.trim() ? r.deletedAt : undefined,
   };

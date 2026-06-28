@@ -114,6 +114,28 @@ import { ITINERARY_TYPES } from '@/types/itinerary';
         <textarea id="if-notes" rows="2" placeholder="共有してよい補足情報"></textarea>
       </label>
 
+      <details class="if-section">
+        <summary>💴 金額・清算 (任意)</summary>
+        <div class="if-row-pair">
+          <label class="if-row">
+            <span>金額</span>
+            <input type="number" id="if-amount" min="0" step="0.01" placeholder="例: 25.50" />
+          </label>
+          <label class="if-row">
+            <span>通貨</span>
+            <select id="if-currency">
+              <option value="EUR" selected>EUR €</option>
+              <option value="JPY">JPY ¥</option>
+            </select>
+          </label>
+        </div>
+        <label class="if-row">
+          <span>支払者</span>
+          <input type="text" id="if-paid-by" placeholder="例: 自分 / 妻 / 友人" list="if-paid-by-list" maxlength="60" />
+          <datalist id="if-paid-by-list"></datalist>
+        </label>
+      </details>
+
       <details class="if-section if-sensitive">
         <summary>🔒 予約番号など (この端末のみに保存、GitHub には載りません)</summary>
         <label class="if-row"><span>予約番号</span><input type="text" data-sensitive="confirmationNumber" /></label>

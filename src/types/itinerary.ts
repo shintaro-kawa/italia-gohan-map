@@ -28,6 +28,8 @@ export interface ItineraryLocation {
   to?: string;
 }
 
+export type ItineraryCurrency = 'EUR' | 'JPY';
+
 export interface ItineraryItem {
   id: string;
   type: ItineraryType;
@@ -37,6 +39,12 @@ export interface ItineraryItem {
   location?: ItineraryLocation;
   details?: Record<string, string | number | boolean | null>;
   notes?: string;
+  /** 金額 (清算用、任意)。currency 単位の数値。負数不可 */
+  amount?: number;
+  /** 通貨コード (EUR / JPY)。amount があるときに意味を持つ */
+  currency?: ItineraryCurrency;
+  /** 支払者 (任意のフリーテキスト)。清算の集計キー */
+  paidBy?: string;
   /** ISO 8601、最終更新タイムスタンプ。同期競合解決に使用。 */
   updatedAt: string;
   /** ISO 8601、論理削除のトゥームストーン。削除アイテムは物理削除せず deletedAt を立てて Gist に残す。 */

@@ -68,6 +68,11 @@ function deriveCityForTodo(item: ItineraryItem): string {
   return '全般';
 }
 
+function formatItemAmount(amount: number, currency?: string): string {
+  if (currency === 'JPY') return `¥${Math.round(amount).toLocaleString('ja-JP')}`;
+  return `€${amount.toFixed(2)}`;
+}
+
 function deadlineBeforeStartAt(iso: string): string {
   const d = new Date(iso);
   if (!Number.isFinite(d.getTime())) return '';
@@ -135,6 +140,14 @@ function detailLines(item: ItineraryItem): string[] {
               {detailLines(item).map((line) => (
                 <p class="itinerary-card-line">{line}</p>
               ))}
+              {typeof item.amount === 'number' && item.amount > 0 && (
+                <p class="itinerary-card-amount">
+                  <span class="itinerary-amount-badge" data-currency={item.currency ?? 'EUR'}>
+                    💴 {formatItemAmount(item.amount, item.currency)}
+                  </span>
+                  {item.paidBy && <span class="itinerary-paid-by">支払: {item.paidBy}</span>}
+                </p>
+              )}
               {item.notes && <p class="itinerary-card-notes">{item.notes}</p>}
               <p class="itinerary-card-sensitive" data-sensitive-for={item.id} hidden></p>
             </div>
