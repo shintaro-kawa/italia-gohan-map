@@ -1133,33 +1133,120 @@ main {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  padding: 10px 14px;
   margin-bottom: 12px;
   box-shadow: var(--shadow-sm);
   font-size: 0.9rem;
 }
-.itinerary-totals-row {
+.itinerary-totals-summary {
   display: flex;
   align-items: baseline;
   gap: 10px;
-  padding: 4px 0;
+  padding: 10px 14px;
+  cursor: pointer;
+  list-style: none;
 }
-.itinerary-totals-row + .itinerary-totals-row {
-  border-top: 1px dashed var(--color-border);
+.itinerary-totals-summary::-webkit-details-marker { display: none; }
+.itinerary-totals-summary::marker { content: ''; }
+.itinerary-totals-summary::before {
+  content: '▶';
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  transition: transform 0.15s ease;
+  display: inline-block;
+}
+.itinerary-totals[open] .itinerary-totals-summary::before {
+  transform: rotate(90deg);
 }
 .itinerary-totals-label {
   font-weight: 600;
   color: var(--color-text-muted);
-  min-width: 7em;
 }
 .itinerary-totals-value {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-text);
+  font-size: 1rem;
 }
-.itinerary-totals-payer {
-  display: inline-block;
-  margin-right: 14px;
+.itinerary-totals-hint {
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+.itinerary-totals-detail {
+  padding: 4px 14px 14px;
+  border-top: 1px dashed var(--color-border);
+}
+.itinerary-totals-section {
+  margin: 12px 0;
+}
+.itinerary-totals-section:first-child { margin-top: 10px; }
+.itinerary-totals-h3 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.itinerary-totals-breakdown {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.itinerary-totals-breakdown li {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--color-surface-2);
+}
+.itinerary-totals-breakdown li:last-child { border-bottom: 0; }
+.itinerary-totals-type,
+.itinerary-totals-payer-name {
   font-weight: 500;
+}
+.itinerary-totals-amounts {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  font-weight: 600;
+}
+.itinerary-totals-count {
+  font-weight: 400;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-left: 4px;
+}
+.itinerary-totals-rate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+.itinerary-totals-rate input {
+  width: 80px;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 0.88rem;
+  text-align: right;
+}
+.itinerary-totals-converted {
+  margin: 4px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.itinerary-totals-converted-total {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+.itinerary-totals-converted-breakdown {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
 }
 
 .itinerary-card-actions {

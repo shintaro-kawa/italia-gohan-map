@@ -20,16 +20,35 @@ const items = await getItinerary();
   </header>
 
   <main class="itinerary-main">
-    <div id="itinerary-totals" class="itinerary-totals" hidden>
-      <div class="itinerary-totals-row">
+    <details id="itinerary-totals" class="itinerary-totals" hidden>
+      <summary class="itinerary-totals-summary">
         <span class="itinerary-totals-label">💴 旅程 合計</span>
         <span id="itinerary-totals-currencies" class="itinerary-totals-value"></span>
+        <span class="itinerary-totals-hint">クリックで詳細</span>
+      </summary>
+
+      <div class="itinerary-totals-detail">
+        <section class="itinerary-totals-section">
+          <h3 class="itinerary-totals-h3">種別別</h3>
+          <ul id="itinerary-totals-by-type" class="itinerary-totals-breakdown"></ul>
+        </section>
+
+        <section id="itinerary-totals-by-payer-section" class="itinerary-totals-section" hidden>
+          <h3 class="itinerary-totals-h3">支払者別</h3>
+          <ul id="itinerary-totals-by-payer" class="itinerary-totals-breakdown"></ul>
+        </section>
+
+        <section class="itinerary-totals-section">
+          <h3 class="itinerary-totals-h3">換算合計 (参考)</h3>
+          <label class="itinerary-totals-rate">
+            <span>1 EUR =</span>
+            <input type="number" id="itinerary-totals-rate-input" min="1" step="0.1" value="170" />
+            <span>JPY</span>
+          </label>
+          <p class="itinerary-totals-converted" id="itinerary-totals-converted"></p>
+        </section>
       </div>
-      <div id="itinerary-totals-payers-row" class="itinerary-totals-row" hidden>
-        <span class="itinerary-totals-label">支払者別</span>
-        <span id="itinerary-totals-payers" class="itinerary-totals-value"></span>
-      </div>
-    </div>
+    </details>
 
     <Itinerary items={items} />
   </main>
@@ -443,8 +462,18 @@ const items = await getItinerary();
     updateTotals();
   }
 
+  const RATE_KEY = 'italia-gohan-itinerary-rate-eur-jpy';
+  function getRate(): number {
+    const raw = localStorage.getItem(RATE_KEY);
+    const n = raw ? Number(raw) : NaN;
+    return Number.isFinite(n) && n > 0 ? n : 170;
+  }
+  function setRate(n: number) {
+    if (Number.isFinite(n) && n > 0) localStorage.setItem(RATE_KEY, String(n));
+  }
+
   function updateTotals() {
-    const root = document.getElementById('itinerary-totals');
+    const root = document.getElementById('itinerary-totals') as HTMLDetailsElement | null;
     if (!root) return;
     const all: Item[] = [...loadInlineItems(), ...loadPrivate()].filter((x) => !x.deletedAt);
     const seen = new Set<string>();
@@ -470,6 +499,31 @@ const items = await getItinerary();
         .join(' ・ ');
     }
 
+    // 種別別
+    const byType: Record<string, Record<string, { amount: number; count: number }>> = {};
+    for (const t of withAmount) {
+      const c = (t.currency ?? 'EUR') as Currency;
+      byType[t.type] ??= {};
+      byType[t.type][c] ??= { amount: 0, count: 0 };
+      byType[t.type][c].amount += t.amount ?? 0;
+      byType[t.type][c].count += 1;
+    }
+    const typeEl = document.getElementById('itinerary-totals-by-type');
+    if (typeEl) {
+      const TYPE_ORDER: Item['type'][] = ['flight', 'hotel', 'train', 'attraction', 'restaurant', 'generic'];
+      typeEl.innerHTML = TYPE_ORDER
+        .filter((tp) => byType[tp])
+        .map((tp) => {
+          const meta = TYPE_META[tp];
+          const parts = Object.entries(byType[tp])
+            .map(([c, v]) => `${formatAmount(v.amount, c as Currency)} <span class="itinerary-totals-count">(${v.count}件)</span>`)
+            .join(' + ');
+          return `<li><span class="itinerary-totals-type"><span aria-hidden="true">${meta.emoji}</span> ${escape(meta.label)}</span><span class="itinerary-totals-amounts">${parts}</span></li>`;
+        })
+        .join('');
+    }
+
+    // 支払者別
     const byPayer: Record<string, Record<string, number>> = {};
     for (const t of withAmount) {
       const p = (t.paidBy ?? '').trim();
@@ -478,20 +532,39 @@ const items = await getItinerary();
       byPayer[p] ??= {};
       byPayer[p][c] = (byPayer[p][c] ?? 0) + (t.amount ?? 0);
     }
-    const payerRow = document.getElementById('itinerary-totals-payers-row');
-    const payerEl = document.getElementById('itinerary-totals-payers');
+    const payerSection = document.getElementById('itinerary-totals-by-payer-section');
+    const payerEl = document.getElementById('itinerary-totals-by-payer');
     if (Object.keys(byPayer).length === 0) {
-      if (payerRow) payerRow.hidden = true;
+      if (payerSection) payerSection.hidden = true;
     } else {
-      if (payerRow) payerRow.hidden = false;
+      if (payerSection) payerSection.hidden = false;
       if (payerEl) payerEl.innerHTML = Object.entries(byPayer)
+        .sort(([, a], [, b]) => {
+          const ax = Object.values(a).reduce((s, v) => s + v, 0);
+          const bx = Object.values(b).reduce((s, v) => s + v, 0);
+          return bx - ax;
+        })
         .map(([p, currs]) => {
           const parts = Object.entries(currs)
             .map(([c, v]) => formatAmount(v, c as Currency))
             .join(' + ');
-          return `<span class="itinerary-totals-payer">${escape(p)}: ${parts}</span>`;
+          return `<li><span class="itinerary-totals-payer-name">${escape(p)}</span><span class="itinerary-totals-amounts">${parts}</span></li>`;
         })
         .join('');
+    }
+
+    // 換算合計
+    const rate = getRate();
+    const totalJpy = (byCurrency.JPY ?? 0) + (byCurrency.EUR ?? 0) * rate;
+    const convEl = document.getElementById('itinerary-totals-converted');
+    if (convEl) {
+      const parts: string[] = [];
+      if (byCurrency.EUR) parts.push(`€${byCurrency.EUR.toFixed(2)} × ${rate} = ¥${Math.round(byCurrency.EUR * rate).toLocaleString('ja-JP')}`);
+      if (byCurrency.JPY) parts.push(`¥${Math.round(byCurrency.JPY).toLocaleString('ja-JP')}`);
+      convEl.innerHTML = `
+        <span class="itinerary-totals-converted-total">≈ ¥${Math.round(totalJpy).toLocaleString('ja-JP')}</span>
+        <span class="itinerary-totals-converted-breakdown">${parts.join(' + ')}</span>
+      `;
     }
   }
 
@@ -1013,6 +1086,18 @@ const items = await getItinerary();
   renderPrivateItems();
   attachCardListeners();
   renderSensitiveLines();
+
+  const rateInputEl = document.getElementById('itinerary-totals-rate-input') as HTMLInputElement | null;
+  if (rateInputEl) {
+    rateInputEl.value = String(getRate());
+    rateInputEl.addEventListener('input', () => {
+      const v = Number(rateInputEl.value);
+      if (Number.isFinite(v) && v > 0) {
+        setRate(v);
+        updateTotals();
+      }
+    });
+  }
 
   void (async () => {
     const latest = await fetchLatestFromServer();
