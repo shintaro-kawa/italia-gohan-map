@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import type { Todo, TodoCity, TodoCurrency } from '@/types/todo';
+import type { Todo, TodoCity } from '@/types/todo';
 import { TODO_CITY_SET, compareTodos } from '@/types/todo';
 import todosJson from '../../data/todos.json';
 
@@ -32,15 +32,6 @@ function sanitize(item: unknown): Todo | null {
       ? (r.city as TodoCity)
       : undefined;
 
-  const amount =
-    typeof r.amount === 'number' && Number.isFinite(r.amount) && r.amount >= 0
-      ? r.amount
-      : undefined;
-  const currency =
-    r.currency === 'EUR' || r.currency === 'JPY' ? (r.currency as TodoCurrency) : undefined;
-  const paidBy =
-    typeof r.paidBy === 'string' && r.paidBy.trim() ? r.paidBy.trim() : undefined;
-
   return {
     id,
     title: r.title.trim(),
@@ -48,9 +39,6 @@ function sanitize(item: unknown): Todo | null {
     city,
     notes: typeof r.notes === 'string' ? r.notes : undefined,
     deadline: typeof r.deadline === 'string' && r.deadline.trim() ? r.deadline : undefined,
-    amount,
-    currency,
-    paidBy,
     createdAt,
     updatedAt,
     deletedAt: typeof r.deletedAt === 'string' && r.deletedAt.trim() ? r.deletedAt : undefined,

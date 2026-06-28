@@ -1,7 +1,5 @@
 export type TodoCity = 'Rome' | 'Florence' | 'Palermo' | 'Taormina' | 'Sicily' | '全般';
 
-export type TodoCurrency = 'EUR' | 'JPY';
-
 export const TODO_CITIES: ReadonlyArray<{ value: TodoCity; label: string }> = [
   { value: 'Rome', label: 'ローマ' },
   { value: 'Florence', label: 'フィレンツェ' },
@@ -25,12 +23,6 @@ export interface Todo {
   notes?: string;
   /** ISO 日付 (例: "2026-07-15")、時刻なし */
   deadline?: string;
-  /** 金額 (清算用、任意)。currency 単位の数値。負数不可 */
-  amount?: number;
-  /** 通貨コード (EUR / JPY)。amount があるときに意味を持つ */
-  currency?: TodoCurrency;
-  /** 支払者 (任意のフリーテキスト)。清算の際の集計キー */
-  paidBy?: string;
   /** ISO 8601 */
   createdAt: string;
   /** ISO 8601、同期競合解決に使用 */
