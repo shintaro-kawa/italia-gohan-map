@@ -1,10 +1,11 @@
-export type TodoCity = 'Rome' | 'Florence' | 'Palermo' | 'Taormina' | 'Sicily' | '全般';
+export type TodoCity = 'Rome' | 'Florence' | 'Palermo' | 'Taormina' | 'Siracusa' | 'Sicily' | '全般';
 
 export const TODO_CITIES: ReadonlyArray<{ value: TodoCity; label: string }> = [
   { value: 'Rome', label: 'ローマ' },
   { value: 'Florence', label: 'フィレンツェ' },
   { value: 'Palermo', label: 'パレルモ' },
   { value: 'Taormina', label: 'タオルミーナ' },
+  { value: 'Siracusa', label: 'シラクーザ' },
   { value: 'Sicily', label: 'シチリア' },
   { value: '全般', label: '全般' },
 ];

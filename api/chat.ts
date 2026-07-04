@@ -7,7 +7,7 @@ const VALID_GENRES = new Set([
   'pizzeria', 'trattoria', 'osteria', 'ristorante', 'enoteca',
   'bar', 'gelateria', 'paninoteca', 'pasticceria', 'other',
 ]);
-const VALID_CITIES = new Set(['Rome', 'Florence', 'Palermo', 'Taormina', 'Sicily']);
+const VALID_CITIES = new Set(['Rome', 'Florence', 'Palermo', 'Taormina', 'Siracusa', 'Sicily']);
 
 function sanitizeCandidates(raw: unknown[]): Restaurant[] {
   const out: Restaurant[] = [];

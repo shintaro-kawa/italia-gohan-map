@@ -6,7 +6,7 @@ const VALID_GENRES = new Set([
   'pizzeria', 'trattoria', 'osteria', 'ristorante', 'enoteca',
   'bar', 'gelateria', 'paninoteca', 'pasticceria', 'other',
 ]);
-const VALID_CITIES = new Set(['Rome', 'Florence', 'Sicily']);
+const VALID_CITIES = new Set(['Rome', 'Florence', 'Palermo', 'Taormina', 'Siracusa', 'Sicily']);
 
 function validate(input: unknown): Restaurant | string {
   if (!input || typeof input !== 'object') return 'candidate must be an object';

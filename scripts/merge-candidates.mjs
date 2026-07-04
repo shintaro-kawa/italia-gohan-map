@@ -24,7 +24,7 @@ const VALID_GENRES = new Set([
   'pizzeria', 'trattoria', 'osteria', 'ristorante', 'enoteca',
   'bar', 'gelateria', 'paninoteca', 'pasticceria', 'other',
 ]);
-const VALID_CITIES = new Set(['Rome', 'Florence', 'Palermo', 'Taormina', 'Sicily']);
+const VALID_CITIES = new Set(['Rome', 'Florence', 'Palermo', 'Taormina', 'Siracusa', 'Sicily']);
 const VALID_SOURCES = new Set([
   'gambero-rosso', '50-top-pizza', 'slow-food', 'identita-golose',
   'food-blogger', 'reddit-local', 'friend', 'guidebook', 'google-maps', 'other',

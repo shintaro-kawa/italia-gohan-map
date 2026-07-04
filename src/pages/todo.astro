@@ -54,7 +54,7 @@ const todos = await getTodos();
 </Layout>
 
 <script>
-  type TodoCity = 'Rome' | 'Florence' | 'Palermo' | 'Taormina' | 'Sicily' | '全般';
+  type TodoCity = 'Rome' | 'Florence' | 'Palermo' | 'Taormina' | 'Siracusa' | 'Sicily' | '全般';
   type Todo = {
     id: string;
     title: string;
@@ -191,9 +191,9 @@ const todos = await getTodos();
 
   const CITY_LABEL: Record<string, string> = {
     Rome: 'ローマ', Florence: 'フィレンツェ', Palermo: 'パレルモ',
-    Taormina: 'タオルミーナ', Sicily: 'シチリア', '全般': '全般',
+    Taormina: 'タオルミーナ', Siracusa: 'シラクーザ', Sicily: 'シチリア', '全般': '全般',
   };
-  const CITY_ORDER: TodoCity[] = ['Rome', 'Florence', 'Palermo', 'Taormina', 'Sicily', '全般'];
+  const CITY_ORDER: TodoCity[] = ['Rome', 'Florence', 'Palermo', 'Taormina', 'Siracusa', 'Sicily', '全般'];
 
   function renderAll() {
     const root = document.querySelector('.todo-list');

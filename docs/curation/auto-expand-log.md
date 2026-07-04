@@ -335,3 +335,44 @@ Taormina/pasticceria:  16/20 (gap 4)
 - 全 27 cell が **15+/20 達成済み**、**13 cell (48%) が 20+ 件達成**
 - 残り 14 cell (gap 1-2) はあと 1 ラウンドで完全制覇可能だが、品質的にはここで打ち止めが正解
 - 16 ラウンド = 128 並列サブエージェント = 約 $20+ 相当の Anthropic API 費用を **コストゼロで実現**
+
+## 2026-07-04 セッション #2: Siracusa 初期キュレーション (D-033)
+
+**方式**: セッション #1 と同様の Claude Code サブエージェント並列リサーチ。今回は**モデルを Sonnet に明示指定**し、候補 JSON はスクラッチパッドへのファイル渡し (メイン文脈に流さない) でトークンを節約。
+
+**背景**: シチリアの訪問先をパレルモ → シラクーザに変更。`Siracusa` を city タクソノミーに追加した上で、Palermo と同じ 7 ジャンルを 1 ラウンドで並列カバー。
+
+### Round 1 (63 件採用 / 70 候補、7 件はジャンル間重複で除外)
+
+Cells: Siracusa × {trattoria, osteria, ristorante, pizzeria, pasticceria, gelateria, paninoteca} (7 並列 × 各 10 件目標)
+
+成果ハイライト:
+- ristorante: Cortile Spirito Santo (Michelin 1★)、Don Camillo、Archè Fine Dining
+- pizzeria: Piano B (50 Top Pizza)、Era Ora Ortigia、Meditè
+- trattoria/osteria: Slow Food 系 (Latteria Mamma Iabica、Apollonion - Osteria da Carlo、Osteria da Mariano)
+- paninoteca: Caseificio Borderi、Fratelli Burgio (Mercato di Ortigia の名物 2 強)
+- gelateria: Don Peppinu (TasteAtlas 選出)、Voglia Matta
+- pasticceria: Pasticceria Artale、Amandorla Marciante、Bar Leonardi 1973
+
+ジャンル間重複の解決 (7 組、同住所・同 URL 根拠):
+Mamma Iabica (trattoria 残)、La Dogana (trattoria 残)、La Casa di Carlo (osteria 残)、Ostaria Siracusa (osteria 残)、Artale (pasticceria 残)、Bar Leonardi (pasticceria 残)、Midolo (pasticceria 残)
+
+532 → 595
+
+### Cell × Count (2026-07-04 終了時点)
+
+```
+Siracusa: 63
+  pizzeria:10, pasticceria:10, trattoria:9, ristorante:9, paninoteca:9,
+  osteria:8, gelateria:8
+  エリア分布: Ortigia 42, Tyche 8, Santa Lucia 7, Borgata 5, Neapolis 1
+```
+
+ジオコーディング: 47/63 件を Nominatim で番地レベルに補正 (`--city=Siracusa` フィルタを geocode.mjs に追加)。残り 15 件は地区中心の概算値 (no match / sanity skip)。
+
+| 指標 | 値 |
+|---|---|
+| 並列サブエージェント数 | 7 (Sonnet) |
+| サブエージェント合計トークン | 約 42 万 (メイン文脈への流入は要約のみ) |
+| 採用 / 候補 | 63 / 70 |
+| API コスト | $0 (Anthropic API 不使用、Claude Code セッション内) |

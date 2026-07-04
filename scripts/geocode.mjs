@@ -18,7 +18,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const TARGET = resolve(__dirname, '../data/restaurants.json');
 
 const APPLY = process.argv.includes('--apply');
-const MAX = 50;
+const CITY_FILTER = (process.argv.find((a) => a.startsWith('--city=')) ?? '').slice('--city='.length);
+const MAX = Number((process.argv.find((a) => a.startsWith('--max=')) ?? '').slice('--max='.length)) || 50;
 const WAIT_MS = 1100;
 const USER_AGENT = 'italia-gohan-map/0.1 (https://github.com/shintaro-kawa/italia-gohan-map)';
 
@@ -28,6 +29,7 @@ const CITY_NAME_MAP = {
   Florence: ['firenze'],
   Palermo: ['palermo'],
   Taormina: ['taormina'],
+  Siracusa: ['siracusa', 'syracuse'],
   Sicily: ['sicilia'],
 };
 
@@ -51,7 +53,9 @@ async function geocode(address) {
 const data = JSON.parse(await readFile(TARGET, 'utf-8'));
 
 // 住所があるエントリすべてが対象（既に正確な座標は dry-run で "already accurate" としてスキップ）
-const candidates = data.filter((r) => r.address && r.address.trim().length > 0);
+const candidates = data.filter(
+  (r) => r.address && r.address.trim().length > 0 && (!CITY_FILTER || r.city === CITY_FILTER),
+);
 
 console.log(`Total entries: ${data.length}`);
 console.log(`Candidates with address + shared coord: ${candidates.length}`);

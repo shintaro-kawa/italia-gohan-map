@@ -18690,5 +18690,2229 @@
       }
     ],
     "lastAnalyzed": "2026-05-25"
+  },
+  {
+    "id": "siracusa-c7aa427e",
+    "name": "Latteria Mamma Iabica",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "trattoria",
+    "priceRange": "€€",
+    "lat": 37.059,
+    "lng": 15.2935,
+    "address": "Via G. B. Perasso, 13, 96100 Siracusa SR",
+    "visited": false,
+    "url": "http://www.mammaiabica.com/en/",
+    "tags": [
+      "slow-food-chiocciola",
+      "vintage-atmosphere",
+      "home-cooking"
+    ],
+    "source": "slow-food",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Slow Food Osterie d'Italia のシオッコラ(最高評価)を獲得。siracusanews.it が2度にわたり紹介、allfoodsicily.it も2024年版で確認"
+      },
+      {
+        "type": "hidden-gem",
+        "note": "1950年代シチリアの乳製品バー『latteria』の雰囲気を再現したヴィンテージ・ブティック風の内装"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-b533e12f",
+    "name": "Trattoria O'Scinà",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "trattoria",
+    "priceRange": "€",
+    "lat": 37.061542,
+    "lng": 15.2932644,
+    "address": "Via Domenico Scinà, 12, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://ristorantiinsicilia.it/dove-mangiare-a-siracusa-e-ortigia-ristoranti-e-trattorie/",
+    "tags": [
+      "market-fresh",
+      "sicilian-classics",
+      "value-menu"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "料理は€4〜€12と非常に手頃。ristorantiinsicilia.it と magazine.bernabei.it の2媒体で共に紹介"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "近隣の旧市場から食材を調達し、地域の歴史と文化を反映したシチリア料理を提供"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-1bfa87c7",
+    "name": "Trattoria La Foglia",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "trattoria",
+    "priceRange": "€€",
+    "lat": 37.0575201,
+    "lng": 15.2939546,
+    "address": "Via Capodieci, 29, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d1345003-Reviews-Trattoria_La_Foglia-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "sarde-a-beccafico",
+      "no-frills",
+      "traditional-recipes"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "not-authentic",
+        "severity": "low",
+        "note": "内装がやや『キッチュ』と評されるが、料理自体はシラクーザの伝統的トラットリア料理をより洗練させたもの、と複数媒体が指摘"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "サルデ・ア・ベッカフィコとレモンの葉包み焼きムール貝が名物。magazine.bernabei.it、ristorantiinsicilia.it、TripAdvisorの3系統で言及"
+      },
+      {
+        "type": "value-for-money",
+        "note": "TripAdvisorレビューで、新鮮な素材と丁寧な調理、量の多さがコスパの良さとして評価されている"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-29d8ca53",
+    "name": "La Tavernetta Uno da Simone",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "trattoria",
+    "priceRange": "€€",
+    "lat": 37.0619637,
+    "lng": 15.2929283,
+    "address": "Via Cavour, 44, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.latavernettadasimone.it/",
+    "tags": [
+      "gnocchi-alla-siracusana",
+      "family-run",
+      "duomo-vicinity"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "1人あたり€20〜€30程度で、パッケリのカボチャ・エビ・スカンピクリーム和えやシラクーザ風ニョッキなど伝統的な農家料理が楽しめる(ristorantiinsicilia.it)"
+      },
+      {
+        "type": "family-run",
+        "note": "公式サイトで『Trattoria tipica siciliana』を掲げる家族経営店。ドゥオモ広場から徒歩圏"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-df8a516e",
+    "name": "Sorelle Bandiera",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "trattoria",
+    "priceRange": "€€",
+    "lat": 37.0651062,
+    "lng": 15.292914,
+    "address": "Via Trento, 29, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://ristorantiinsicilia.it/dove-mangiare-a-siracusa-e-ortigia-ristoranti-e-trattorie/",
+    "tags": [
+      "informal",
+      "grilled-octopus",
+      "local-classics"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "overpriced",
+        "severity": "low",
+        "note": "ristorantiinsicilia.it によれば価格帯はやや平均以上だが妥当な範囲内"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "タコのロースト、ナス料理が推奨メニューとして紹介されている"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-c3868cf5",
+    "name": "Trattoria La Pigna",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "trattoria",
+    "priceRange": "€€",
+    "lat": 37.0583583,
+    "lng": 15.2941309,
+    "address": "Via della Conciliazione, 12, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d21203278-Reviews-Trattoria_La_Pigna-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "fresh-catch-of-the-day",
+      "seafood",
+      "husband-and-wife-run"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "hidden-gem",
+        "note": "観光客の罠を避けたい人向けの『安心できる』静かな一角にある店として複数のグルメサイトが紹介"
+      },
+      {
+        "type": "family-run",
+        "note": "オーナーFrancescoと料理担当の妻Patriziaが営む夫婦経営。TheForkで9.4/10、NuovaOpinioneで613件レビュー平均4.8/5"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "獲れたての魚とロブスターをトレーに載せてテーブルに見せる演出が好評"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-2035f7b0",
+    "name": "Trattoria La Dogana",
+    "city": "Siracusa",
+    "area": "Borgata",
+    "genre": "trattoria",
+    "priceRange": "€€",
+    "lat": 37.064793,
+    "lng": 15.2894777,
+    "address": "Via della Dogana, 11, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.ladoganacucina.com/",
+    "tags": [
+      "home-cooking",
+      "generous-portions",
+      "near-ortigia-bridge"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "古いトラットリア/オステリアの精神を受け継ぎ、代々伝わるレシピと元来の味を大切にする家庭料理を提供"
+      },
+      {
+        "type": "signature-dish",
+        "note": "本格シチリア料理として海と山両方の料理、量の多さと家庭的な雰囲気が評価されている"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-fa5563f7",
+    "name": "Rittufilu Food Trattoria",
+    "city": "Siracusa",
+    "area": "Borgata",
+    "genre": "trattoria",
+    "priceRange": "€€",
+    "lat": 37.0656305,
+    "lng": 15.2874405,
+    "address": "Corso Umberto I, 65, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.rittufilu.com/",
+    "tags": [
+      "near-umbertino-bridge",
+      "sicilian-authenticity",
+      "friendly-service"
+    ],
+    "source": "reddit-local",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "TripAdvisorで『本物のシチリア料理』『質の高い食材』『フレンドリーな雰囲気』と評価され、コスパの良さが強調されている"
+      },
+      {
+        "type": "hidden-gem",
+        "note": "オルティージャ橋(ウンベルティーノ橋)から徒歩圏、観光の中心を少し外れた立地"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-3f8a6ccf",
+    "name": "Trattoria La Spigola",
+    "city": "Siracusa",
+    "area": "Santa Lucia",
+    "genre": "trattoria",
+    "priceRange": "€€",
+    "lat": 37.0655962,
+    "lng": 15.2891724,
+    "address": "Via Senatore Gaetano Moscuzza, 3, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d3911696-Reviews-Trattoria_la_Spigola-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "seafood-trattoria",
+      "mixed-grill",
+      "local-favorite"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "魚介のグリリアータ・ミスタとピスタチオ添えのメカジキが好評、平均的な価格帯と評されている"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-3e62aa1d",
+    "name": "Ostaria Siracusa - Cucina e Vino",
+    "city": "Siracusa",
+    "area": "Santa Lucia",
+    "genre": "osteria",
+    "priceRange": "€€€",
+    "lat": 37.078,
+    "lng": 15.286,
+    "address": "Via G. B. Perasso 10/12, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://ostariasiracusa.it/",
+    "tags": [
+      "dry-aged-meat",
+      "josper-grill",
+      "wine-cellar",
+      "modern-osteria"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Awarded 'Due Forchette' (Two Forks) by Gambero Rosso guide, chef Alessandro Pittori (source: gamberorosso.it via siracusanews.it, siracusapress.it)"
+      },
+      {
+        "type": "innovative",
+        "note": "Opened 2019 by three friends as an alternative dining concept; menu changes every ~60 days with organic eggs and seasonal produce"
+      },
+      {
+        "type": "value-for-money",
+        "note": "Large curated wine cellar including Nebbiolo, Amarone, Brunello alongside local Sicilian labels"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-5def643c",
+    "name": "Osteria La Casa di Carlo",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "osteria",
+    "priceRange": "€€",
+    "lat": 37.0582193,
+    "lng": 15.2941155,
+    "address": "Via della Conciliazione 12/14, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d6621876-Reviews-Osteria_La_Casa_di_Carlo-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "near-duomo",
+      "syracusan-cuisine",
+      "grilled-swordfish"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "Cited as a fair-priced, simple and informal option just steps from the Duomo (source: ristorantiinsicilia.it aggregation)"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Grilled swordfish with tomato and mixed seafood antipasto frequently praised"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-3608a7d1",
+    "name": "Apollonion - Osteria da Carlo",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "osteria",
+    "priceRange": "€€",
+    "lat": 37.0633007,
+    "lng": 15.2930731,
+    "address": "Via Carmelo Campisi 18, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d1816810-Reviews-Apollonion_Osteria_Da_Carlo-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "seafood",
+      "tasting-menu",
+      "tucked-away"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "long-wait",
+        "severity": "low",
+        "note": "High demand; reservation strongly recommended, often fully booked at peak times"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "Open since 2005, on a quiet side street in Ortigia"
+      },
+      {
+        "type": "value-for-money",
+        "note": "4.5/5 on Tripadvisor with 2,282+ reviews; affordable seafood tasting menu around €35-40"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Extensive raw and cooked seafood tasting menu is the highlight"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-80b9d387",
+    "name": "Al Gambero Rosso Osteria Pizzeria",
+    "city": "Siracusa",
+    "area": "Santa Lucia",
+    "genre": "osteria",
+    "priceRange": "€€",
+    "lat": 37.0654742,
+    "lng": 15.2880027,
+    "address": "Corso Umberto I 41, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.thefork.it/ristorante/al-gambero-rosso-r816941",
+    "tags": [
+      "fish",
+      "pizza",
+      "family-friendly"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "not-authentic",
+        "severity": "low",
+        "note": "Also operates as pizzeria, so menu leans broader than a pure osteria"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "9.2/10 TheFork, 4.7 PagineGialle, 'Fabulous' 9.3 on ViaMichelin (165 reviews); average price ~€30"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Paccheri with scampi and pistachio cream frequently mentioned"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-8071dbe5",
+    "name": "Osteria del Vecchio Ponte",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "osteria",
+    "priceRange": "€€",
+    "lat": 37.062,
+    "lng": 15.293,
+    "address": "near Ponte Umbertino (old bridge to Ortigia), 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d7029468-Reviews-Osteria_Del_Vecchio_Ponte-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "small-venue",
+      "fish",
+      "near-bridge"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "hidden-gem",
+        "note": "Small ~30 sqm venue seating about 30, near the old bridge connecting mainland Siracusa to Ortigia"
+      },
+      {
+        "type": "value-for-money",
+        "note": "4.5/5 on Tripadvisor (777 reviews); ~€30/person for full multi-course meal with wine"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Grouper, tuna and lobster linguine highlighted in reviews"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-a4514390",
+    "name": "Osteria del Principe - La Cantinaccia",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "osteria",
+    "priceRange": "€€",
+    "lat": 37.0640342,
+    "lng": 15.2923331,
+    "address": "Via XX Settembre 13, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.osteriadelprincipe.eu/",
+    "tags": [
+      "seafood",
+      "two-generations",
+      "pizzeria-evening"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "medium",
+        "note": "Large capacity (100+ indoor seats, 50+ veranda) near marina entrance to Ortigia; also serves pizza evenings, leaning toward broader tourist trade"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "Open 30 years, run for two generations, Sicilian and Syracusan tradition dishes"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "Reviews highlight freshness and quality of seafood/local catch"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-e3dcd1e0",
+    "name": "Osteria da Mariano",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "osteria",
+    "priceRange": "€€",
+    "lat": 37.0572391,
+    "lng": 15.2939987,
+    "address": "Vicolo Zuccolà 9, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.osteriamariano.it/",
+    "tags": [
+      "family-run",
+      "near-duomo",
+      "sicilian-tradition"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "family-run",
+        "note": "Salafia family has run the osteria for 3 generations in the heart of Ortigia"
+      },
+      {
+        "type": "hidden-gem",
+        "note": "Tucked in a small alley near Piazza Duomo, outdoor tables under flowered balconies"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Cavatelli, caponata and penne alla siracusana noted specialties; Sluurpy score 77"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-f3d3497d",
+    "name": "Osteria da Seby",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "osteria",
+    "priceRange": "€€",
+    "lat": 37.0628667,
+    "lng": 15.293971,
+    "address": "Via Vincenzo Mirabella 21, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://sebylosteria.it/",
+    "tags": [
+      "km-zero",
+      "evolved-from-deli",
+      "sicilian-tradition"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "TheFork 9.2/10 (food 9.4, service 9.4, atmosphere 9.3); ViaMichelin 'Fabulous' 9.3 (383 reviews), ~€29/person"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Praised for excellent caponata and km-0 fresh fish served both raw and cooked"
+      },
+      {
+        "type": "hidden-gem",
+        "note": "Evolved from a small neighborhood delicatessen into a beloved osteria"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-73c98134",
+    "name": "Cortile Spirito Santo",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "ristorante",
+    "priceRange": "€€€€",
+    "lat": 37.0568,
+    "lng": 15.2934,
+    "address": "Via Santa Teresa 8 (Palazzo Salomone Luxury Suites), 96100 Siracusa, Ortigia",
+    "visited": false,
+    "url": "https://guide.michelin.com/en/it/sicilia/siracusa/restaurant/cortile-spirito-santo",
+    "tags": [
+      "fine-dining",
+      "sicilian-creative",
+      "hotel-restaurant"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "overpriced",
+        "severity": "low",
+        "note": "€€€€帯、観光客も多いフォーラム近く"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Michelin 1★ 2025/2026 (Guida Michelin Italia)。シェフGiuseppe Torrisi"
+      },
+      {
+        "type": "innovative",
+        "note": "パラモニタとオルティジャの赤エビ、ラビオリにソーセージ・カリフラワー・ペコリーノDOP・スマックなど地元食材を創造的に再構築"
+      },
+      {
+        "type": "signature-dish",
+        "note": "アーモンドタルトレット『Made in Sicily』(シチリア島の形)"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-0810ca9b",
+    "name": "Don Camillo",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "ristorante",
+    "priceRange": "€€€",
+    "lat": 37.0608089,
+    "lng": 15.2965024,
+    "address": "Via della Maestranza 96, 96100 Siracusa, Ortigia",
+    "visited": false,
+    "url": "https://www.ristorantedoncamillosiracusa.it/",
+    "tags": [
+      "historic",
+      "sicilian-classic",
+      "wine-list"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "1985年からシェフGiovanni Guarneriが厨房を統括。15世紀の凝灰岩壁が残る歴史的な店内"
+      },
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso 2025 『Due Forchette』"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "オルティジャの老舗として地元でも評価が高い"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-69b19d3c",
+    "name": "Il Tiranno (Caportigia Restaurant)",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "ristorante",
+    "priceRange": "€€€",
+    "lat": 37.0588,
+    "lng": 15.2915,
+    "address": "Viale Montedoro 78 (Caportigia Boutique Hotel), 96100 Siracusa, Ortigia",
+    "visited": false,
+    "url": "https://iltiranno.it/en/",
+    "tags": [
+      "hotel-restaurant",
+      "view",
+      "sicilian-classic"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "low",
+        "note": "フォーラム(古代遺跡)を望むホテル内レストランで観光客比率がやや高め"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso 2025 『Una Forchetta』。Identità Golose 2024『注目シェフ』にシェフValentina Galliが選出"
+      },
+      {
+        "type": "innovative",
+        "note": "伝統料理を再解釈するミラノ出身シェフValentina Galliの料理"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-d4fa37aa",
+    "name": "Regina Lucia Ristorante",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "ristorante",
+    "priceRange": "€€€",
+    "lat": 37.0587889,
+    "lng": 15.2931052,
+    "address": "Piazza Duomo 6, 96100 Siracusa, Ortigia",
+    "visited": false,
+    "url": "https://www.reginaluciaristorante.com/",
+    "tags": [
+      "duomo-view",
+      "tasting-menu",
+      "contemporary-italian"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "medium",
+        "note": "ドゥオーモ広場の一等地で観光客向けの色合いが強い"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "70〜90€の3種テイスティングメニューを提供。18世紀の貴族邸宅を改装した空間からドゥオーモを一望"
+      },
+      {
+        "type": "family-run",
+        "note": "シェフ兼オーナーのRoberta GalloとSalvatore Calleriが運営"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-e0be08f9",
+    "name": "Ranieri - Cucina, Chiacchiere e Vino",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "ristorante",
+    "priceRange": "€€",
+    "lat": 37.0588728,
+    "lng": 15.2957551,
+    "address": "Piazza San Giuseppe 8, 96100 Siracusa, Ortigia",
+    "visited": false,
+    "url": "https://www.ranierirestaurantortigia.com/",
+    "tags": [
+      "seafood",
+      "mediterranean",
+      "value-for-money"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "fresh-ingredients",
+        "note": "新鮮な魚介類と地元産食材を用いた地中海料理"
+      },
+      {
+        "type": "value-for-money",
+        "note": "€€の中価格帯で質の高い料理と評判"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-a125a182",
+    "name": "La Zaituna (Hotel Donna Coraly)",
+    "city": "Siracusa",
+    "area": "Borgata",
+    "genre": "ristorante",
+    "priceRange": "€€€",
+    "lat": 37.043,
+    "lng": 15.265,
+    "address": "Contrada San Michele, 96100 Siracusa",
+    "visited": false,
+    "url": "https://www.donnacoraly.it/la-zaituna/",
+    "tags": [
+      "countryside",
+      "zero-km",
+      "hotel-restaurant"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "long-wait",
+        "severity": "low",
+        "note": "市街地Ortigiaから離れた郊外リゾート内、車移動が必要"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso 2025 『Una Forchetta』。シェフVincenzo Di Falco"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "ゼロキロ食材を用いたエレガントなシチリア料理"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-e158f608",
+    "name": "Ristorante Porta Marina da Salvo",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "ristorante",
+    "priceRange": "€€€",
+    "lat": 37.0618803,
+    "lng": 15.2920498,
+    "address": "Via dei Candelai 35, 96100 Siracusa, Ortigia",
+    "visited": false,
+    "url": "https://www.ristoranteportamarina.it/en/",
+    "tags": [
+      "seafood",
+      "historic-building",
+      "signature-pasta"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "2000年創業、シェフSalvo Di Mauro。15世紀の石造りヴォールト天井の建物"
+      },
+      {
+        "type": "signature-dish",
+        "note": "『Spaghetti alla Salvo』(パキーノの赤エビ、チェリートマト、アヴォラのアーモンド、燻製メカジキ)"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-f60b5b46",
+    "name": "La Terrazza del Grand Hotel Ortigia",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "ristorante",
+    "priceRange": "€€€€",
+    "lat": 37.057,
+    "lng": 15.2955,
+    "address": "Viale Mazzini 12 (Grand Hotel Ortigia), 96100 Siracusa, Ortigia",
+    "visited": false,
+    "url": "https://www.laterrazzadelgrandhotelortigia.it/",
+    "tags": [
+      "sea-view",
+      "hotel-restaurant",
+      "seasonal-menu"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "medium",
+        "note": "5つ星ホテル内、マリーナを望む観光客向けロケーション"
+      },
+      {
+        "type": "overpriced",
+        "severity": "medium",
+        "note": "€€€€帯でホテルレストランのプレミアム価格"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "seasonal-menu",
+        "note": "季節ごとに変わるクラシックなシチリア料理、10コースの試食メニューあり"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-a3d72218",
+    "name": "Archè Fine Dining",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "ristorante",
+    "priceRange": "€€€",
+    "lat": 37.062,
+    "lng": 15.29,
+    "address": "Via Trieste ang. Via Raffaele Lanza 16, 96100 Siracusa, Ortigia",
+    "visited": false,
+    "url": "https://www.instagram.com/archerestaurant/",
+    "tags": [
+      "seafood",
+      "market-fresh",
+      "hidden-gem"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "low",
+    "verdict": "neutral",
+    "highlights": [
+      {
+        "type": "hidden-gem",
+        "note": "オルティジャの市場裏手に位置し、地元客からも評価される小規模店"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "シーフードスープ、ムール貝、メカジキ料理、カポナータが好評"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-6c266936",
+    "name": "Piano B",
+    "city": "Siracusa",
+    "area": "Santa Lucia",
+    "genre": "pizzeria",
+    "priceRange": "€€€",
+    "lat": 37.0647315,
+    "lng": 15.2879897,
+    "address": "Via Cairoli, 18, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.50toppizza.it/en/referenza/piano-b/",
+    "tags": [
+      "gourmet-pizza",
+      "km0-ingredients",
+      "pala-romana",
+      "padellino",
+      "mother-yeast"
+    ],
+    "source": "50-top-pizza",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "50 Top Pizza Italia 2025: 83esima posizione; Gambero Rosso Tre Spicchi con punteggio 92/100"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Pizzaiolo Friedrich Schmuck offre pala romana, napoletana e padellino con farine di alta qualità e lievito madre"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-a6f18220",
+    "name": "Era Ora Ortigia",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "pizzeria",
+    "priceRange": "€€€",
+    "lat": 37.062,
+    "lng": 15.294,
+    "address": "Via Riva Giuseppe Garibaldi, 10, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.eraoraortigia.it/",
+    "tags": [
+      "contemporary-pizza",
+      "wood-fired-oven",
+      "sicilian-style"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Gambero Rosso Tre Spicchi, punteggio 90/100; già premiata come miglior pizzaiolo emergente 2022"
+      },
+      {
+        "type": "innovative",
+        "note": "Pizzeria contemporanea aperta nel 2020 nel cuore di Ortigia, guidata da Concetto Fiorentino"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-c4b43750",
+    "name": "Meditè",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 37.0688797,
+    "lng": 15.2905297,
+    "address": "Riva Porto Lachio, 9, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.meditesiracusa.it/",
+    "tags": [
+      "seaview",
+      "neapolitan-style",
+      "gourmet-toppings"
+    ],
+    "source": "50-top-pizza",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "Inclusa nella guida 50 Top Pizza"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Pizza leggera con cornicione croccante, diverse interpretazioni di margherita e mini pizze in padellino, vista sul porto"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-4f0f7922",
+    "name": "Fly City",
+    "city": "Siracusa",
+    "area": "Tyche",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 37.082,
+    "lng": 15.283,
+    "address": "Via Mons. Ettore Baranzini, 3, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.flycity.it/",
+    "tags": [
+      "locals-favorite",
+      "takeaway-available"
+    ],
+    "source": "other",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "locals-frequent",
+        "note": "Valutazione 9.5/10 su TheFork tra gli utenti locali, vicino al Santuario Madonna delle Lacrime, fuori dal circuito turistico di Ortigia"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-31995208",
+    "name": "Triscele Ristorante Pizzeria",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 37.0569876,
+    "lng": 15.2941574,
+    "address": "Via Santa Teresa, 12/18, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://ristorantetriscelesiracusa.it/en/",
+    "tags": [
+      "seafood-and-pizza",
+      "stone-walls",
+      "near-fonte-aretusa"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "Valutazioni alte su TheFork: cibo 9.1/10, atmosfera e servizio 9.2/10"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-2c357c5e",
+    "name": "Ai Grani Antichi",
+    "city": "Siracusa",
+    "area": "Neapolis",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 37.0765,
+    "lng": 15.2795,
+    "address": "Via Agnello Giuseppe, 7, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.thefork.it/ristorante/ai-grani-antichi-r277437",
+    "tags": [
+      "ancient-grains",
+      "tumminia-flour",
+      "garden-seating",
+      "near-neapolis-park"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "Impasti con farine di grani antichi siciliani (tumminia, perciasacchi, maiorca)"
+      },
+      {
+        "type": "hidden-gem",
+        "note": "All'ingresso del Parco Archeologico della Neapolis, ambiente tranquillo con giardino; 8.8/10 su TheFork"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-e431f6d0",
+    "name": "Locanda del Collegio",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 37.0605777,
+    "lng": 15.2927122,
+    "address": "Via del Collegio, 13/15, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://locandadelcollegio.com/",
+    "tags": [
+      "near-duomo",
+      "seafood-and-pizza"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "Ristorante pizzeria a pochi passi dal Duomo, specializzato in ricette di mare oltre alla pizza"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-86344ac7",
+    "name": "Xenia - Ristorante & Pinseria",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 37.0653463,
+    "lng": 15.2925046,
+    "address": "Via Trieste, 31, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.xeniasiracusa.it/",
+    "tags": [
+      "pinsa-romana",
+      "near-market",
+      "mediterranean-cuisine"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "Pinsa romana con materie prime locali (olio extravergine, pomodori, formaggi e salumi artigianali), all'ingresso di Ortigia vicino al mercato storico"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-e809ee27",
+    "name": "Anima e Core",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 37.0625,
+    "lng": 15.29,
+    "address": "Via Claudio Mario Arezzo, 9, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://ristorantiinsicilia.it/pizzerie-a-siracusa-6-locali-consigliati/",
+    "tags": [
+      "ancient-grains",
+      "fried-pizza",
+      "cozy-small-venue"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "Fonde tradizione napoletana e sapori siciliani, varianti di grani antichi e pizza fritta; ambiente piccolo e conviviale vicino alla Fontana di Diana"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-766db832",
+    "name": "Pizzeria Tica",
+    "city": "Siracusa",
+    "area": "Borgata",
+    "genre": "pizzeria",
+    "priceRange": "€€",
+    "lat": 37.0840684,
+    "lng": 15.2834915,
+    "address": "Viale Tica, 98, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://ristorantiinsicilia.it/pizzerie-a-siracusa-6-locali-consigliati/",
+    "tags": [
+      "gluten-free-options",
+      "family-owned"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "Attiva da oltre 20 anni, gestita dal campione del mondo di acrobazia con la pizza Luca Lanza"
+      },
+      {
+        "type": "family-run",
+        "note": "Ampliata nel 2019, offre pizze classiche, speciali e opzioni senza glutine"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-25038056",
+    "name": "Pasticceria Artale",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "pasticceria",
+    "priceRange": "€€",
+    "lat": 37.0596,
+    "lng": 15.2926,
+    "address": "Via Vittorio Veneto / Via Landolina, Ortigia, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.pasticceriaartale.it/",
+    "tags": [
+      "cannoli",
+      "granita",
+      "cassata",
+      "storico"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "crowded-noisy",
+        "severity": "low",
+        "note": "Recensioni la descrivono come 'sempre piena di gente', locale storico molto frequentato in pieno centro Ortigia"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "Laboratorio artigianale attivo dal 1950 circa, gestione familiare da oltre 40 anni"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Cannolo farcito al momento e granita (pistacchio/limone/mandorla) citati come tra i migliori di Ortigia in numerose recensioni Tripadvisor"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-40c1ab2e",
+    "name": "Amandorla Marciante",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "pasticceria",
+    "priceRange": "€€",
+    "lat": 37.0610193,
+    "lng": 15.2933305,
+    "address": "Via Amalfitania, 10, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.amandorlamarciante.it/",
+    "tags": [
+      "pasta-di-mandorla",
+      "frutta-martorana",
+      "cannoli",
+      "vicino-duomo"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "Storica pasticceria di mandorle attiva dai primi del '900, a pochi passi dal Duomo di Ortigia"
+      },
+      {
+        "type": "hidden-gem",
+        "note": "Recensione Tripadvisor la definisce 'la miglior pasticceria di Ortigia', distinta dalle 'trappole turistiche' per passione e competenza del maestro pasticcere"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Dolcini di mandorla, Occhi di S. Lucia, Cuccìa e Cassatella Siracusana come specialità esclusive"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-5c9e7097",
+    "name": "Pasticceria Midolo",
+    "city": "Siracusa",
+    "area": "Borgata",
+    "genre": "pasticceria",
+    "priceRange": "€",
+    "lat": 37.0659169,
+    "lng": 15.287142,
+    "address": "Corso Umberto I, 86, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "http://www.barmidolo.it/",
+    "tags": [
+      "cannoli",
+      "arancini",
+      "storico",
+      "clientela-locale"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "long-wait",
+        "severity": "low",
+        "note": "Servizio al banco descritto come efficiente ma a tratti sbrigativo per l'alta affluenza"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "Istituzione cittadina dal 1950, fuori dai circuiti turistici di Ortigia"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "Punto di riferimento quotidiano per i siracusani, molto frequentata da clientela locale abituale"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Cannoli farciti al momento con ricotta ben bilanciata, descritti come tra i migliori della città"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-11788740",
+    "name": "Pasticceria Brancato",
+    "city": "Siracusa",
+    "area": "Santa Lucia",
+    "genre": "pasticceria",
+    "priceRange": "€€",
+    "lat": 37.0838,
+    "lng": 15.2919,
+    "address": "Via Pitia 8 / Via Grottasanta 219, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.brancatopasticceria.it/",
+    "tags": [
+      "paste-di-mandorla",
+      "torta-don-camillo",
+      "granita",
+      "gluten-free"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "family-run",
+        "note": "Aperta da papà Antonio nel 1984, oggi gestita con affiancamento di consulenti pasticceri (Paolo Magni) dopo recensione del critico Luigi Cremona nel 2001"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Torta Don Camillo (crema al pistacchio) e Torta al Limone Verdello IGP di Siracusa citate come specialità distintive"
+      },
+      {
+        "type": "innovative",
+        "note": "Granita dai colori naturali molto apprezzata, tra i pasticceri più rinomati della zona secondo farinapetra.it"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-2464caf7",
+    "name": "Pasticceria Rizzo",
+    "city": "Siracusa",
+    "area": "Tyche",
+    "genre": "pasticceria",
+    "priceRange": "€€",
+    "lat": 37.0852647,
+    "lng": 15.2871778,
+    "address": "Via Polibio 72-80, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.rizzopasticceri.com/",
+    "tags": [
+      "pasta-di-mandorla",
+      "frutta-martorana",
+      "banqueting",
+      "catering"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "neutral",
+    "highlights": [
+      {
+        "type": "family-run",
+        "note": "Fondata nel 1975 da Santo Rizzo, oltre 40 anni di esperienza nella tradizione dolciaria siciliana"
+      },
+      {
+        "type": "value-for-money",
+        "note": "Offerta ampia (pasticceria, gelateria, catering per matrimoni ed eventi) mantenendo prezzi nella media locale"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-e3a4cd67",
+    "name": "Pasticceria Le Voglie di Giuseppe Scorpo",
+    "city": "Siracusa",
+    "area": "Tyche",
+    "genre": "pasticceria",
+    "priceRange": "€",
+    "lat": 37.0772255,
+    "lng": 15.2908082,
+    "address": "Via Pescara 36-38, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.pasticcerialevoglie.it/",
+    "tags": [
+      "cannoli-ricotta",
+      "mandorle-avola",
+      "granita",
+      "semifreddi"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "fresh-ingredients",
+        "note": "Utilizzo di mandorle di Avola e ingredienti locali genuini, ricette tradizionali siracusane"
+      },
+      {
+        "type": "value-for-money",
+        "note": "Attiva da 20 anni fuori dal circuito turistico di Ortigia, aderisce al programma anti-spreco Too Good To Go"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-cfc25b4c",
+    "name": "Alfio Neri - Cannolo Terapia",
+    "city": "Siracusa",
+    "area": "Tyche",
+    "genre": "pasticceria",
+    "priceRange": "€€",
+    "lat": 37.0750514,
+    "lng": 15.2836281,
+    "address": "Via Pausania 3-5-9, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.alfioneri.it/",
+    "tags": [
+      "cannolo-al-momento",
+      "rosticceria",
+      "granita",
+      "esperienza-degustazione"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "Ideatore della 'Cannolo Terapia': cannolo farcito rigorosamente al momento, mai preparato in anticipo, presentato come vera e propria esperienza degustativa"
+      },
+      {
+        "type": "family-run",
+        "note": "Gestione familiare dei fratelli Neri (Franco, Salvatore, Massimo), laboratorio artigianale aperto 365 giorni l'anno"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-4a2f82b6",
+    "name": "Pasticceria Uccello",
+    "city": "Siracusa",
+    "area": "Tyche",
+    "genre": "pasticceria",
+    "priceRange": "€",
+    "lat": 37.0852402,
+    "lng": 15.2518672,
+    "address": "Via Monte Pellegrino, 23, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://www.pasticceriauccello.com/",
+    "tags": [
+      "cannoli-ricotta",
+      "quartiere-epipoli",
+      "gelato",
+      "granita"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "low",
+    "verdict": "neutral",
+    "highlights": [
+      {
+        "type": "family-run",
+        "note": "Attività di famiglia nel quartiere Epipoli, aperta nel 1999 dal maestro Michele (in laboratorio dai 15 anni), oggi con i figli"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "Situata fuori dal centro turistico, punto di riferimento per il quartiere"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-abf2ee4a",
+    "name": "Bar Leonardi 1973",
+    "city": "Siracusa",
+    "area": "Tyche",
+    "genre": "pasticceria",
+    "priceRange": "€",
+    "lat": 37.0750369,
+    "lng": 15.2831837,
+    "address": "Via Socrate, 17/23, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://pasticcerialeonardi.com/",
+    "tags": [
+      "cassata",
+      "cannoli",
+      "rosticceria",
+      "gelateria"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "low",
+    "verdict": "neutral",
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "Attivo dal 1973, combina bar, rosticceria, gelateria e pasticceria"
+      },
+      {
+        "type": "family-run",
+        "note": "Gestione familiare storica, partner Illy Coffee"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-84338b29",
+    "name": "Piazza Archimede Caffè",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "pasticceria",
+    "priceRange": "€€€",
+    "lat": 37.0614,
+    "lng": 15.2937,
+    "address": "Piazza Archimede, 22, 96100 Siracusa (SR)",
+    "visited": false,
+    "url": "https://piazzarchimede.com/en/",
+    "tags": [
+      "alta-pasticceria",
+      "cannoli",
+      "baba",
+      "aperitivo",
+      "piazza-storica"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "low",
+    "verdict": "neutral",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "medium",
+        "note": "Posizione centralissima in Piazza Archimede, una delle piazze più turistiche di Ortigia, con offerta estesa anche ad aperitivo e pranzo"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "Alta pasticceria siciliana con cannoli, babà e dolci monoporzione in ambiente raffinato"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-78d3118b",
+    "name": "Voglia Matta",
+    "city": "Siracusa",
+    "area": "Santa Lucia",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 37.065425,
+    "lng": 15.2888708,
+    "address": "Corso Umberto I, 34, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d3410861-Reviews-Voglia_Matta-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "granita",
+      "brioche",
+      "pistacchio",
+      "mandorla"
+    ],
+    "source": "google-maps",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "overpriced",
+        "severity": "low",
+        "note": "一部レビューで品質に対して価格がやや高いとの指摘あり"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "コーンは3ユーロ以下と手頃で地元客にも人気、Google口コミ2900件超で評価4.5"
+      },
+      {
+        "type": "signature-dish",
+        "note": "ピスタチオ&アーモンドのグラニータに温かいブリオッシュを添えて提供、シチリア中を巡ったレビュアーが一番と評価"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-ff5e93a0",
+    "name": "Il Cucchiaino",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 37.0619676,
+    "lng": 15.2929123,
+    "address": "Via Cavour, 79/81, 96100 Siracusa SR (Ortigia)",
+    "visited": false,
+    "url": "https://www.pistacchissimo.it/recensioni/siracusa/dolci-siracusa/76-gelati-siracusa/610-gelato-al-pistacchio-il-cucchiaino-siracusa-ortigia",
+    "tags": [
+      "pistacchio",
+      "granita-al-pistacchio",
+      "ortigia"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "ピスタチオのジェラート/グラニータが地域随一と評され、鮮やかな緑色とクリーミーな質感、皮の粒感が高評価"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "オルティージャの路地裏(コルソ・マッテオッティ近く)にあり地元でも支持される専門店"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-98d5cef2",
+    "name": "Gelati Bianca",
+    "city": "Siracusa",
+    "area": "Tyche",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 37.0711415,
+    "lng": 15.2673673,
+    "address": "Via Necropoli del Fusco, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.con-gelato.it/gelateria/gelati-bianca/",
+    "tags": [
+      "storica",
+      "pistacchio-di-bronte",
+      "mandorla-di-avola",
+      "ricotta"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "generations-old",
+        "note": "創業80年以上。Tatai Bianca氏が創業し代々受け継がれる製法を守る老舗"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "ブロンテ産ピスタチオ、アヴォラ産アーモンド、シチリア産羊乳リコッタなど厳選素材を使用"
+      },
+      {
+        "type": "innovative",
+        "note": "伝統フレーバーに加えDubai ChocolateやOreoなど新作フレーバーも展開"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-f13885f6",
+    "name": "Levante Gelato Artigianale",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "gelateria",
+    "priceRange": "€€",
+    "lat": 37.0650011,
+    "lng": 15.2930698,
+    "address": "Via Trento, 8, 96100 Siracusa SR (Ortigia)",
+    "visited": false,
+    "url": "https://www.levantegelateria.com/",
+    "tags": [
+      "pistacchio",
+      "tiramisu",
+      "materie-prime-locali",
+      "granita"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "fresh-ingredients",
+        "note": "できる限り地元・旬の食材を使用し、日替わりでラボにて手作り"
+      },
+      {
+        "type": "award-winning",
+        "note": "Google口コミ約1000件で平均4.8/5と高評価、オルティージャ中心部の人気店"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-a0b457ba",
+    "name": "Il Mastro Gelataio",
+    "city": "Siracusa",
+    "area": "Santa Lucia",
+    "genre": "gelateria",
+    "priceRange": "€",
+    "lat": 37.0690481,
+    "lng": 15.2865215,
+    "address": "Largo Empedocle, 9, 96100 Siracusa SR",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d4703790-Reviews-Il_mastro_gelataio-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "granita",
+      "frutta-di-stagione",
+      "brioche"
+    ],
+    "source": "google-maps",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "レビューで「シラクーザ随一のグラニータ」と評される。砂糖控えめで旬のフルーツを多用した伝統的シチリア風グラニータが名物"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-95ff406e",
+    "name": "Caffè Apollo",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "gelateria",
+    "priceRange": "€€",
+    "lat": 37.0637913,
+    "lng": 15.2924144,
+    "address": "Largo XXV Luglio, 13, 96100 Siracusa SR (Ortigia)",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d3410140-Reviews-Caffe_Apollo-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "granita-al-limone",
+      "limone-di-siracusa",
+      "aperitivo"
+    ],
+    "source": "google-maps",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "medium",
+        "note": "アポロ神殿前という一等地に位置し、観光客向けの価格設定との声もある"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "シラクーザ産フェミネッロ種レモンを使った濃厚なレモングラニータが名物"
+      },
+      {
+        "type": "hidden-gem",
+        "note": "アポロ神殿を眺めながら味わえる開放的なロケーション"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-bc981ef7",
+    "name": "Gusto",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "gelateria",
+    "priceRange": "€€",
+    "lat": 37.0600006,
+    "lng": 15.294596,
+    "address": "Via Roma, 39, 96100 Siracusa SR (Ortigia)",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d10729289-Reviews-Gusto-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "gelato-gourmet",
+      "pistacchio",
+      "amaretto"
+    ],
+    "source": "google-maps",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "overpriced",
+        "severity": "low",
+        "note": "「グルメ」系フレーバーは通常より1ユーロ高い設定"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "innovative",
+        "note": "アマレットやピスタチオなどグルメ系フレーバーが充実し素材の質が高いと評判"
+      },
+      {
+        "type": "hidden-gem",
+        "note": "Via Minerva近くの路地にあり「オルティージャで一番美味しいジェラート」との口コミ多数"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-24aedfc2",
+    "name": "Don Peppinu",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "gelateria",
+    "priceRange": "€€",
+    "lat": 37.0625211,
+    "lng": 15.2930548,
+    "address": "Corso Giacomo Matteotti, 39, 96100 Siracusa SR (Ortigia)",
+    "visited": false,
+    "url": "https://donpeppinu.it/",
+    "tags": [
+      "storica",
+      "gelso",
+      "pistacchio",
+      "cannoli",
+      "granita"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "award-winning",
+        "note": "TasteAtlasの「世界のベストジェラテリア100」に選出"
+      },
+      {
+        "type": "generations-old",
+        "note": "1960年創業。祖父がシチリア最古級のコーン工場を興し、現在は孫のPeppe Flamingo氏が継承"
+      },
+      {
+        "type": "signature-dish",
+        "note": "桑の実(ジェルソ)やピスタチオのジェラート、カンノーロ、グラニータが名物"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-05e25afb",
+    "name": "Caseificio Borderi",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "paninoteca",
+    "priceRange": "€€",
+    "lat": 37.0654521,
+    "lng": 15.2935676,
+    "address": "Via Emanuele de Benedictis 6, 96100 Siracusa, Italia",
+    "visited": false,
+    "url": "https://www.gamberorosso.it/attualita/mercato-ortigia-siracusa-street-food/",
+    "tags": [
+      "mercato-ortigia",
+      "panino-gigante",
+      "formaggi-artigianali",
+      "cibo-di-strada",
+      "lunch-only"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "long-wait",
+        "severity": "high",
+        "note": "行列が1時間に及ぶこともある超人気店"
+      },
+      {
+        "type": "tourist-oriented",
+        "severity": "low",
+        "note": "NvidiaのCEOも訪れるなど有名観光スポット化している"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "signature-dish",
+        "note": "オーナーAndrea Borderiが目の前で仕立てる具沢山パニーノ(パニーノ#4、#8など)"
+      },
+      {
+        "type": "award-winning",
+        "note": "Gambero Rossoがオルティージャ市場随一のstreet foodとして紹介"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-c9ffe38b",
+    "name": "Fratelli Burgio (La Salumeria)",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "paninoteca",
+    "priceRange": "€",
+    "lat": 37.064,
+    "lng": 15.2928,
+    "address": "Piazza Cesare Battisti, Mercato di Ortigia, 96100 Siracusa, Italia",
+    "visited": false,
+    "url": "https://www.scattidigusto.it/panini-siracusa-fratelli-burgio",
+    "tags": [
+      "mercato-ortigia",
+      "salumeria",
+      "tagliere",
+      "panino-siciliano",
+      "dal-1978"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "crowded-noisy",
+        "severity": "medium",
+        "note": "市場内の人気店で常に混雑"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "パニーノ1個€3.50、シチリアstreet food選手権で高評価(Scatti di Gusto)"
+      },
+      {
+        "type": "generations-old",
+        "note": "1978年創業のサルメリア"
+      },
+      {
+        "type": "signature-dish",
+        "note": "Il Siciliano(コッパ・シクラ、ペコリーノ、ドライトマト)"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-4e53116e",
+    "name": "L'Antica Salumeria Ortigia",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "paninoteca",
+    "priceRange": "€€",
+    "lat": 37.0610724,
+    "lng": 15.2931227,
+    "address": "Via Cavour 1, 96100 Siracusa, Italia",
+    "visited": false,
+    "url": "https://www.tripadvisor.it/ShowUserReviews-g187891-d3741537-r957859828-L_Antica_Salumeria_Ortigia-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "via-cavour",
+      "aperitivo",
+      "gastronomia",
+      "birra-artigianale"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "fresh-ingredients",
+        "note": "厳選シチリア食材を扱う量り売りデリ"
+      },
+      {
+        "type": "value-for-money",
+        "note": "アペリチェーナに最適とTripAdvisorで高評価"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-b7683b3f",
+    "name": "Gusto Ortigia Market",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "paninoteca",
+    "priceRange": "€",
+    "lat": 37.0608431,
+    "lng": 15.296098,
+    "address": "Via della Maestranza 80, 96100 Siracusa, Italia",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d6852897-Reviews-Gusto_Ortigia_Market-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "via-maestranza",
+      "gastronomia",
+      "gelato",
+      "happy-hour"
+    ],
+    "source": "other",
+    "sourceTrust": "low",
+    "verdict": "neutral",
+    "concerns": [
+      {
+        "type": "tourist-oriented",
+        "severity": "low",
+        "note": "デリ+ミニスーパー形態でやや観光客向けの雰囲気"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "地元食材のサンドイッチとジェラートが評判"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-f38cded8",
+    "name": "Antica Giudecca",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "paninoteca",
+    "priceRange": "€",
+    "lat": 37.0604721,
+    "lng": 15.2962822,
+    "address": "Via della Giudecca 26, 96100 Siracusa, Italia",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d8552680-Reviews-Antica_Giudecca_Pizzeria_Biscotti_Arancini_Take_Away-Syracuse_Province_of_Syracus.html",
+    "tags": [
+      "giudecca",
+      "rosticceria",
+      "arancini",
+      "scacciata",
+      "take-away"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "value-for-money",
+        "note": "TripAdvisor 4.6、PagineGialle 4.8の高評価ロスティッチェリア"
+      },
+      {
+        "type": "signature-dish",
+        "note": "観光客からも『シラクーザ最高のアランチーノ』と評される"
+      },
+      {
+        "type": "locals-frequent",
+        "note": "2006年創業、地元客にも人気"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-3a365d92",
+    "name": "Fisheria",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "paninoteca",
+    "priceRange": "€",
+    "lat": 37.0610193,
+    "lng": 15.2933305,
+    "address": "Via Amalfitania 10, 96100 Siracusa, Italia",
+    "visited": false,
+    "url": "https://www.tripadvisor.com/Restaurant_Review-g187891-d12347408-Reviews-Fisheria-Syracuse_Province_of_Syracuse_Sicily.html",
+    "tags": [
+      "via-amalfitania",
+      "friggitoria",
+      "fritti-di-mare",
+      "cartoccio"
+    ],
+    "source": "guidebook",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "highlights": [
+      {
+        "type": "locals-frequent",
+        "note": "地元客に人気の飾らない小さな店"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "揚げたて魚介のコーンが1皿約€8"
+      },
+      {
+        "type": "value-for-money",
+        "note": "TripAdvisor評価4.4(180件)"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-d46e0b91",
+    "name": "Panificio Tisia",
+    "city": "Siracusa",
+    "area": "Tyche",
+    "genre": "paninoteca",
+    "priceRange": "€",
+    "lat": 37.0835939,
+    "lng": 15.2898316,
+    "address": "Via Tisia 14, 96100 Siracusa, Italia",
+    "visited": false,
+    "url": "https://www.panificiotisia.com/salumeria.php",
+    "tags": [
+      "via-tisia",
+      "panetteria",
+      "salumeria",
+      "pizza-al-taglio",
+      "quartiere-locale"
+    ],
+    "source": "other",
+    "sourceTrust": "low",
+    "verdict": "neutral",
+    "highlights": [
+      {
+        "type": "fresh-ingredients",
+        "note": "パン屋直営でその日焼いたパンを使うパニーノとサルメリア"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-863f4853",
+    "name": "Oz & Cappuccio Pesce Fresco",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "paninoteca",
+    "priceRange": "€€",
+    "lat": 37.0652453,
+    "lng": 15.2933184,
+    "address": "Via Emanuele Giaracà 8, 96100 Siracusa, Italia",
+    "visited": false,
+    "url": "https://www.gamberorosso.it/attualita/mercato-ortigia-siracusa-street-food/",
+    "tags": [
+      "mercato-ortigia",
+      "pesce-fresco",
+      "street-food-pesce",
+      "stagionale-apr-nov"
+    ],
+    "source": "gambero-rosso",
+    "sourceTrust": "high",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "long-wait",
+        "severity": "low",
+        "note": "市場内の人気店で行列ができることもある"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "seasonal-menu",
+        "note": "4月〜11月の季節営業"
+      },
+      {
+        "type": "signature-dish",
+        "note": "マグロバーガー、イカスミのアランチーノ、揚げ魚盛り合わせ"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
+  },
+  {
+    "id": "siracusa-428ac3a3",
+    "name": "Carnezzeria",
+    "city": "Siracusa",
+    "area": "Ortigia",
+    "genre": "paninoteca",
+    "priceRange": "€€",
+    "lat": 37.0645611,
+    "lng": 15.2933766,
+    "address": "Via Emanuele de Benedictis 29, 96100 Siracusa, Italia",
+    "visited": false,
+    "url": "https://www.dissapore.com/ristoranti/carnezzeria-a-siracusa-recensione-mangiare-pesce-al-mercato-di-ortigia/",
+    "tags": [
+      "mercato-ortigia",
+      "pesce",
+      "cibo-di-strada",
+      "stagionale-mar-ott"
+    ],
+    "source": "food-blogger",
+    "sourceTrust": "medium",
+    "verdict": "recommended",
+    "concerns": [
+      {
+        "type": "crowded-noisy",
+        "severity": "medium",
+        "note": "屋外席のみでテーブル間隔が狭い"
+      },
+      {
+        "type": "service-issues",
+        "severity": "low",
+        "note": "サービスや品質にばらつきがあるとのレビューもあり"
+      }
+    ],
+    "highlights": [
+      {
+        "type": "hidden-gem",
+        "note": "肉屋(carnezzeria)の名を継ぎながら実際は市場随一の鮮魚料理店"
+      },
+      {
+        "type": "fresh-ingredients",
+        "note": "市場の路上で新鮮な魚介料理を味わえる"
+      }
+    ],
+    "lastAnalyzed": "2026-07-04"
   }
 ]

@@ -561,3 +561,18 @@
   - 新規環境変数なし (既存 `ITINERARY_GIST_ID` / `GITHUB_TOKEN` / `ADMIN_PASSWORD` 再利用)
 
 設計書: `docs/superpowers/specs/2026-06-23-todo-design.md`、実装プラン: `docs/superpowers/plans/2026-06-23-todo.md`
+
+## D-033: Siracusa 追加 — 行き先変更 (パレルモ → シラクーザ) に伴う第 5 都市キュレーション
+
+- 日付: 2026-07-04
+- 状態: Active
+- 関連: [docs/curation/auto-expand-log.md](../curation/auto-expand-log.md), [scripts/geocode.mjs](../../scripts/geocode.mjs), [src/types/restaurant.ts](../../src/types/restaurant.ts)
+- 決定: シチリアの訪問先をパレルモからシラクーザに変更したユーザー要望を受け、`Siracusa` を city タクソノミーの第 5 都市として追加し、Palermo と同じ 7 ジャンル (trattoria / osteria / ristorante / pizzeria / pasticceria / gelateria / paninoteca) で並列リサーチを実施。63 件を採用 (532 → 595 件)
+- 実施方式 (トークン効率を明示的に設計):
+  - リサーチ: **Sonnet サブエージェント 7 体並列** (メインセッションは Fable だが、Web リサーチは Sonnet で十分なため引き下げ)。各エージェントは候補 JSON を**スクラッチパッドのファイルに直接書き出し**、メイン文脈には要約のみ返す (候補 JSON 70 件分をメイン文脈に流さない)
+  - ジャンル間重複解決: Node ワンライナーで正規化名の包含比較 → 7 組検出 (Mamma Iabica、La Dogana、La Casa di Carlo、Ostaria Siracusa、Artale、Bar Leonardi、Midolo)。同住所・同 URL を根拠に片側を除外し 63 件に確定
+  - 統合: `scripts/merge-candidates.mjs` (LLM 不使用)
+  - 座標補正: `scripts/geocode.mjs` に `--city=` / `--max=` フィルタを追加して Siracusa 63 件のみ Nominatim 処理 (47 件を番地レベルに補正、15 件は概算のまま)
+- 付随修正: `api/save.ts` の `VALID_CITIES` が D-028 の 4 都市分割時に未更新だった潜在バグ (Rome/Florence/Sicily のみ) を修正
+- Palermo の既存データ (約 136 件) は**削除せず保持** (フィルタで切替可能、破壊的変更を避ける)。削除はユーザー判断待ち
+- 根拠: ユーザー要望 (2026-07-04)「パレルモではなくシラクーザに行くことにした。前回依頼した飲食店のリサーチをシラクーザでやって。トークン節約にも考慮し、すべて Fable で実施するのではなく効率的に」

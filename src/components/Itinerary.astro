@@ -64,6 +64,7 @@ function deriveCityForTodo(item: ItineraryItem): string {
   if (/florence|firenze/i.test(text)) return 'Florence';
   if (/palermo/i.test(text)) return 'Palermo';
   if (/taormina/i.test(text)) return 'Taormina';
+  if (/siracusa|syracuse|ortigia|ortygia/i.test(text)) return 'Siracusa';
   if (/sicil(y|ia)|catania/i.test(text)) return 'Sicily';
   return '全般';
 }
