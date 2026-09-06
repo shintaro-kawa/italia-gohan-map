@@ -31,6 +31,8 @@ export function bootstrapPasswordFromUrl(): void {
       // プライベートブラウズ等で localStorage が使えない場合は従来の入力 UI にフォールバック
     }
     params.delete('key');
+    // LINE の外部ブラウザ強制パラメータ (openExternalBrowser=1) も役目を終えているので除去
+    params.delete('openExternalBrowser');
     const qs = params.toString();
     history.replaceState(null, '', window.location.pathname + (qs ? `?${qs}` : ''));
   }
