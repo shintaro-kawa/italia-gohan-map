@@ -24,7 +24,8 @@ function sanitizeItineraryDraft(raw: unknown): Record<string, unknown> | null {
   if (typeof r.endAt === 'string' && r.endAt.trim()) out.endAt = r.endAt;
   if (r.location && typeof r.location === 'object' && !Array.isArray(r.location)) out.location = r.location;
   if (typeof r.notes === 'string' && r.notes.trim()) out.notes = r.notes.trim();
-  if (typeof r.amount === 'number' && Number.isFinite(r.amount) && r.amount >= 0) out.amount = r.amount;
+  // 0 は「金額不明」の混入 (プロンプト例示への引っ張られ) なので除外
+  if (typeof r.amount === 'number' && Number.isFinite(r.amount) && r.amount > 0) out.amount = r.amount;
   if (r.currency === 'EUR' || r.currency === 'JPY') out.currency = r.currency;
   return out;
 }

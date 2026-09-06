@@ -41,7 +41,7 @@ export function buildSystemPrompt(existing: Restaurant[]): string {
     "endAt": "ISO 8601 (チェックアウト・到着時刻があれば)",
     "location": { "name": "string?", "address": "string?", "from": "string?", "to": "string?" },
     "notes": "予約番号・人数・条件など本文から読み取れた補足 (日本語で簡潔に)",
-    "amount": 0,
+    "amount": 123.45,
     "currency": "EUR | JPY"
   }
 }
