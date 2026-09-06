@@ -1,5 +1,6 @@
 ---
 import type { Restaurant } from '@/types/restaurant';
+import { curationScore } from '@/lib/curation-score';
 import {
   CONCERN_LABELS,
   HIGHLIGHT_LABELS,
@@ -61,7 +62,7 @@ const verdictRank = restaurant.verdict ? VERDICT_RANK[restaurant.verdict] ?? 0 :
   data-concerns={(restaurant.concerns ?? []).map((c) => `${c.type}:${c.severity}`).join(',')}
   data-search={searchableText}
   data-sort-name={restaurant.name.toLowerCase()}
-  data-sort-rating={restaurant.rating ?? -1}
+  data-sort-score={curationScore(restaurant)}
   data-sort-verdict={verdictRank}
   data-sort-analyzed={restaurant.lastAnalyzed ?? ''}
 >

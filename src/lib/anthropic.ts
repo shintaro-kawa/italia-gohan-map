@@ -61,7 +61,33 @@ export function buildSystemPrompt(existing: Restaurant[]): string {
 
 ${existingSummary}
 
-## 応答フォーマット
+## 予約確認の取り込みモード
+
+ユーザーのメッセージが **予約確認の貼り付け**（レストラン予約・ホテル・航空券・列車などの
+確認メール本文、WhatsApp 通知、予約サイトの確認文）と判断できる場合は、店舗提案ではなく
+以下の JSON を返す:
+
+\`\`\`json
+{
+  "message": "（抽出内容の 1〜2 文サマリ、日本語）",
+  "itineraryDraft": {
+    "type": "flight | hotel | train | attraction | restaurant | generic",
+    "title": "string (例: Ristorante Da Nino 予約 2名)",
+    "startAt": "ISO 8601 現地時刻 (例: 2026-09-14T12:00:00)",
+    "endAt": "ISO 8601 (チェックアウト・到着時刻があれば)",
+    "location": { "name": "string?", "address": "string?", "from": "string?", "to": "string?" },
+    "notes": "予約番号・人数・条件など本文から読み取れた補足 (日本語で簡潔に)",
+    "amount": 0,
+    "currency": "EUR | JPY"
+  }
+}
+\`\`\`
+
+- 日付に年がなければ 2026 年と解釈。時刻は現地時刻のまま（タイムゾーン変換しない）
+- 読み取れないフィールドは**省略**する（憶測で埋めない）。amount は金額が明記されている場合のみ
+- このモードでは web_search は不要
+
+## 応答フォーマット（店舗提案モード）
 
 ユーザーの質問に対して、以下の JSON を返す（コードブロック付きで OK）:
 
@@ -99,7 +125,9 @@ export async function chatWithClaude(userMessage: string, existing: Restaurant[]
 /**
  * Claude のテキスト応答から JSON ブロックを抽出。
  */
-export function extractJson(text: string): { message: string; candidates: unknown[]; sources?: string[] } | null {
+export function extractJson(
+  text: string,
+): { message: string; candidates: unknown[]; sources?: string[]; itineraryDraft?: unknown } | null {
   // ```json ... ``` ブロック優先
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
   const raw = fenced ? fenced[1] : text;
@@ -110,6 +138,10 @@ export function extractJson(text: string): { message: string; candidates: unknow
         message: typeof parsed.message === 'string' ? parsed.message : '',
         candidates: Array.isArray(parsed.candidates) ? parsed.candidates : [],
         sources: Array.isArray(parsed.sources) ? parsed.sources.filter((s: unknown) => typeof s === 'string') : undefined,
+        itineraryDraft:
+          parsed.itineraryDraft && typeof parsed.itineraryDraft === 'object' && !Array.isArray(parsed.itineraryDraft)
+            ? parsed.itineraryDraft
+            : undefined,
       };
     }
   } catch {

@@ -8,6 +8,26 @@ const VALID_GENRES = new Set([
   'bar', 'gelateria', 'paninoteca', 'pasticceria', 'other',
 ]);
 const VALID_CITIES = new Set(['Rome', 'Florence', 'Palermo', 'Taormina', 'Siracusa', 'Sicily']);
+const VALID_ITINERARY_TYPES = new Set(['flight', 'hotel', 'train', 'attraction', 'restaurant', 'generic']);
+
+/** 予約確認の貼り付けから抽出された旅程ドラフト (D-035)。登録は クライアント → /api/sync-itinerary。 */
+function sanitizeItineraryDraft(raw: unknown): Record<string, unknown> | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const r = raw as Record<string, unknown>;
+  if (typeof r.title !== 'string' || !r.title.trim()) return null;
+  if (typeof r.startAt !== 'string' || !r.startAt.trim()) return null;
+  const out: Record<string, unknown> = {
+    type: typeof r.type === 'string' && VALID_ITINERARY_TYPES.has(r.type) ? r.type : 'generic',
+    title: r.title.trim(),
+    startAt: r.startAt,
+  };
+  if (typeof r.endAt === 'string' && r.endAt.trim()) out.endAt = r.endAt;
+  if (r.location && typeof r.location === 'object' && !Array.isArray(r.location)) out.location = r.location;
+  if (typeof r.notes === 'string' && r.notes.trim()) out.notes = r.notes.trim();
+  if (typeof r.amount === 'number' && Number.isFinite(r.amount) && r.amount >= 0) out.amount = r.amount;
+  if (r.currency === 'EUR' || r.currency === 'JPY') out.currency = r.currency;
+  return out;
+}
 
 function sanitizeCandidates(raw: unknown[]): Restaurant[] {
   const out: Restaurant[] = [];
@@ -71,7 +91,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(200).json({ message: claudeText, candidates: [], sources: [] });
     }
     const candidates = sanitizeCandidates(parsed.candidates);
-    return res.status(200).json({ message: parsed.message, candidates, sources: parsed.sources ?? [] });
+    const itineraryDraft = sanitizeItineraryDraft(parsed.itineraryDraft);
+    return res.status(200).json({
+      message: parsed.message,
+      candidates,
+      sources: parsed.sources ?? [],
+      ...(itineraryDraft ? { itineraryDraft } : {}),
+    });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Unknown error';
     return res.status(500).json({ error: 'Internal error: ' + msg });

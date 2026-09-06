@@ -589,3 +589,12 @@
   - リンク所持者 = 全権限のトレードオフを明示的に許容 (2 人利用)。漏洩時は Vercel の `ADMIN_PASSWORD` 変更で全リンク失効
   - サーバー側 (`src/lib/auth.ts`、各 API) は無変更。401 時は localStorage をクリアして従来の入力 UI にフォールバック
 - 代替案 (採用せず): localStorage 永続化のみ (初回入力は残る) / 閲覧の認証撤廃 (私的旅程が公開になるため不採用)
+
+## D-035: 予約貼り付け→旅程登録 + 並び替えのキュレーションスコア化
+
+- 日付: 2026-09-07
+- 状態: Active
+- 関連: [docs/superpowers/specs/2026-09-07-booking-paste-and-sort-design.md](../superpowers/specs/2026-09-07-booking-paste-and-sort-design.md), [src/lib/curation-score.ts](../../src/lib/curation-score.ts)
+- 決定 1 (予約取り込み): チャットに予約確認 (メール/WhatsApp/予約サイト通知) を貼ると、Claude が ItineraryItem 準拠の `itineraryDraft` を抽出 → 確認カード表示 → 「🗓 旅程に登録」で `/api/sync-itinerary` に直接 POST。登録前確認はユーザー選択 (誤抽出防止)。同期 API・レストラン提案フローは無変更
+- 決定 2 (並び替え): 全 595 件が rating 無し・verdict ほぼ同値のため全ソートが名前順に退化していた。verdict/sourceTrust/highlights/concerns から `curationScore()` を算出し「おすすめ順」をスコア降順に。データの無い「評価順」は削除 (旧 URL の `sort=rating` は読み替え)。スコア分布は 26〜9 点に分散 (ビルドで確認)
+- 根拠: ユーザー要望 (2026-09-07)「予約完了のメールとか WhatsApp の通知をチャット欄に渡したら予定として登録できるように」「並び替えをしてもあいうえお順になってしまっているの直して」

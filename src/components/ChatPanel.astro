@@ -26,7 +26,7 @@
     <form id="chat-form" class="chat-form">
       <textarea
         id="chat-input"
-        placeholder="例: ローマで朝食にいい場所を 3 件教えて"
+        placeholder="例: ローマで朝食にいい場所を 3 件教えて / 予約確認メールを貼ると旅程に登録できます"
         rows="2"
         required
       ></textarea>
@@ -100,7 +100,76 @@
     container.scrollTop = container.scrollHeight;
   }
 
+  type ItineraryDraft = {
+    type: 'flight' | 'hotel' | 'train' | 'attraction' | 'restaurant' | 'generic';
+    title: string;
+    startAt: string;
+    endAt?: string;
+    location?: { name?: string; address?: string; from?: string; to?: string };
+    notes?: string;
+    amount?: number;
+    currency?: 'EUR' | 'JPY';
+  };
+
+  const DRAFT_TYPE_EMOJI: Record<string, string> = {
+    flight: '✈️', hotel: '🏨', train: '🚄', attraction: '🏛️', restaurant: '🍝', generic: '📌',
+  };
+
   let currentCandidates: Candidate[] = [];
+  let currentDraft: ItineraryDraft | null = null;
+
+  function formatDraftDate(iso: string): string {
+    const d = new Date(iso);
+    if (!Number.isFinite(d.getTime())) return iso;
+    return d.toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit' });
+  }
+
+  function renderDraft(d: ItineraryDraft): string {
+    const emoji = DRAFT_TYPE_EMOJI[d.type] ?? '📌';
+    const when = formatDraftDate(d.startAt) + (d.endAt ? ` 〜 ${formatDraftDate(d.endAt)}` : '');
+    const place = d.location?.name ?? d.location?.address ?? (d.location?.from && d.location?.to ? `${d.location.from} → ${d.location.to}` : '');
+    const amount = d.amount != null ? `💶 ${d.amount.toLocaleString()} ${d.currency ?? 'EUR'}` : '';
+    return `
+      <div class="chat-candidate chat-draft">
+        <div class="chat-candidate-head"><strong>${emoji} ${escape(d.title)}</strong></div>
+        <p class="chat-candidate-meta">🗓 ${escape(when)}</p>
+        ${place ? `<p class="chat-candidate-addr">📍 ${escape(place)}</p>` : ''}
+        ${amount ? `<p class="chat-candidate-meta">${escape(amount)}</p>` : ''}
+        ${d.notes ? `<p class="chat-candidate-addr">${escape(d.notes)}</p>` : ''}
+        <button type="button" class="chat-add-btn chat-draft-btn">🗓 旅程に登録</button>
+      </div>
+    `;
+  }
+
+  async function registerDraft(btn: HTMLButtonElement) {
+    const password = getPassword();
+    if (!password || !currentDraft) return;
+    btn.disabled = true;
+    btn.textContent = '登録中…';
+    const item = {
+      ...currentDraft,
+      id: 'chat-' + crypto.randomUUID().slice(0, 8),
+      updatedAt: new Date().toISOString(),
+    };
+    try {
+      const res = await fetch('/api/sync-itinerary', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify({ writes: [item] }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        btn.disabled = false;
+        btn.textContent = `エラー: ${String(json.error ?? 'failed').slice(0, 40)}`;
+        return;
+      }
+      btn.textContent = '✓ 登録しました（旅程ページに反映されます）';
+      btn.classList.add('is-saved');
+    } catch {
+      btn.disabled = false;
+      btn.textContent = 'ネットワークエラー（再試行可）';
+    }
+  }
 
   async function send(message: string) {
     const password = getPassword();
@@ -137,7 +206,9 @@
           ? `<p class="chat-sources">出典: ${(json.sources as string[]).map((s) => `<a href="${escape(s)}" target="_blank" rel="noopener noreferrer">${escape(new URL(s).hostname)}</a>`).join(', ')}</p>`
           : '';
       currentCandidates = json.candidates ?? [];
-      appendMessage('assistant', aiMsg + candidatesHtml + sourcesHtml);
+      currentDraft = (json.itineraryDraft as ItineraryDraft | undefined) ?? null;
+      const draftHtml = currentDraft ? renderDraft(currentDraft) : '';
+      appendMessage('assistant', aiMsg + candidatesHtml + draftHtml + sourcesHtml);
     } catch (e) {
       appendMessage('system', `<em>ネットワークエラー: ${escape(String(e))}</em>`);
     }
@@ -215,7 +286,9 @@
   document.getElementById('chat-messages')?.addEventListener('click', (e) => {
     const target = e.target;
     if (!(target instanceof HTMLElement)) return;
-    if (target.classList.contains('chat-add-btn')) {
+    if (target.classList.contains('chat-draft-btn')) {
+      void registerDraft(target as HTMLButtonElement);
+    } else if (target.classList.contains('chat-add-btn')) {
       const idx = Number(target.getAttribute('data-idx'));
       if (Number.isFinite(idx)) saveCandidate(idx, target as HTMLButtonElement);
     }
