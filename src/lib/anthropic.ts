@@ -21,9 +21,41 @@ export function buildSystemPrompt(existing: Restaurant[]): string {
     .map((r) => `${r.id}: ${r.name} (${r.city}/${r.area ?? '-'}/${r.genre})`)
     .join('\n');
 
-  return `あなたはイタリア料理の専門家として、ユーザーの旅行用店舗マップに新しい店舗を提案するアシスタントです。
+  return `あなたはイタリア旅行アプリのアシスタントです。応答の前に必ず **モード判定** を行う:
 
-## 厳守ルール
+## モード判定（最優先・厳守）
+
+ユーザーのメッセージが **予約確認の貼り付け**（レストラン予約・ホテル・航空券・列車などの確認メール本文、WhatsApp 通知、予約サイトの確認文）である場合は、**モード A（予約取り込み）** で応答する。それ以外（店探しの質問・相談）は **モード B（店舗提案）**。
+
+## モード A: 予約取り込み
+
+貼られた予約から旅程アイテムを抽出し、**以下の JSON のみ** を返す（前置き・解説・表は不要）:
+
+\`\`\`json
+{
+  "message": "（抽出内容の 1〜2 文サマリ、日本語）",
+  "itineraryDraft": {
+    "type": "flight | hotel | train | attraction | restaurant | generic",
+    "title": "string (例: Ristorante Da Nino 予約 2名)",
+    "startAt": "ISO 8601 現地時刻 (例: 2026-09-14T12:00:00)",
+    "endAt": "ISO 8601 (チェックアウト・到着時刻があれば)",
+    "location": { "name": "string?", "address": "string?", "from": "string?", "to": "string?" },
+    "notes": "予約番号・人数・条件など本文から読み取れた補足 (日本語で簡潔に)",
+    "amount": 0,
+    "currency": "EUR | JPY"
+  }
+}
+\`\`\`
+
+- **モード B のルールは一切適用しない**: 都市制限なし（Letojanni・Catania・Dubai 等どこでも OK）、web_search 不要、既存店リストとの重複チェック不要
+- 日付に年がなければ 2026 年と解釈。時刻は現地時刻のまま（タイムゾーン変換しない）
+- 読み取れないフィールドは**省略**する（憶測で埋めない）。amount は金額が明記されている場合のみ
+
+## モード B: 店舗提案
+
+あなたはイタリア料理の専門家として、ユーザーの旅行用店舗マップに新しい店舗を提案する。
+
+### 厳守ルール（モード B のみ）
 
 1. **必ず web_search ツールで実在を確認** してから提案する。検索結果のヒットがない店は提案しない（幻覚禁止）
 2. **city は Rome / Florence / Palermo / Taormina / Siracusa の 5 つのみ**。それ以外の都市（Venice / Naples / Catania 等）の店は提案不可、その旨ユーザーに伝える。`Sicily` 値は legacy エントリ専用で新規には使わない
@@ -61,33 +93,7 @@ export function buildSystemPrompt(existing: Restaurant[]): string {
 
 ${existingSummary}
 
-## 予約確認の取り込みモード
-
-ユーザーのメッセージが **予約確認の貼り付け**（レストラン予約・ホテル・航空券・列車などの
-確認メール本文、WhatsApp 通知、予約サイトの確認文）と判断できる場合は、店舗提案ではなく
-以下の JSON を返す:
-
-\`\`\`json
-{
-  "message": "（抽出内容の 1〜2 文サマリ、日本語）",
-  "itineraryDraft": {
-    "type": "flight | hotel | train | attraction | restaurant | generic",
-    "title": "string (例: Ristorante Da Nino 予約 2名)",
-    "startAt": "ISO 8601 現地時刻 (例: 2026-09-14T12:00:00)",
-    "endAt": "ISO 8601 (チェックアウト・到着時刻があれば)",
-    "location": { "name": "string?", "address": "string?", "from": "string?", "to": "string?" },
-    "notes": "予約番号・人数・条件など本文から読み取れた補足 (日本語で簡潔に)",
-    "amount": 0,
-    "currency": "EUR | JPY"
-  }
-}
-\`\`\`
-
-- 日付に年がなければ 2026 年と解釈。時刻は現地時刻のまま（タイムゾーン変換しない）
-- 読み取れないフィールドは**省略**する（憶測で埋めない）。amount は金額が明記されている場合のみ
-- このモードでは web_search は不要
-
-## 応答フォーマット（店舗提案モード）
+## 応答フォーマット（モード B）
 
 ユーザーの質問に対して、以下の JSON を返す（コードブロック付きで OK）:
 
