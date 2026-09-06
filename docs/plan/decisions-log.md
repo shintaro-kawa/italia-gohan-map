@@ -576,3 +576,16 @@
 - 付随修正: `api/save.ts` の `VALID_CITIES` が D-028 の 4 都市分割時に未更新だった潜在バグ (Rome/Florence/Sicily のみ) を修正
 - Palermo の既存データ (約 136 件) は**削除せず保持** (フィルタで切替可能、破壊的変更を避ける)。削除はユーザー判断待ち
 - 根拠: ユーザー要望 (2026-07-04)「パレルモではなくシラクーザに行くことにした。前回依頼した飲食店のリサーチをシラクーザでやって。トークン節約にも考慮し、すべて Fable で実施するのではなく効率的に」
+
+## D-034: マジックリンク認証 — ログイン再入力と手動同期の撤廃
+
+- 日付: 2026-09-06
+- 状態: Active
+- 関連: [src/lib/password-client.ts](../../src/lib/password-client.ts), [docs/superpowers/specs/2026-09-06-magic-link-auth-design.md](../superpowers/specs/2026-09-06-magic-link-auth-design.md)
+- 決定: `#key=<ADMIN_PASSWORD>` 付き URL を一度開くだけでパスワードを localStorage に永続保存し、以後の入力・手動同期を不要にする。パスワード保存を `src/lib/password-client.ts` に一元化 (todo / itinerary / ChatPanel の sessionStorage 重複実装 3 箇所を置換)、`visibilitychange` 復帰時の自動再同期を todo / itinerary に追加
+- 根拠: ユーザー要望 (2026-09-06)「ログインと同期がだるすぎる。今パートナーと 2 人で使うだけのアプリ」。sessionStorage はタブを閉じるたび消え、再入力までは同期も走らない構造だった
+- 設計上の選択:
+  - フラグメント (`#key=`) 採用 — クエリと違いサーバー・アクセスログに送信されない。取り込み後は `history.replaceState` で URL から即除去
+  - リンク所持者 = 全権限のトレードオフを明示的に許容 (2 人利用)。漏洩時は Vercel の `ADMIN_PASSWORD` 変更で全リンク失効
+  - サーバー側 (`src/lib/auth.ts`、各 API) は無変更。401 時は localStorage をクリアして従来の入力 UI にフォールバック
+- 代替案 (採用せず): localStorage 永続化のみ (初回入力は残る) / 閲覧の認証撤廃 (私的旅程が公開になるため不採用)

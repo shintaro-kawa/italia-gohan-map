@@ -59,6 +59,10 @@ const items = await getItinerary();
 </Layout>
 
 <script>
+  import { bootstrapPasswordFromUrl, getPassword, setPassword, clearPassword } from '@/lib/password-client';
+
+  bootstrapPasswordFromUrl();
+
   type Currency = 'EUR' | 'JPY';
   type Item = {
     id: string;
@@ -87,7 +91,6 @@ const items = await getItinerary();
     privateNotes?: string;
   };
 
-  const PASSWORD_KEY = 'italia-gohan-chat-password';
   const SENSITIVE_KEY = 'italia-gohan-itinerary-sensitive';
   const PRIVATE_KEY = 'italia-gohan-itinerary-private';
   const QUEUE_KEY = 'italia-gohan-itinerary-queue';
@@ -103,10 +106,6 @@ const items = await getItinerary();
     restaurant: { emoji: '🍝', label: 'レストラン予約' },
     generic: { emoji: '📌', label: 'その他' },
   };
-
-  const getPassword = () => sessionStorage.getItem(PASSWORD_KEY);
-  const setPassword = (p: string) => sessionStorage.setItem(PASSWORD_KEY, p);
-  const clearPassword = () => sessionStorage.removeItem(PASSWORD_KEY);
 
   function loadAllSensitive(): Record<string, Sensitive> {
     try {
@@ -1132,5 +1131,14 @@ const items = await getItinerary();
 
   window.addEventListener('online', () => { void drainQueue(); updateSyncBadge(); });
   window.addEventListener('offline', () => { updateSyncBadge(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') return;
+    void (async () => {
+      const latest = await fetchLatestFromServer();
+      if (latest) applyServerItems(latest);
+      await drainQueue();
+      updateSyncBadge();
+    })();
+  });
   setInterval(updateSyncBadge, 30_000);
 </script>

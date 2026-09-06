@@ -54,6 +54,10 @@ const todos = await getTodos();
 </Layout>
 
 <script>
+  import { bootstrapPasswordFromUrl, getPassword, setPassword, clearPassword } from '@/lib/password-client';
+
+  bootstrapPasswordFromUrl();
+
   type TodoCity = 'Rome' | 'Florence' | 'Palermo' | 'Taormina' | 'Siracusa' | 'Sicily' | '全般';
   type Todo = {
     id: string;
@@ -67,16 +71,11 @@ const todos = await getTodos();
     deletedAt?: string;
   };
 
-  const PASSWORD_KEY = 'italia-gohan-chat-password';
   const CACHE_KEY = 'italia-gohan-todo-cache';
   const QUEUE_KEY = 'italia-gohan-todo-queue';
   const LAST_SYNC_KEY = 'italia-gohan-todo-last-sync';
 
   let draining = false;
-
-  const getPassword = () => sessionStorage.getItem(PASSWORD_KEY);
-  const setPassword = (p: string) => sessionStorage.setItem(PASSWORD_KEY, p);
-  const clearPassword = () => sessionStorage.removeItem(PASSWORD_KEY);
 
   function loadCache(): Todo[] {
     try {
@@ -602,6 +601,15 @@ const todos = await getTodos();
 
   window.addEventListener('online', () => { void drainQueue(); updateSyncBadge(); });
   window.addEventListener('offline', () => { updateSyncBadge(); });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState !== 'visible') return;
+    void (async () => {
+      const latest = await fetchLatestFromServer();
+      if (latest) applyServerTodos(latest);
+      await drainQueue();
+      updateSyncBadge();
+    })();
+  });
   setInterval(updateSyncBadge, 30_000);
 
   document.addEventListener('keydown', (e) => {

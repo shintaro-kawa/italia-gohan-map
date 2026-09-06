@@ -36,6 +36,10 @@
 </div>
 
 <script>
+  import { bootstrapPasswordFromUrl, getPassword, setPassword, clearPassword } from '@/lib/password-client';
+
+  bootstrapPasswordFromUrl();
+
   type Candidate = {
     id?: string;
     name: string;
@@ -56,18 +60,6 @@
     highlights?: Array<{ type: string; note?: string }>;
     lastAnalyzed?: string;
   };
-
-  const PASSWORD_KEY = 'italia-gohan-chat-password';
-
-  function getPassword(): string | null {
-    return sessionStorage.getItem(PASSWORD_KEY);
-  }
-  function setPassword(p: string) {
-    sessionStorage.setItem(PASSWORD_KEY, p);
-  }
-  function clearPassword() {
-    sessionStorage.removeItem(PASSWORD_KEY);
-  }
 
   function escape(s: string): string {
     return s
