@@ -11,14 +11,28 @@ const PASSWORD_KEY = 'italia-gohan-chat-password';
  * 送信されないため。旧 sessionStorage 保存分もここで localStorage へ移行する。
  */
 export function bootstrapPasswordFromUrl(): void {
-  const m = window.location.hash.match(/[#&]key=([^&]+)/);
-  if (m) {
+  // #key= を優先しつつ ?key= も受け付ける。メッセージアプリ (LINE 等) のリンク自動検出は
+  // `#` の手前で切れることがあり、フラグメントが届かないケースの保険 (D-034 追補)。
+  let key: string | null = null;
+  const hashMatch = window.location.hash.match(/[#&]key=([^&]+)/);
+  if (hashMatch) {
     try {
-      localStorage.setItem(PASSWORD_KEY, decodeURIComponent(m[1]));
+      key = decodeURIComponent(hashMatch[1]);
+    } catch {
+      key = hashMatch[1];
+    }
+  }
+  const params = new URLSearchParams(window.location.search);
+  if (!key) key = params.get('key');
+  if (key) {
+    try {
+      localStorage.setItem(PASSWORD_KEY, key);
     } catch {
       // プライベートブラウズ等で localStorage が使えない場合は従来の入力 UI にフォールバック
     }
-    history.replaceState(null, '', window.location.pathname + window.location.search);
+    params.delete('key');
+    const qs = params.toString();
+    history.replaceState(null, '', window.location.pathname + (qs ? `?${qs}` : ''));
   }
 
   // sessionStorage 時代 (〜D-033) の保存分を移行
