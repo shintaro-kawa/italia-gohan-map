@@ -1,3 +1,5 @@
+import { compareWallClock, toWallClock, wallDateKey } from '../lib/itinerary-time.js';
+
 export type ItineraryType =
   | 'flight'
   | 'hotel'
@@ -73,32 +75,24 @@ export interface ItinerarySensitive {
 
 export function formatItineraryDateTime(iso: string, locale = 'ja-JP'): string {
   try {
-    const d = new Date(iso);
-    return d.toLocaleString(locale, {
+    const wc = toWallClock(iso);
+    const d = new Date(`${wc.slice(0, 10)}T00:00:00`);
+    const date = d.toLocaleDateString(locale, {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
       weekday: 'short',
-      hour: '2-digit',
-      minute: '2-digit',
     });
+    return `${date} ${wc.slice(11, 16)}`;
   } catch {
     return iso;
   }
 }
 
 export function itineraryDateKey(iso: string): string {
-  try {
-    const d = new Date(iso);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  } catch {
-    return iso.slice(0, 10);
-  }
+  return wallDateKey(iso);
 }
 
 export function compareItineraryItems(a: ItineraryItem, b: ItineraryItem): number {
-  return new Date(a.startAt).getTime() - new Date(b.startAt).getTime();
+  return compareWallClock(a.startAt, b.startAt);
 }

@@ -60,6 +60,7 @@ const items = await getItinerary();
 
 <script>
   import { bootstrapPasswordFromUrl, getPassword, setPassword, clearPassword } from '@/lib/password-client';
+  import { compareWallClock, toWallClock, wallDateBefore, wallDateKey, wallHm } from '@/lib/itinerary-time';
 
   bootstrapPasswordFromUrl();
 
@@ -209,13 +210,7 @@ const items = await getItinerary();
       .replace(/'/g, '&#39;');
   }
   function dateKey(iso: string): string {
-    try {
-      const d = new Date(iso);
-      const pad = (n: number) => String(n).padStart(2, '0');
-      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-    } catch {
-      return iso.slice(0, 10);
-    }
+    return wallDateKey(iso);
   }
   function formatGroupDate(key: string): string {
     try {
@@ -226,8 +221,7 @@ const items = await getItinerary();
     }
   }
   function formatHm(iso: string): string {
-    const d = new Date(iso);
-    return d.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+    return wallHm(iso);
   }
   function formatRange(start: string, end?: string): string {
     if (!end) return formatHm(start);
@@ -289,13 +283,7 @@ const items = await getItinerary();
   }
 
   function deadlineBeforeStartAt(iso: string): string {
-    const d = new Date(iso);
-    if (!Number.isFinite(d.getTime())) return '';
-    d.setDate(d.getDate() - 1);
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
+    return wallDateBefore(iso);
   }
 
   function buildCardHtml(item: Item, isPrivate: boolean): string {
@@ -361,18 +349,18 @@ const items = await getItinerary();
     tmp.innerHTML = cardHtml.trim();
     const card = tmp.content.firstElementChild as HTMLElement;
     if (!card) return;
-    const targetStart = new Date(item.startAt).getTime();
+    const targetStart = toWallClock(item.startAt);
     const siblings = Array.from(list.children) as HTMLElement[];
     for (const sib of siblings) {
       const sibId = sib.getAttribute('data-id');
       const isJsonSib = sib.getAttribute('data-source') === 'json';
-      let sibStart = 0;
+      let sibStart = '';
       if (isJsonSib) {
         const found = loadInlineItems().find((x) => x.id === sibId);
-        sibStart = found ? new Date(found.startAt).getTime() : 0;
+        sibStart = found ? toWallClock(found.startAt) : '';
       } else {
         const found = findPrivate(sibId ?? '');
-        sibStart = found ? new Date(found.startAt).getTime() : 0;
+        sibStart = found ? toWallClock(found.startAt) : '';
       }
       if (targetStart < sibStart) {
         list.insertBefore(card, sib);
@@ -591,7 +579,7 @@ const items = await getItinerary();
     if (items.length === 0) return;
     items
       .slice()
-      .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime())
+      .sort((a, b) => compareWallClock(a.startAt, b.startAt))
       .forEach((it) => {
         const dk = dateKey(it.startAt);
         const list = ensureDayGroup(dk);
@@ -672,8 +660,7 @@ const items = await getItinerary();
     (document.getElementById('if-amount') as HTMLInputElement).value =
       typeof item?.amount === 'number' ? String(item.amount) : '';
     (document.getElementById('if-currency') as HTMLSelectElement).value = item?.currency ?? 'EUR';
-    (document.getElementById('if-paid-by') as HTMLInputElement).value = item?.paidBy ?? '';
-    refreshPaidByDatalist();
+    refreshPaidBySelect(item?.paidBy);
 
     const type = item?.type ?? 'flight';
     document.querySelectorAll<HTMLInputElement>('[data-if-type-input]').forEach((r) => {
@@ -711,24 +698,16 @@ const items = await getItinerary();
     });
   }
 
+  // 旅程の時刻は「イベント現地の壁時計時刻」をオフセット無しの
+  // YYYY-MM-DDTHH:mm で保存する。toISOString() で UTC に変換すると、
+  // 旅行先で端末のタイムゾーンが変わったときに表示がずれる。
   function toLocalInput(iso?: string): string {
     if (!iso) return '';
-    try {
-      const d = new Date(iso);
-      const pad = (n: number) => String(n).padStart(2, '0');
-      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    } catch {
-      return '';
-    }
+    return toWallClock(iso);
   }
   function fromLocalInput(local: string): string | undefined {
-    if (!local) return undefined;
-    try {
-      const d = new Date(local);
-      return d.toISOString();
-    } catch {
-      return undefined;
-    }
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(local)) return undefined;
+    return local.slice(0, 16);
   }
 
   function gatherFormItem(): Item | string {
@@ -780,7 +759,8 @@ const items = await getItinerary();
     const hasAmount = Number.isFinite(amountNum) && amountNum >= 0;
     const currencyVal = (document.getElementById('if-currency') as HTMLSelectElement).value;
     const currency: Currency = currencyVal === 'JPY' ? 'JPY' : 'EUR';
-    const paidBy = (document.getElementById('if-paid-by') as HTMLInputElement).value.trim();
+    const paidBy = currentPaidBy();
+    if (paidBy) rememberPayer(paidBy);
 
     const item: Item = {
       id: id || `${type}-${cryptoRandomShort()}`,
@@ -797,18 +777,70 @@ const items = await getItinerary();
     return item;
   }
 
-  function refreshPaidByDatalist() {
-    const dl = document.getElementById('if-paid-by-list');
-    if (!dl) return;
+  const PAYERS_KEY = 'italia-gohan-itinerary-payers';
+
+  function loadSavedPayers(): string[] {
+    try {
+      const raw = localStorage.getItem(PAYERS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed.filter((p): p is string => typeof p === 'string') : [];
+    } catch {
+      return [];
+    }
+  }
+  function rememberPayer(name: string) {
+    const n = name.trim();
+    if (!n) return;
+    const all = loadSavedPayers();
+    if (!all.includes(n)) {
+      all.push(n);
+      try {
+        localStorage.setItem(PAYERS_KEY, JSON.stringify(all));
+      } catch {
+        // ignore
+      }
+    }
+  }
+  function knownPayers(): string[] {
     const seen = new Set<string>();
-    const fromInline = loadInlineItems();
-    for (const it of fromInline) {
+    for (const it of loadInlineItems()) {
       if (it.paidBy && it.paidBy.trim()) seen.add(it.paidBy.trim());
     }
     for (const it of loadPrivate()) {
       if (it.paidBy && it.paidBy.trim()) seen.add(it.paidBy.trim());
     }
-    dl.innerHTML = Array.from(seen).map((p) => `<option value="${escape(p)}"></option>`).join('');
+    for (const p of loadSavedPayers()) seen.add(p);
+    return Array.from(seen).sort((a, b) => a.localeCompare(b, 'ja'));
+  }
+
+  function refreshPaidBySelect(current?: string) {
+    const sel = document.getElementById('if-paid-by-select') as HTMLSelectElement | null;
+    if (!sel) return;
+    const cur = (current ?? '').trim();
+    const payers = knownPayers();
+    if (cur && !payers.includes(cur)) payers.push(cur);
+    sel.innerHTML =
+      `<option value="">未設定</option>` +
+      payers.map((p) => `<option value="${escape(p)}">${escape(p)}</option>`).join('') +
+      `<option value="__new__">＋ 新しい支払者を追加…</option>`;
+    sel.value = cur;
+    togglePaidByNewRow(false);
+  }
+
+  function togglePaidByNewRow(show: boolean) {
+    const row = document.getElementById('if-paid-by-new-row') as HTMLElement | null;
+    const input = document.getElementById('if-paid-by') as HTMLInputElement | null;
+    if (row) row.hidden = !show;
+    if (input && !show) input.value = '';
+  }
+
+  function currentPaidBy(): string {
+    const sel = document.getElementById('if-paid-by-select') as HTMLSelectElement | null;
+    if (!sel) return '';
+    if (sel.value === '__new__') {
+      return (document.getElementById('if-paid-by') as HTMLInputElement).value.trim();
+    }
+    return sel.value.trim();
   }
 
   function formatAmount(amount: number, currency: Currency): string {
@@ -1045,6 +1077,13 @@ const items = await getItinerary();
 
   document.querySelectorAll<HTMLInputElement>('[data-if-type-input]').forEach((r) => {
     r.addEventListener('change', () => refreshTypeView(r.value));
+  });
+
+  document.getElementById('if-paid-by-select')?.addEventListener('change', (e) => {
+    const sel = e.currentTarget as HTMLSelectElement;
+    const isNew = sel.value === '__new__';
+    togglePaidByNewRow(isNew);
+    if (isNew) (document.getElementById('if-paid-by') as HTMLInputElement | null)?.focus();
   });
 
   document.getElementById('if-private')?.addEventListener('change', () => {

@@ -1,5 +1,6 @@
 ---
 import { itineraryDateKey, ITINERARY_TYPES } from '@/types/itinerary';
+import { wallDateBefore, wallHm } from '@/lib/itinerary-time';
 import type { ItineraryItem } from '@/types/itinerary';
 
 interface Props {
@@ -26,15 +27,13 @@ function label(type: string): string {
   return ITINERARY_TYPES.find((t) => t.value === type)?.label ?? type;
 }
 function formatHm(iso: string): string {
-  const d = new Date(iso);
-  return d.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+  return wallHm(iso);
 }
 function formatRange(start: string, end?: string): string {
   if (!end) return formatHm(start);
   const startKey = itineraryDateKey(start);
   const endKey = itineraryDateKey(end);
   if (startKey === endKey) return `${formatHm(start)} – ${formatHm(end)}`;
-  const endD = new Date(end);
   return `${formatHm(start)} → ${endKey.slice(5).replace('-', '/')} ${formatHm(end)}`;
 }
 function formatGroupDate(key: string): string {
@@ -75,13 +74,7 @@ function formatItemAmount(amount: number, currency?: string): string {
 }
 
 function deadlineBeforeStartAt(iso: string): string {
-  const d = new Date(iso);
-  if (!Number.isFinite(d.getTime())) return '';
-  d.setDate(d.getDate() - 1);
-  const yyyy = d.getFullYear();
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  return `${yyyy}-${mm}-${dd}`;
+  return wallDateBefore(iso);
 }
 
 function detailLines(item: ItineraryItem): string[] {

@@ -37,6 +37,7 @@
 
 <script>
   import { bootstrapPasswordFromUrl, getPassword, setPassword, clearPassword } from '@/lib/password-client';
+  import { toWallClock } from '@/lib/itinerary-time';
 
   bootstrapPasswordFromUrl();
 
@@ -119,9 +120,12 @@
   let currentDraft: ItineraryDraft | null = null;
 
   function formatDraftDate(iso: string): string {
-    const d = new Date(iso);
+    // 壁時計時刻のまま表示 (端末タイムゾーンで変換しない)
+    const wc = toWallClock(iso);
+    const d = new Date(`${wc.slice(0, 10)}T00:00:00`);
     if (!Number.isFinite(d.getTime())) return iso;
-    return d.toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit' });
+    const date = d.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', weekday: 'short' });
+    return `${date} ${wc.slice(11, 16)}`;
   }
 
   function renderDraft(d: ItineraryDraft): string {
@@ -148,6 +152,8 @@
     btn.textContent = '登録中…';
     const item = {
       ...currentDraft,
+      startAt: toWallClock(currentDraft.startAt),
+      ...(currentDraft.endAt ? { endAt: toWallClock(currentDraft.endAt) } : {}),
       id: 'chat-' + crypto.randomUUID().slice(0, 8),
       updatedAt: new Date().toISOString(),
     };

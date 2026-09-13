@@ -131,8 +131,14 @@ import { ITINERARY_TYPES } from '@/types/itinerary';
         </div>
         <label class="if-row">
           <span>支払者</span>
-          <input type="text" id="if-paid-by" placeholder="例: 自分 / 妻 / 友人" list="if-paid-by-list" maxlength="60" />
-          <datalist id="if-paid-by-list"></datalist>
+          <select id="if-paid-by-select">
+            <option value="">未設定</option>
+            <option value="__new__">＋ 新しい支払者を追加…</option>
+          </select>
+        </label>
+        <label class="if-row" id="if-paid-by-new-row" hidden>
+          <span>新しい支払者の名前</span>
+          <input type="text" id="if-paid-by" placeholder="例: 自分 / 妻 / 友人" maxlength="60" />
         </label>
       </details>
 

@@ -3,8 +3,8 @@
     "id": "flight-ek319-nrt-dxb",
     "type": "flight",
     "title": "EK319 Tokyo (NRT) → Dubai (DXB)",
-    "startAt": "2026-09-11T13:30:00.000Z",
-    "endAt": "2026-09-11T19:05:00.000Z",
+    "startAt": "2026-09-11T22:30",
+    "endAt": "2026-09-12T04:05",
     "location": {
       "from": "NRT",
       "to": "DXB"
