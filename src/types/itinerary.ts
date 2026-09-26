@@ -47,6 +47,8 @@ export interface ItineraryItem {
   currency?: ItineraryCurrency;
   /** 支払者 (任意のフリーテキスト)。清算の集計キー */
   paidBy?: string;
+  /** true なら割り勘 (精算) の対象外。旅程合計には含まれる (D-036) */
+  splitExcluded?: boolean;
   /** ISO 8601、最終更新タイムスタンプ。同期競合解決に使用。 */
   updatedAt: string;
   /** ISO 8601、論理削除のトゥームストーン。削除アイテムは物理削除せず deletedAt を立てて Gist に残す。 */

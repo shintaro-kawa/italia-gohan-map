@@ -47,6 +47,9 @@ function validateWrite(input: unknown): ItineraryItem | string {
   if (typeof r.paidBy === 'string' && r.paidBy.trim()) {
     item.paidBy = r.paidBy.trim();
   }
+  if (r.splitExcluded === true) {
+    item.splitExcluded = true;
+  }
   return item;
 }
 

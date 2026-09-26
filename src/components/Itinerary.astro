@@ -140,6 +140,13 @@ function detailLines(item: ItineraryItem): string[] {
                     💴 {formatItemAmount(item.amount, item.currency)}
                   </span>
                   {item.paidBy && <span class="itinerary-paid-by">支払: {item.paidBy}</span>}
+                  {item.splitExcluded && <span class="itinerary-split-excluded-badge">割り勘対象外</span>}
+                  <button
+                    type="button"
+                    class="itinerary-split-toggle"
+                    data-split-toggle={item.id}
+                    title={item.splitExcluded ? '割り勘に戻す' : '割り勘から外す'}
+                  >{item.splitExcluded ? '↩ 割り勘に戻す' : '🚫 割り勘から外す'}</button>
                 </p>
               )}
               {item.notes && <p class="itinerary-card-notes">{item.notes}</p>}

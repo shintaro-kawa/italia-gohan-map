@@ -140,6 +140,10 @@ import { ITINERARY_TYPES } from '@/types/itinerary';
           <span>新しい支払者の名前</span>
           <input type="text" id="if-paid-by" placeholder="例: 自分 / 妻 / 友人" maxlength="60" />
         </label>
+        <label class="if-row if-row-check">
+          <input type="checkbox" id="if-split-excluded" />
+          <span>割り勘の対象外にする (合計には含まれ、精算からのみ除外)</span>
+        </label>
       </details>
 
       <details class="if-section if-sensitive">

@@ -34,8 +34,10 @@ const items = await getItinerary();
         </section>
 
         <section id="itinerary-totals-by-payer-section" class="itinerary-totals-section" hidden>
-          <h3 class="itinerary-totals-h3">支払者別</h3>
+          <h3 class="itinerary-totals-h3">精算 (割り勘)</h3>
+          <p id="itinerary-totals-split-basis" class="itinerary-totals-split-basis"></p>
           <ul id="itinerary-totals-by-payer" class="itinerary-totals-breakdown"></ul>
+          <p id="itinerary-totals-settlement" class="itinerary-totals-settlement"></p>
         </section>
 
         <section class="itinerary-totals-section">
@@ -77,6 +79,7 @@ const items = await getItinerary();
     amount?: number;
     currency?: Currency;
     paidBy?: string;
+    splitExcluded?: boolean;
     updatedAt?: string;
     deletedAt?: string;
   };
@@ -308,7 +311,7 @@ const items = await getItinerary();
           </div>
           ${loc ? `<p class="itinerary-card-loc">📍 ${escape(loc)}</p>` : ''}
           ${lines.map((l) => `<p class="itinerary-card-line">${escape(l)}</p>`).join('')}
-          ${typeof item.amount === 'number' && item.amount > 0 ? `<p class="itinerary-card-amount"><span class="itinerary-amount-badge" data-currency="${escape(item.currency ?? 'EUR')}">💴 ${escape(formatAmount(item.amount, (item.currency ?? 'EUR') as Currency))}</span>${item.paidBy ? ` <span class="itinerary-paid-by">支払: ${escape(item.paidBy)}</span>` : ''}</p>` : ''}
+          ${typeof item.amount === 'number' && item.amount > 0 ? `<p class="itinerary-card-amount"><span class="itinerary-amount-badge" data-currency="${escape(item.currency ?? 'EUR')}">💴 ${escape(formatAmount(item.amount, (item.currency ?? 'EUR') as Currency))}</span>${item.paidBy ? ` <span class="itinerary-paid-by">支払: ${escape(item.paidBy)}</span>` : ''}${item.splitExcluded ? ' <span class="itinerary-split-excluded-badge">割り勘対象外</span>' : ''} <button type="button" class="itinerary-split-toggle" data-split-toggle="${escape(item.id)}" title="${item.splitExcluded ? '割り勘に戻す' : '割り勘から外す'}">${item.splitExcluded ? '↩ 割り勘に戻す' : '🚫 割り勘から外す'}</button></p>` : ''}
           ${item.notes ? `<p class="itinerary-card-notes">${escape(item.notes)}</p>` : ''}
           <p class="itinerary-card-sensitive" data-sensitive-for="${escape(item.id)}" hidden></p>
         </div>
@@ -413,6 +416,29 @@ const items = await getItinerary();
         modalOpen(target);
       });
     });
+    scope.querySelectorAll<HTMLButtonElement>('[data-split-toggle]').forEach((btn) => {
+      if (btn.dataset.bound === '1') return;
+      btn.dataset.bound = '1';
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-split-toggle');
+        if (!id) return;
+        const target = findPrivate(id) ?? loadInlineItems().find((x) => x.id === id);
+        if (!target) return;
+        const next: Item = { ...target, updatedAt: new Date().toISOString() };
+        if (next.splitExcluded) delete next.splitExcluded;
+        else next.splitExcluded = true;
+        upsertPrivate(next);
+        enqueueWrite(next);
+        const card = document.querySelector(`[data-id="${id}"]`);
+        card?.remove();
+        const list = ensureDayGroup(dateKey(next.startAt));
+        insertCardSorted(list, buildCardHtml(next, true), next);
+        attachCardListeners();
+        renderSensitiveLines();
+        updateCount();
+        void drainQueue();
+      });
+    });
     scope.querySelectorAll<HTMLButtonElement>('[data-delete-id]').forEach((btn) => {
       if (btn.dataset.bound === '1') return;
       btn.dataset.bound = '1';
@@ -463,7 +489,8 @@ const items = await getItinerary();
   function updateTotals() {
     const root = document.getElementById('itinerary-totals') as HTMLDetailsElement | null;
     if (!root) return;
-    const all: Item[] = [...loadInlineItems(), ...loadPrivate()].filter((x) => !x.deletedAt);
+    // 同期済み (private) を先に置く: ビルド時シードと同 id の場合、編集・除外トグルが反映された方を採用 (D-036)
+    const all: Item[] = [...loadPrivate(), ...loadInlineItems()].filter((x) => !x.deletedAt);
     const seen = new Set<string>();
     const dedup: Item[] = [];
     for (const it of all) {
@@ -511,38 +538,86 @@ const items = await getItinerary();
         .join('');
     }
 
-    // 支払者別
+    // 精算 (割り勘) — splitExcluded を除いた対象で集計 (D-036)
+    const rate = getRate();
+    const toJpy = (currs: Record<string, number>) => (currs.JPY ?? 0) + (currs.EUR ?? 0) * rate;
+    const splitTarget = withAmount.filter((t) => t.splitExcluded !== true);
+    const excludedCount = withAmount.length - splitTarget.length;
+
+    const splitByCurrency: Record<string, number> = {};
     const byPayer: Record<string, Record<string, number>> = {};
-    for (const t of withAmount) {
-      const p = (t.paidBy ?? '').trim();
-      if (!p) continue;
+    const noPayerByCurrency: Record<string, number> = {};
+    for (const t of splitTarget) {
       const c = (t.currency ?? 'EUR') as Currency;
+      splitByCurrency[c] = (splitByCurrency[c] ?? 0) + (t.amount ?? 0);
+      const p = (t.paidBy ?? '').trim();
+      if (!p) {
+        noPayerByCurrency[c] = (noPayerByCurrency[c] ?? 0) + (t.amount ?? 0);
+        continue;
+      }
       byPayer[p] ??= {};
       byPayer[p][c] = (byPayer[p][c] ?? 0) + (t.amount ?? 0);
     }
+
     const payerSection = document.getElementById('itinerary-totals-by-payer-section');
     const payerEl = document.getElementById('itinerary-totals-by-payer');
-    if (Object.keys(byPayer).length === 0) {
+    const basisEl = document.getElementById('itinerary-totals-split-basis');
+    const settlementEl = document.getElementById('itinerary-totals-settlement');
+    const payers = Object.entries(byPayer).sort(([, a], [, b]) => toJpy(b) - toJpy(a));
+    if (payers.length === 0 && excludedCount === 0) {
       if (payerSection) payerSection.hidden = true;
     } else {
       if (payerSection) payerSection.hidden = false;
-      if (payerEl) payerEl.innerHTML = Object.entries(byPayer)
-        .sort(([, a], [, b]) => {
-          const ax = Object.values(a).reduce((s, v) => s + v, 0);
-          const bx = Object.values(b).reduce((s, v) => s + v, 0);
-          return bx - ax;
-        })
+
+      if (basisEl) {
+        const totalParts = Object.entries(splitByCurrency)
+          .map(([c, v]) => formatAmount(v, c as Currency))
+          .join(' + ') || 'なし';
+        basisEl.textContent = `割り勘対象: ${totalParts}${excludedCount > 0 ? ` (除外 ${excludedCount} 件)` : ''}`;
+      }
+
+      // 1 人あたりと過不足は支払者が付いたアイテムのみで計算 (円換算)
+      const attributedJpy = payers.reduce((s, [, currs]) => s + toJpy(currs), 0);
+      const perHead = payers.length > 0 ? attributedJpy / payers.length : 0;
+
+      if (payerEl) payerEl.innerHTML = payers
         .map(([p, currs]) => {
           const parts = Object.entries(currs)
             .map(([c, v]) => formatAmount(v, c as Currency))
             .join(' + ');
-          return `<li><span class="itinerary-totals-payer-name">${escape(p)}</span><span class="itinerary-totals-amounts">${parts}</span></li>`;
+          const diff = toJpy(currs) - perHead;
+          const diffLabel = payers.length < 2 ? '' :
+            ` <span class="itinerary-totals-diff" data-sign="${diff >= 0 ? 'plus' : 'minus'}">(${diff >= 0 ? '+' : '−'}¥${Math.round(Math.abs(diff)).toLocaleString('ja-JP')})</span>`;
+          return `<li><span class="itinerary-totals-payer-name">${escape(p)}</span><span class="itinerary-totals-amounts">${parts}${diffLabel}</span></li>`;
         })
         .join('');
+
+      if (settlementEl) {
+        const lines: string[] = [];
+        if (payers.length >= 2) {
+          lines.push(`1人あたり ≈ ¥${Math.round(perHead).toLocaleString('ja-JP')} (レート ${rate})`);
+        }
+        if (payers.length === 2) {
+          const [[nameA, currsA], [nameB]] = payers; // 多く払っている順
+          const owe = toJpy(currsA) - perHead;
+          if (Math.round(owe) > 0) {
+            lines.push(`💸 ${escape(nameB)} → ${escape(nameA)} に ¥${Math.round(owe).toLocaleString('ja-JP')}`);
+          } else {
+            lines.push('💸 精算不要 (同額)');
+          }
+        }
+        const noPayerParts = Object.entries(noPayerByCurrency)
+          .map(([c, v]) => formatAmount(v, c as Currency))
+          .join(' + ');
+        if (noPayerParts) {
+          lines.push(`⚠ 支払者未設定: ${noPayerParts} (差額計算に含まれていません)`);
+        }
+        settlementEl.innerHTML = lines.join('<br />');
+        settlementEl.hidden = lines.length === 0;
+      }
     }
 
     // 換算合計
-    const rate = getRate();
     const totalJpy = (byCurrency.JPY ?? 0) + (byCurrency.EUR ?? 0) * rate;
     const convEl = document.getElementById('itinerary-totals-converted');
     if (convEl) {
@@ -661,6 +736,7 @@ const items = await getItinerary();
       typeof item?.amount === 'number' ? String(item.amount) : '';
     (document.getElementById('if-currency') as HTMLSelectElement).value = item?.currency ?? 'EUR';
     refreshPaidBySelect(item?.paidBy);
+    (document.getElementById('if-split-excluded') as HTMLInputElement).checked = item?.splitExcluded === true;
 
     const type = item?.type ?? 'flight';
     document.querySelectorAll<HTMLInputElement>('[data-if-type-input]').forEach((r) => {
@@ -773,6 +849,7 @@ const items = await getItinerary();
       ...(notes ? { notes } : {}),
       ...(hasAmount ? { amount: amountNum, currency } : {}),
       ...(paidBy ? { paidBy } : {}),
+      ...((document.getElementById('if-split-excluded') as HTMLInputElement).checked ? { splitExcluded: true } : {}),
     };
     return item;
   }
